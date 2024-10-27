@@ -1,0 +1,57 @@
+.projects {
+  max-width: 800px;
+  margin: 80px auto 0;
+  padding: 2rem;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.projects h2 {
+  font-size: 2rem;
+  color: #61dafb;
+  margin-bottom: 1.5rem;
+}
+
+.project-item {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #4a4a4a;
+}
+
+.project-item:last-child {
+  border-bottom: none;
+}
+
+.project-item h3 {
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.project-item p {
+  font-size: 1rem;
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.technologies {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tech-tag {
+  background-color: #3a3a3a;
+  color: #61dafb;
+  padding: 0.3rem 0.6rem;
+  margin: 0.25rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.tech-tag:hover {
+  background-color: #61dafb;
+  color: #1a1a1a;
+  transform: translateY(-2px);
+}
