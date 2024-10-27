@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-scroll';
-import Fade from 'react-reveal/Fade';
+import { motion } from 'framer-motion';
 import '../styles/Header.css';
 
 const Header = () => {
@@ -8,14 +8,25 @@ const Header = () => {
     <header>
       <nav>
         <ul>
-          <Fade top cascade>
-            <li><Link to="about" smooth={true} duration={500}>About</Link></li>
-            <li><Link to="experience" smooth={true} duration={500}>Experience</Link></li>
-            <li><Link to="skills" smooth={true} duration={500}>Skills</Link></li>
-            <li><Link to="education" smooth={true} duration={500}>Education</Link></li>
-            <li><Link to="projects" smooth={true} duration={500}>Projects</Link></li>
-            <li><Link to="contact" smooth={true} duration={500}>Contact</Link></li>
-          </Fade>
+          {['about', 'experience', 'skills', 'education', 'projects', 'contact'].map((item, index) => (
+            <motion.li
+              key={item}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <Link
+                activeClass="active"
+                to={item}
+                spy={true}
+                smooth={true}
+                offset={-60}
+                duration={500}
+              >
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </Link>
+            </motion.li>
+          ))}
         </ul>
       </nav>
     </header>

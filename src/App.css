@@ -6,15 +6,15 @@ body {
   }
   
   .App {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    text-align: center;
+    padding-top: 60px; /* Adjust this value as needed */
   }
   
   main {
-    padding-top: 60px; /* To account for the fixed header */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
   }
-  
   section {
     margin-bottom: 60px;
   }

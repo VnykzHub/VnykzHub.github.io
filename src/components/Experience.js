@@ -1,5 +1,5 @@
 import React from 'react';
-import Fade from 'react-reveal/Fade';
+import { motion } from 'framer-motion';
 import '../styles/Experience.css';
 
 const Experience = () => {
@@ -43,7 +43,13 @@ const Experience = () => {
     <section id="experience" className="experience">
       <h2>Professional Experience</h2>
       {experiences.map((exp, index) => (
-        <Fade bottom key={index}>
+        <motion.div 
+        key={index}
+        className="experience-item"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: index * 0.1 }}
+      >
           <div className="experience-item">
             <h3>{exp.title}</h3>
             <h4>{exp.company}</h4>
@@ -54,7 +60,7 @@ const Experience = () => {
               ))}
             </ul>
           </div>
-        </Fade>
+          </motion.div>
       ))}
     </section>
   );

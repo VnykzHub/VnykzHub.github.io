@@ -1,5 +1,5 @@
 import React from 'react';
-import Fade from 'react-reveal/Fade';
+import { motion } from 'framer-motion';
 import '../styles/Skills.css';
 
 const Skills = () => {
@@ -30,7 +30,13 @@ const Skills = () => {
     <section id="skills" className="skills">
       <h2>Technical Skills</h2>
       {skillCategories.map((category, index) => (
-        <Fade bottom key={index}>
+        <motion.div 
+        key={index}
+        className="skill-category"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: index * 0.1 }}
+      >
           <div className="skill-category">
             <h3>{category.category}</h3>
             <ul>
@@ -39,7 +45,7 @@ const Skills = () => {
               ))}
             </ul>
           </div>
-        </Fade>
+        </motion.div>
       ))}
     </section>
   );
