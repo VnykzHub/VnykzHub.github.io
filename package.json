@@ -24,6 +24,10 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VnykzHub/VnykzHub.github.io.git"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
