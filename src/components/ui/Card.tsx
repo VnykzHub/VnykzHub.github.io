@@ -1,7 +1,8 @@
 import { cn } from '@/utils/cn'
-import { ReactNode } from 'react'
+import { ReactNode, HTMLAttributes } from 'react'
 
-interface CardProps {
+// Extend HTMLAttributes to inherit all div props
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   className?: string
   hover?: boolean
@@ -14,7 +15,8 @@ export function Card({
   className,
   hover = false,
   padding = 'md',
-  gradient = false
+  gradient = false,
+  ...props  // Collect all other props (including onMouseEnter, onMouseLeave, etc.)
 }: CardProps) {
   const paddingClasses = {
     none: '',
@@ -32,6 +34,7 @@ export function Card({
         paddingClasses[padding],
         className
       )}
+      {...props}  // Spread all props to the div (this includes event handlers)
     >
       {children}
     </div>
