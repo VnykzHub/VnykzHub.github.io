@@ -66,8 +66,21 @@ const cells = (row: string): string[] =>
 const isDelimiter = (line: string): boolean =>
   /^\|?[\s:|-]+\|[\s:|-]*$/.test(line) && line.includes('-')
 
+/**
+ * HTML comments are authoring notes, not content.
+ *
+ * Drafting agents leave `<!-- VERIFY: ... -->` markers wherever they could not
+ * source a claim. Those are the review queue and must stay in the markdown, but
+ * a reader must never see them.
+ *
+ * Stripping the comment rather than the line is deliberate: several were
+ * written inline, mid-paragraph, so dropping whole lines would eat real prose
+ * around them.
+ */
+const stripComments = (s: string): string => s.replace(/<!--[\s\S]*?-->/g, '')
+
 function parseBlocks(source: string): Block[] {
-  return source
+  return stripComments(source)
     .split(/\n\s*\n/)
     .map((b) => b.trim())
     .filter(Boolean)
