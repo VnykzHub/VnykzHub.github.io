@@ -4,8 +4,8 @@ import 'katex/dist/katex.min.css'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-python'
 import { Check, Copy } from 'lucide-react'
-import { ANIMS } from '@/content/atlas/anims'
-import type { AtlasCode, AtlasEquation } from '@/content/atlas/types'
+import { ANIMS } from '@/content/llm-atlas/anims'
+import type { AtlasCode, AtlasEquation } from '@/content/llm-atlas/types'
 import { cn } from '@/utils/cn'
 
 /* ────────────────────────────────────────────────────────────────

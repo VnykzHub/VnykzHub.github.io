@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
-import type { Article } from '@/content/atlas'
+import type { Article } from '@/content/llm-atlas'
 import { pad } from './format'
 import { cn } from '@/utils/cn'
 
@@ -12,7 +12,7 @@ interface ArticleCardProps {
 export function ArticleCard({ article, className }: ArticleCardProps) {
   return (
     <Link
-      to={`/blog/${article.slug}`}
+      to={`/blog/${article.series}/${article.slug}`}
       className={cn(
         'group relative flex flex-col rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6',
         'transition-colors duration-200 hover:border-accent-amber',

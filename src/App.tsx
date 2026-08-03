@@ -1,10 +1,12 @@
 import { Suspense, lazy, useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { Layout } from '@/components/layout'
+import { findSeriesBySlug } from '@/content/series'
 import { Home } from '@/pages/Home'
 
 // Only the article routes pull in KaTeX, Prism and the 49 canvas figures —
 // keeping them out of the home-page bundle.
+const BlogHub = lazy(() => import('@/pages/BlogHub').then((m) => ({ default: m.BlogHub })))
 const WritingIndex = lazy(() =>
   import('@/pages/WritingIndex').then((m) => ({ default: m.WritingIndex }))
 )
@@ -59,6 +61,22 @@ function RedirectArticle() {
   return <Navigate to={`/blog/${slug}`} replace />
 }
 
+/**
+ * Resolves a bare /blog/:slug against the registry.
+ *
+ * Before the multi-series registry, every LLM Atlas part lived at /blog/<slug>
+ * with no series segment. Those URLs are published and may have been shared, so
+ * a known slug redirects to its canonical /blog/<series>/<slug>. Anything else
+ * is a genuine 404 — and notably, a *series* id also lands here, which is why
+ * this route sits after the series routes rather than shadowing them.
+ */
+function ResolveLegacyArticle() {
+  const { slug } = useParams<{ slug: string }>()
+  const series = slug ? findSeriesBySlug(slug) : undefined
+  if (series) return <Navigate to={`/blog/${series.id}/${slug}`} replace />
+  return <NotFound />
+}
+
 function App() {
   return (
     <Layout>
@@ -66,8 +84,14 @@ function App() {
       <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/blog" element={<WritingIndex />} />
-          <Route path="/blog/:slug" element={<ArticlePage />} />
+
+          {/* The Atlas hub, then one landing page per series, then articles.
+              Order matters: /blog/:slug must come last or it would swallow
+              /blog/llm-atlas and every future series id. */}
+          <Route path="/blog" element={<BlogHub />} />
+          <Route path="/blog/llm-atlas" element={<WritingIndex />} />
+          <Route path="/blog/:series/:slug" element={<ArticlePage />} />
+          <Route path="/blog/:slug" element={<ResolveLegacyArticle />} />
           {/* /writing was the original path and is already linked from the
               deployed site. Redirect rather than rename, so anything shared
               externally keeps resolving instead of 404ing. */}

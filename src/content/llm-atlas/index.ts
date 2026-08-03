@@ -1,5 +1,10 @@
 import { ATLAS_META } from './atlas.meta'
 import type { AtlasMeta } from './types'
+import type { Article, Series } from '../types'
+import { sumTotals } from '../types'
+
+/** URL segment for this series: /blog/llm-atlas/<slug>. */
+export const SERIES_ID = 'llm-atlas'
 
 export type {
   AtlasSection,
@@ -105,28 +110,8 @@ const ORDER: { id: string; slug: string; dek: string }[] = [
   },
 ]
 
-export interface Article {
-  /** Position in the series, 1-indexed */
-  part: number
-  slug: string
-  /** Section id — the key for loading the body via ./content */
-  id: string
-  /** Full display title */
-  title: string
-  /** Short nav label */
-  label: string
-  dek: string
-  /** Spot colour, carried from the source data */
-  color: string
-  icon: string
-  published: string
-  /** Estimated minutes, rounded, minimum 1 */
-  readingTime: number
-  subCount: number
-  wordCount: number
-  figureCount: number
-  equationCount: number
-}
+/** The listing shape is shared across every Atlas series — see ../types. */
+export type { Article } from '../types'
 
 const WORDS_PER_MINUTE = 220
 /** A figure or an equation costs roughly as much attention as a short paragraph. */
@@ -147,6 +132,7 @@ export const ARTICLES: Article[] = ORDER.map((entry, index) => {
     part: index + 1,
     slug: entry.slug,
     id: meta.id,
+    series: SERIES_ID,
     title: meta.title,
     label: meta.label,
     dek: entry.dek,
@@ -171,10 +157,16 @@ export function getNeighbours(slug: string): { prev?: Article; next?: Article } 
   return { prev: ARTICLES[i - 1], next: ARTICLES[i + 1] }
 }
 
-export const SERIES_TOTALS = {
-  parts: ARTICLES.length,
-  sections: ARTICLES.reduce((n, a) => n + a.subCount, 0),
-  figures: ARTICLES.reduce((n, a) => n + a.figureCount, 0),
-  equations: ARTICLES.reduce((n, a) => n + a.equationCount, 0),
-  minutes: ARTICLES.reduce((n, a) => n + a.readingTime, 0),
+export const SERIES_TOTALS = sumTotals(ARTICLES)
+
+/** Registry entry. See src/content/series.ts. */
+export const LLM_ATLAS: Series = {
+  id: SERIES_ID,
+  title: SERIES_TITLE,
+  subtitle: SERIES_SUBTITLE,
+  dek: 'Ten years of architectural churn, in dependency order: what a language model actually is, what the Transformer replaced and why, the lineages that descend from it, and the economics that decide what gets built.',
+  status: 'published',
+  accent: 'amber',
+  articles: ARTICLES,
+  totals: SERIES_TOTALS,
 }

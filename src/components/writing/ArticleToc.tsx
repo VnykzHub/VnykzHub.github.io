@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useScrollProgress } from '@/hooks'
-import type { AtlasSection } from '@/content/atlas/types'
+import type { AtlasSection } from '@/content/llm-atlas/types'
 import { splitTitle } from './format'
 
 /** Thin cyan bar pinned to the top of the viewport. */

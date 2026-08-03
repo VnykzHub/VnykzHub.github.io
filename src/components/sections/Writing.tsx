@@ -6,7 +6,7 @@ import { Heading, Text, Eyebrow } from '@/components/ui'
 // article renderer and would pull KaTeX, Prism and 49 canvas figures into the
 // home page's bundle.
 import { ArticleCard } from '@/components/writing/ArticleCard'
-import { ARTICLES, SERIES_SUBTITLE, SERIES_TITLE, SERIES_TOTALS } from '@/content/atlas'
+import { ARTICLES, SERIES_SUBTITLE, SERIES_TITLE, SERIES_TOTALS } from '@/content/llm-atlas'
 
 /** The three parts that best show what the series is; the rest live at /writing. */
 const FEATURED_SLUGS = [
@@ -53,7 +53,7 @@ export function Writing() {
         <AnimatedSection animation="fadeIn" delay={0.2}>
           <div className="mt-10 text-center">
             <Link
-              to="/blog"
+              to="/blog/llm-atlas"
               className="inline-flex items-center gap-2 rounded-lg border border-[var(--rule)] px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ink-soft)] transition-colors hover:border-accent-amber hover:text-accent-amber"
             >
               Read all {SERIES_TOTALS.parts} parts

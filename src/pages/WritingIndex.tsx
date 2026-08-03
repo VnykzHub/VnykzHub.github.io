@@ -10,8 +10,8 @@ import {
   SERIES_SUBTITLE,
   SERIES_TITLE,
   SERIES_TOTALS,
-} from '@/content/atlas'
-import { ATLAS_GLOSSARY, ATLAS_PAPERS } from '@/content/atlas/atlas.refs'
+} from '@/content/llm-atlas'
+import { ATLAS_GLOSSARY, ATLAS_PAPERS } from '@/content/llm-atlas/atlas.refs'
 
 const paperCount = ATLAS_PAPERS.reduce((n, c) => n + c.papers.length, 0)
 

@@ -2,16 +2,17 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { AtlasFigure, CodeBlock, MathBlock, Prose } from './ContentBlocks'
 import { formatDate, pad, splitTitle } from './format'
-import type { Article as ArticleMeta } from '@/content/atlas'
-import { SERIES_TITLE } from '@/content/atlas'
-import type { AtlasSection, AtlasSub } from '@/content/atlas/types'
+import type { Article as ArticleMeta } from '@/content/llm-atlas'
+import { SERIES_TITLE } from '@/content/llm-atlas'
+import { getSeries } from '@/content/series'
+import type { AtlasSection, AtlasSub } from '@/content/llm-atlas/types'
 
 export function ArticleHeader({ article }: { article: ArticleMeta }) {
   return (
     <header className="article-measure px-4 pt-14 pb-10 sm:px-6 md:pt-20">
       <div className="mb-5 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.18em]">
-        <Link to="/blog" className="text-accent-amber hover:underline">
-          {SERIES_TITLE}
+        <Link to={`/blog/${article.series}`} className="text-accent-amber hover:underline">
+          {getSeries(article.series)?.title ?? SERIES_TITLE}
         </Link>
         <span className="text-[var(--ink-faint)]">/</span>
         <span className="text-[var(--ink-faint)]">Part {pad(article.part)}</span>
@@ -112,7 +113,7 @@ export function SeriesNav({ prev, next }: { prev?: ArticleMeta; next?: ArticleMe
     >
       {prev ? (
         <Link
-          to={`/blog/${prev.slug}`}
+          to={`/blog/${prev.series}/${prev.slug}`}
           className="group rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 transition-colors hover:border-accent-amber"
         >
           <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
@@ -128,7 +129,7 @@ export function SeriesNav({ prev, next }: { prev?: ArticleMeta; next?: ArticleMe
 
       {next && (
         <Link
-          to={`/blog/${next.slug}`}
+          to={`/blog/${next.series}/${next.slug}`}
           className="group rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 text-right transition-colors hover:border-accent-amber sm:col-start-2"
         >
           <span className="flex items-center justify-end gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">

@@ -7,22 +7,44 @@ import {
   ReadingProgress,
   SeriesNav,
 } from '@/components/writing'
-import { getArticle, getNeighbours, SERIES_TITLE } from '@/content/atlas'
-import { getSection } from '@/content/atlas/content'
+import { getArticle, getNeighbours, getSeries } from '@/content/series'
+import type { AtlasSection } from '@/content/llm-atlas/types'
+import { getSection as getLlmAtlasSection } from '@/content/llm-atlas/content'
+
+/**
+ * Body getters, one per series.
+ *
+ * Each Atlas keeps its prose, equations and figures in its own module so a
+ * reader of one never downloads another's. Registering a series here is step 3
+ * of adding one — see src/content/series.ts.
+ *
+ * Static imports rather than dynamic: the whole article route is already lazy
+ * behind React.lazy in App.tsx, so a second suspense boundary inside it would
+ * buy nothing and cost a loading flash.
+ */
+const BODY_LOADERS: Record<string, (id: string) => AtlasSection | undefined> = {
+  'llm-atlas': getLlmAtlasSection,
+}
 
 export function ArticlePage() {
-  const { slug } = useParams<{ slug: string }>()
-  const article = slug ? getArticle(slug) : undefined
-  const section = article ? getSection(article.id) : undefined
+  const { series: seriesId, slug } = useParams<{ series: string; slug: string }>()
 
-  // An unknown slug is a dead link, not an error state worth a page of its own.
-  if (!article || !section) return <Navigate to="/blog" replace />
+  const series = seriesId ? getSeries(seriesId) : undefined
+  const article = seriesId && slug ? getArticle(seriesId, slug) : undefined
+  const getSection = seriesId ? BODY_LOADERS[seriesId] : undefined
+  const section = article && getSection ? getSection(article.id) : undefined
 
-  const { prev, next } = getNeighbours(article.slug)
+  // An unknown series or slug is a dead link, not an error state worth its own
+  // page. Fall back to the series landing when the series is real, else the hub.
+  if (!series || !article || !section) {
+    return <Navigate to={series ? `/blog/${series.id}` : '/blog'} replace />
+  }
+
+  const { prev, next } = getNeighbours(series.id, article.slug)
 
   return (
     <>
-      <title>{`${article.title} — ${SERIES_TITLE}`}</title>
+      <title>{`${article.title} — ${series.title}`}</title>
       <meta name="description" content={article.dek} />
 
       <ReadingProgress />
@@ -44,11 +66,11 @@ export function ArticlePage() {
 
         <div className="article-wide mt-8 px-4 sm:px-6">
           <Link
-            to="/blog"
+            to={`/blog/${series.id}`}
             className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)] transition-colors hover:text-accent-amber"
           >
             <ArrowLeft size={12} />
-            All {SERIES_TITLE} parts
+            All {series.title} parts
           </Link>
         </div>
       </footer>
