@@ -503,3 +503,22 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Declared-but-undrawn figure. Visible on purpose while a series is
+   in progress — a blank box reads as broken, this reads as pending. */
+.article-figure-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border: 1px dashed var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.article-figure-placeholder span {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}

@@ -366,7 +366,27 @@ export function AtlasFigure({ anim, label }: { anim: string; label?: string }) {
     return () => cancelAnimationFrame(frame)
   }, [draw, visible])
 
-  if (!draw) return null
+  // A declared-but-undrawn figure renders as a labelled placeholder rather than
+  // vanishing. Drafting agents declare a figure and describe it in the caption;
+  // the canvas is written later, by hand. Returning null would silently discard
+  // that description and leave no trace of what is still owed.
+  //
+  // Every LLM Atlas figure has an implementation, so that series never reaches
+  // this branch.
+  if (!draw) {
+    return (
+      <figure className="article-figure article-figure-pending">
+        {label && <figcaption className="article-figure-label">{label}</figcaption>}
+        <div
+          className="article-figure-placeholder"
+          role="img"
+          aria-label={label ?? 'Diagram pending'}
+        >
+          <span>Figure in progress</span>
+        </div>
+      </figure>
+    )
+  }
 
   return (
     <figure className="article-figure">

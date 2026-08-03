@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "gen:atlas": "node scripts/generate-atlas-content.mjs"
+    "gen:atlas": "node scripts/generate-atlas-content.mjs",
+    "gen:ai-atlas": "node scripts/generate-ai-atlas.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

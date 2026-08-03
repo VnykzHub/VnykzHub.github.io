@@ -10,6 +10,7 @@ import {
 import { getArticle, getNeighbours, getSeries } from '@/content/series'
 import type { AtlasSection } from '@/content/llm-atlas/types'
 import { getSection as getLlmAtlasSection } from '@/content/llm-atlas/content'
+import { getSection as getAiAtlasSection } from '@/content/ai-engineering-atlas/content'
 
 /**
  * Body getters, one per series.
@@ -24,6 +25,7 @@ import { getSection as getLlmAtlasSection } from '@/content/llm-atlas/content'
  */
 const BODY_LOADERS: Record<string, (id: string) => AtlasSection | undefined> = {
   'llm-atlas': getLlmAtlasSection,
+  'ai-engineering-atlas': getAiAtlasSection,
 }
 
 export function ArticlePage() {

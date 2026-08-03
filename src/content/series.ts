@@ -16,6 +16,7 @@
  *   3. add its body loader to BODY_LOADERS in src/pages/ArticlePage.tsx
  */
 
+import { AI_ENGINEERING_ATLAS } from './ai-engineering-atlas'
 import { LLM_ATLAS } from './llm-atlas'
 import type { Article, Series } from './types'
 import { EMPTY_TOTALS } from './types'
@@ -27,16 +28,6 @@ import { EMPTY_TOTALS } from './types'
  * is visible without pretending anything is finished. A series graduates by
  * replacing the placeholder with a real export — the hub needs no change.
  */
-const AI_ENGINEERING_ATLAS: Series = {
-  id: 'ai-engineering-atlas',
-  title: 'AI Engineering Atlas',
-  subtitle: 'Building systems on top of models you did not train',
-  dek: 'The application layer, in dependency order: embeddings and search, vector stores, RAG, agents and tool use, MCP, and everything that sits between a working demo and a system that survives real traffic.',
-  status: 'planned',
-  accent: 'patina',
-  articles: [],
-  totals: EMPTY_TOTALS,
-}
 
 const DSA_ATLAS: Series = {
   id: 'dsa-atlas',
