@@ -11,6 +11,45 @@ export interface AiAtlasMeta extends AtlasMeta {
 
 export const AI_ATLAS_META: AiAtlasMeta[] = [
   {
+    "id": "llm-fundamentals",
+    "label": "LLM Fundamentals",
+    "title": "LLM Fundamentals",
+    "color": "#F0B84C",
+    "icon": "zap",
+    "slug": "llm-fundamentals",
+    "dek": "The floor everything else stands on. What the model actually is, what it costs, what it cannot do. The thing that explains why your token budget matters more than your parameter count.",
+    "subCount": 8,
+    "wordCount": 3222,
+    "figureCount": 5,
+    "equationCount": 0
+  },
+  {
+    "id": "embeddings-search",
+    "label": "Embeddings & Search",
+    "title": "Embeddings & Search",
+    "color": "#4A9E93",
+    "icon": "search",
+    "slug": "embeddings-search",
+    "dek": "Turning meaning into geometry, then searching that geometry fast enough to matter. The compression, the metrics, and the real cost of approximate nearest neighbour.",
+    "subCount": 7,
+    "wordCount": 2140,
+    "figureCount": 2,
+    "equationCount": 6
+  },
+  {
+    "id": "vector-databases",
+    "label": "Vector Databases",
+    "title": "Vector Databases",
+    "color": "#C4703F",
+    "icon": "database",
+    "slug": "vector-databases",
+    "dek": "Where the vectors live, and everything that gets hard once they do. Persistence, filtering, replication, and the operational constraints that library users never touch.",
+    "subCount": 4,
+    "wordCount": 1279,
+    "figureCount": 3,
+    "equationCount": 0
+  },
+  {
     "id": "rag",
     "label": "RAG",
     "title": "Retrieval-Augmented Generation",
@@ -21,6 +60,84 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "subCount": 4,
     "wordCount": 912,
     "figureCount": 2,
+    "equationCount": 1
+  },
+  {
+    "id": "agents",
+    "label": "Agents",
+    "title": "Agents",
+    "color": "#F0B84C",
+    "icon": "bot",
+    "slug": "agents",
+    "dek": "What happens when the model, not your code, decides what happens next. Tool schemas it can actually use, planning loops that drift, memory that has to be deliberately persisted, and the retries, budgets and step caps that keep the whole loop from running away.",
+    "subCount": 9,
+    "wordCount": 5598,
+    "figureCount": 2,
+    "equationCount": 2
+  },
+  {
+    "id": "mcp",
+    "label": "MCP",
+    "title": "Model Context Protocol",
+    "color": "#4A9E93",
+    "icon": "plug",
+    "slug": "mcp",
+    "dek": "A standard socket between models and the tools they call. The newest material in this Atlas, and the one most likely to be stated wrong with confidence — treat every specific detail here as something to check against the current spec before you repeat it.",
+    "subCount": 3,
+    "wordCount": 1698,
+    "figureCount": 2,
+    "equationCount": 0
+  },
+  {
+    "id": "production",
+    "label": "Production",
+    "title": "Production",
+    "color": "#C4703F",
+    "icon": "server",
+    "slug": "production",
+    "dek": "Anyone can build a demo in an afternoon. What separates it from a system is everything covered here — the tail latency nobody load-tested, the token bill nobody budgeted, the cache that lies with a straight face, and the guardrail that only logs.",
+    "subCount": 7,
+    "wordCount": 3407,
+    "figureCount": 4,
+    "equationCount": 1
+  },
+  {
+    "id": "model-landscape",
+    "label": "Model Landscape",
+    "title": "Choosing a Model",
+    "color": "#F0B84C",
+    "icon": "cpu",
+    "slug": "model-landscape",
+    "dek": "Buy, host, or adapt — and how to defend the choice. API tradeoffs, open weights, and why fine-tuning is almost never the first move.",
+    "subCount": 4,
+    "wordCount": 1416,
+    "figureCount": 0,
+    "equationCount": 0
+  },
+  {
+    "id": "multimodal",
+    "label": "Multimodal",
+    "title": "Images and the Documents That Aren't Text",
+    "color": "#9B6BA8",
+    "icon": "image",
+    "slug": "multimodal",
+    "dek": "When your retrieval corpus contains charts, tables and scanned PDFs, text extraction is silent sabotage. How vision-language models work, what they cost, and why document-aware parsing is not optional.",
+    "subCount": 2,
+    "wordCount": 1769,
+    "figureCount": 1,
+    "equationCount": 0
+  },
+  {
+    "id": "system-design",
+    "label": "System Design",
+    "title": "System Design",
+    "color": "#F0B84C",
+    "icon": "network",
+    "slug": "system-design",
+    "dek": "Everything above, assembled into one system, under constraints that conflict. The AI-system-design interview, and the section that proves the rest was understood rather than collected.",
+    "subCount": 7,
+    "wordCount": 4086,
+    "figureCount": 1,
     "equationCount": 1
   }
 ]
