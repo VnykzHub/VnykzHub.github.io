@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Container, Section } from '@/components/common'
 import { Heading, Text, Button } from '@/components/ui'
 import { ArrowDown, Sparkles, Code2, Brain, Github, Linkedin } from 'lucide-react'
@@ -32,6 +32,11 @@ export function Hero() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
   
+  // Fade the scroll hint out over the first 200px — once you are scrolling, an
+  // instruction to scroll is just something in the way.
+  const { scrollY } = useScroll()
+  const scrollHintOpacity = useTransform(scrollY, [0, 200], [1, 0])
+
   useEffect(() => {
     // Check WebGL support
     try {
@@ -195,28 +200,49 @@ export function Hero() {
               <Linkedin size={20} />
             </a>
           </motion.div>
-
-          {/* Scroll indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, y: [0, 10, 0] }}
-            transition={{ 
-              opacity: { delay: 1 },
-              y: { duration: 2, repeat: Infinity }
-            }}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          >
-            <ScrollLink to="about" smooth duration={500} offset={-80}>
-              <div className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer">
-                <div className="flex flex-col items-center gap-2">
-                  <Text size="xs" className="uppercase tracking-wider">Scroll</Text>
-                  <ArrowDown className="w-5 h-5" />
-                </div>
-              </div>
-            </ScrollLink>
-          </motion.div>
         </motion.div>
       </Container>
+
+      {/* Scroll indicator.
+       *
+       * Deliberately a sibling of <Container>, not a child of it. `absolute`
+       * resolves against the nearest positioned ancestor, and Container carries
+       * `relative z-10` — so while this lived inside, `bottom-8` measured from
+       * the bottom of the centred text block (Section is `flex items-center`,
+       * so Container is only as tall as its content) and landed directly on the
+       * GitHub/LinkedIn row. As a child of the full-height Section it now sits
+       * where it reads: at the bottom of the viewport.
+       *
+       * It also fades out over the first 200px of scroll. A permanent "scroll"
+       * prompt is noise once the reader has already started scrolling.
+       */}
+      <motion.div
+        style={{ opacity: scrollHintOpacity }}
+        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
+      >
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, y: [0, 10, 0] }}
+          transition={{
+            opacity: { delay: 1 },
+            y: { duration: 2, repeat: Infinity },
+          }}
+        >
+          <ScrollLink to="about" smooth duration={500} offset={-80}>
+            <div
+              role="link"
+              tabIndex={0}
+              aria-label="Scroll to the About section"
+              className="cursor-pointer text-[var(--ink-soft)] transition-colors hover:text-accent-amber"
+            >
+              <div className="flex flex-col items-center gap-2">
+                <Text size="xs" className="uppercase tracking-wider">Scroll</Text>
+                <ArrowDown className="h-5 w-5" />
+              </div>
+            </div>
+          </ScrollLink>
+        </motion.div>
+      </motion.div>
     </Section>
   )
 }
