@@ -73,7 +73,7 @@ export function Contact() {
                   </div>
                   <div>
                     <Text size="sm" muted>Location</Text>
-                    <Text size="lg">Gurugram, India</Text>
+                    <Text size="lg">Hyderabad, India</Text>
                   </div>
                 </div>
               </Card>
