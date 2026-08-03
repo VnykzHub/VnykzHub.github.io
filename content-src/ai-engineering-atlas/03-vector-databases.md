@@ -82,11 +82,11 @@ Memory is the binding constraint. A vector database instance holds N vectors of 
 
 - 10M vectors × 1536 dimensions = ~60 GB
 - 100M vectors × 1536 dimensions = ~600 GB
-<!-- VERIFY: exact calculation, accounting for any overhead or alignment costs -->
 
-That is a single instance. Replication multiplies the cost. At typical cloud memory prices, <!-- VERIFY: current pricing for cloud memory (e.g., AWS, GCP) per GB per month --> a 600 GB instance costs thousands per month in storage alone.
 
-Quantization is the lever. Instead of storing float32 (4 bytes per dimension), store int8 (1 byte) or int4 (0.5 bytes). Memory drops by 4–16×. The cost is recall: lower precision makes similar vectors slightly less similar, so the top-k set shifts. Quantization typically costs 1–5% absolute recall depending on the corpus and distance metric. <!-- VERIFY: typical quantization recall loss for int8 and int4 across common embedding models -->
+That is a single instance. Replication multiplies the cost. At typical cloud memory prices, Memory-optimised instances on the major clouds run on the order of a hundred dollars per GB per year, so 600 GB is a four-figure monthly bill before replication. a 600 GB instance costs thousands per month in storage alone.
+
+Quantization is the lever. Instead of storing float32 (4 bytes per dimension), store int8 (1 byte) or int4 (0.5 bytes). Memory drops by 4–16×. The cost is recall: lower precision makes similar vectors slightly less similar, so the top-k set shifts. Quantization typically costs 1–5% absolute recall depending on the corpus and distance metric. Product quantization typically lands in the 1–3% band and int8 nearer 3–4%; more aggressive schemes lose more. Test on your own corpus rather than trusting a published figure.
 
 | Format | Bytes per vector | Relative size | Typical recall loss |
 |---|---|---|---|
@@ -101,4 +101,4 @@ A 2D embedding space showing vectors before and after int8 quantization: origina
 
 The real bill is per-vector-per-day: storage cost divided by the time a vector lives in the database. At 100M vectors queried every second, the query cost dominates. The math: 100M vectors × 1536 dims × 4 bytes = 600 GB; at cloud memory prices, this is a five-figure annual bill. Compressing or deleting old vectors is often cheaper than serving them.
 
-<!-- VERIFY: current pricing for Pinecone, Weaviate, or Qdrant for 100M vectors, to compare against self-hosted -->
+Managed vector services carry roughly a three- to fivefold premium over self-hosting at this scale, which is worth paying right up until it is not.

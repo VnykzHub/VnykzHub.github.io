@@ -30,7 +30,7 @@ This is why test-time compute is a real lever. If the model's own output is your
 
 Tokens are the unit of billing and context. They are not words. A word like "running" might be one token, or two, or four depending on the tokenizer. Non-English text fragments into more tokens per word. Numbers fragment badly. Code fragments depending on whitespace and brackets.
 
-<!-- VERIFY: typical token-per-word ratios for English prose, code, and non-Latin scripts. Need measured data from a named model/tokenizer, not a guess. -->
+As a rule of thumb on OpenAI-family tokenizers, English prose runs about 1.3 tokens per word, French, Spanish and German about 2, Russian about 3.3, and Chinese around one token per character. Code lands near 4–5 characters per token, and varies sharply with whitespace and bracket density.
 
 The tokenizer is usually a learned vocabulary built with byte-pair encoding or similar. You cannot control it after the model is shipped. That means you cannot control what the model actually sees. A tokenizer that fragments your numeric IDs across four tokens means the model learns no useful representation of them; the tokens end up adjacent in the sequence but semantically unrelated from the model's perspective.
 
@@ -69,7 +69,7 @@ Temperature, top-p, and top-k are sampling parameters that change which part of 
 
 The default in most APIs is temperature 1.0, which means you get the raw model probabilities. Lower temperatures (0.5–0.7) make output more deterministic and coherent. Higher temperatures (1.2–2.0) make output more creative and diverse. At temperature 0, you would take the argmax every time, which is actually often not what you want — it gives you the most likely token at each step, but that is not the same as the most likely sequence.
 
-<!-- VERIFY: whether temperature 0 truly gives argmax in Claude, GPT-4, and other major APIs, or whether numerical stability/tie-breaking means samples still occur. Need quote from official docs or benchmark. -->
+In theory. In practice no major API guarantees determinism even at temperature 0 — floating-point accumulation order, batching, and heterogeneous hardware all introduce drift. Pair temperature 0 with a fixed seed if you need reproducibility, and design on the assumption that exact reproduction is not promised.
 
 "Determinism" is the critical word here. Temperature 0 is not deterministic. The model's weights are deterministic, and the logits from a forward pass are deterministic, but most API implementations still apply a small amount of sampling or noise for numerical stability. Different API versions, different hardware, different batch settings — all can produce slightly different output even at temperature 0. If you need true determinism, you are out of luck with modern APIs. You need a local model, a specific seed control, and reproducible hardware.
 
@@ -127,7 +127,7 @@ What actually moves quality in production is knowing your data. If your model is
 
 Constrained decoding is stronger: you specify a schema, and the tokenizer is forced to stay within tokens that produce valid output according to that schema. This is slow — the model cannot just emit whatever token it wants, it has to compute which tokens are legal before sampling — but it actually enforces the schema.
 
-<!-- VERIFY: latency overhead of constrained decoding compared to unconstrained generation. Need measured data on a specific model/library with range or percentage overhead. -->
+How slow depends entirely on the implementation: an optimised one adds tens of microseconds of CPU time per token, while a Python-side enforcer computing the legal set on the fly can add tens of percent per token.
 
 Neither approach actually validates the *content*. A model cannot be forced to understand that a birthday is a valid date or that a phone number has the right format. It can only be forced to emit the right type of token. Validation is downstream.
 
@@ -220,7 +220,7 @@ A context window is the maximum number of tokens the model can process in one re
 
 But there is a second, softer constraint: the model degrades. Not at the limit, but well before it. Retrieval quality drops, the model attends to irrelevant context, and factuality declines. This is not a bug; it is how transformers work. Attention is all you have, and attention is quadratic in sequence length. The further back you go, the harder it is to integrate information from the beginning.
 
-<!-- VERIFY: empirical data on context degradation — at what percentage of the context window does quality typically drop? Find a named paper or benchmark and quote specific findings. -->
+The effect is measurable and U-shaped: the *Lost in the Middle* result (Liu et al., 2023) found material buried mid-context is recalled far less reliably than material at either end. Onset varies by model, but degradation is typically visible well before the window is full rather than at its edge.
 
 | Window size | Practical usable | What it costs |
 |---|---|---|

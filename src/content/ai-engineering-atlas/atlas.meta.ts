@@ -19,7 +19,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "llm-fundamentals",
     "dek": "The floor everything else stands on. What the model actually is, what it costs, what it cannot do. The thing that explains why your token budget matters more than your parameter count.",
     "subCount": 8,
-    "wordCount": 3222,
+    "wordCount": 3294,
     "figureCount": 5,
     "equationCount": 0
   },
@@ -32,7 +32,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "embeddings-search",
     "dek": "Turning meaning into geometry, then searching that geometry fast enough to matter. The compression, the metrics, and the real cost of approximate nearest neighbour.",
     "subCount": 7,
-    "wordCount": 2140,
+    "wordCount": 2173,
     "figureCount": 2,
     "equationCount": 6
   },
@@ -45,7 +45,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "vector-databases",
     "dek": "Where the vectors live, and everything that gets hard once they do. Persistence, filtering, replication, and the operational constraints that library users never touch.",
     "subCount": 4,
-    "wordCount": 1279,
+    "wordCount": 1301,
     "figureCount": 3,
     "equationCount": 0
   },
@@ -58,7 +58,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "rag",
     "dek": "The most-built system in applied AI, and the one most often described too shallowly. Chunking, retrieval, generation, and the evaluation that tells you which half is broken.",
     "subCount": 4,
-    "wordCount": 912,
+    "wordCount": 927,
     "figureCount": 2,
     "equationCount": 1
   },
@@ -71,7 +71,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "agents",
     "dek": "What happens when the model, not your code, decides what happens next. Tool schemas it can actually use, planning loops that drift, memory that has to be deliberately persisted, and the retries, budgets and step caps that keep the whole loop from running away.",
     "subCount": 9,
-    "wordCount": 5598,
+    "wordCount": 5657,
     "figureCount": 2,
     "equationCount": 2
   },
@@ -84,7 +84,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "mcp",
     "dek": "A standard socket between models and the tools they call. The newest material in this Atlas, and the one most likely to be stated wrong with confidence — treat every specific detail here as something to check against the current spec before you repeat it.",
     "subCount": 3,
-    "wordCount": 1698,
+    "wordCount": 1666,
     "figureCount": 2,
     "equationCount": 0
   },
@@ -97,7 +97,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "production",
     "dek": "Anyone can build a demo in an afternoon. What separates it from a system is everything covered here — the tail latency nobody load-tested, the token bill nobody budgeted, the cache that lies with a straight face, and the guardrail that only logs.",
     "subCount": 7,
-    "wordCount": 3407,
+    "wordCount": 3434,
     "figureCount": 4,
     "equationCount": 1
   },
@@ -123,7 +123,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "multimodal",
     "dek": "When your retrieval corpus contains charts, tables and scanned PDFs, text extraction is silent sabotage. How vision-language models work, what they cost, and why document-aware parsing is not optional.",
     "subCount": 2,
-    "wordCount": 1769,
+    "wordCount": 1797,
     "figureCount": 1,
     "equationCount": 0
   },
@@ -136,7 +136,7 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "system-design",
     "dek": "Everything above, assembled into one system, under constraints that conflict. The AI-system-design interview, and the section that proves the rest was understood rather than collected.",
     "subCount": 7,
-    "wordCount": 4086,
+    "wordCount": 4116,
     "figureCount": 1,
     "equationCount": 1
   }
