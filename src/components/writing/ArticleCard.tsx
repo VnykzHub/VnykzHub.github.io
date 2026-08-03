@@ -15,7 +15,7 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
       to={`/writing/${article.slug}`}
       className={cn(
         'group relative flex flex-col rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6',
-        'transition-colors duration-200 hover:border-accent-cyan',
+        'transition-colors duration-200 hover:border-accent-amber',
         className
       )}
     >
@@ -26,11 +26,11 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
         </span>
         <ArrowUpRight
           size={16}
-          className="text-[var(--ink-faint)] transition-colors group-hover:text-accent-cyan"
+          className="text-[var(--ink-faint)] transition-colors group-hover:text-accent-amber"
         />
       </div>
 
-      <h3 className="font-sans text-lg font-semibold leading-snug text-[var(--heading)] transition-colors group-hover:text-accent-cyan">
+      <h3 className="font-sans text-lg font-semibold leading-snug text-[var(--heading)] transition-colors group-hover:text-accent-amber">
         {article.title}
       </h3>
 

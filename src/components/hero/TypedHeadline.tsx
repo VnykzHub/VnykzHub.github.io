@@ -20,7 +20,7 @@ export function TypedHeadline() {
     <div className="text-4xl md:text-5xl lg:text-6xl font-bold">
       <span className="text-[var(--heading)]">I Build AI That </span>
       {isVisible && (
-        <span className="text-accent-cyan inline-block">
+        <span className="text-accent-amber inline-block">
           <Typewriter
             options={{
               strings: phrases,

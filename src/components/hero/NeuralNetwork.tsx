@@ -94,7 +94,7 @@ export function NeuralNetwork({ count = 300, mousePosition }: NeuralNetworkProps
       <Points ref={points} positions={positions} stride={3} frustumCulled={false}>
         <PointMaterial
           transparent
-          color="#00D9FF"
+          color="#F0B84C"
           size={0.2}
           sizeAttenuation={true}
           depthWrite={false}
@@ -113,7 +113,7 @@ export function NeuralNetwork({ count = 300, mousePosition }: NeuralNetworkProps
             />
           </bufferGeometry>
           <lineBasicMaterial
-            color="#00D9FF"
+            color="#F0B84C"
             transparent
             opacity={0.05}
             blending={THREE.AdditiveBlending}
@@ -125,7 +125,7 @@ export function NeuralNetwork({ count = 300, mousePosition }: NeuralNetworkProps
       <Points positions={positions} stride={3} frustumCulled={false}>
         <PointMaterial
           transparent
-          color="#8B5CF6"
+          color="#4A9E93"
           size={0.1}
           sizeAttenuation={true}
           depthWrite={false}

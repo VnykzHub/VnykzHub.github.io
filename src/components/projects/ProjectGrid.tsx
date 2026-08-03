@@ -28,7 +28,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
           onClick={() => setSelectedCategory('all')}
           className={`px-4 py-2 rounded-lg transition-all ${
             selectedCategory === 'all'
-              ? 'bg-accent-cyan text-gray-900'
+              ? 'bg-accent-amber text-gray-900'
               : 'bg-[var(--bar-track)] text-[var(--ink-soft)] hover:bg-[var(--panel-border)]'
           }`}
         >

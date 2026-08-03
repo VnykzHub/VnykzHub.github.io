@@ -19,10 +19,10 @@ export function NotFound() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-5 font-mono text-[11px] uppercase tracking-[0.14em]">
-            <Link to="/" className="text-accent-cyan hover:underline">
+            <Link to="/" className="text-accent-amber hover:underline">
               Home
             </Link>
-            <Link to="/writing" className="text-accent-cyan hover:underline">
+            <Link to="/writing" className="text-accent-amber hover:underline">
               Writing
             </Link>
           </div>

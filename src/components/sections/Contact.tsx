@@ -42,12 +42,12 @@ export function Contact() {
             <div className="space-y-6">
               <Card hover>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-accent-cyan/20 rounded-lg flex items-center justify-center">
-                    <Mail className="text-accent-cyan" size={24} />
+                  <div className="w-12 h-12 bg-accent-amber/20 rounded-lg flex items-center justify-center">
+                    <Mail className="text-accent-amber" size={24} />
                   </div>
                   <div>
                     <Text size="sm" muted>Email</Text>
-                    <a href="mailto:vinayak.k.mathur@gmail.com" className="text-lg hover:text-accent-cyan transition-colors">
+                    <a href="mailto:vinayak.k.mathur@gmail.com" className="text-lg hover:text-accent-amber transition-colors">
                       vinayak.k.mathur@gmail.com
                     </a>
                   </div>
@@ -56,8 +56,8 @@ export function Contact() {
 
               <Card hover>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-accent-purple/20 rounded-lg flex items-center justify-center">
-                    <Phone className="text-accent-purple" size={24} />
+                  <div className="w-12 h-12 bg-accent-patina/20 rounded-lg flex items-center justify-center">
+                    <Phone className="text-accent-patina" size={24} />
                   </div>
                   <div>
                     <Text size="sm" muted>Phone</Text>
@@ -68,8 +68,8 @@ export function Contact() {
 
               <Card hover>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-accent-green/20 rounded-lg flex items-center justify-center">
-                    <MapPin className="text-accent-green" size={24} />
+                  <div className="w-12 h-12 bg-accent-rust/20 rounded-lg flex items-center justify-center">
+                    <MapPin className="text-accent-rust" size={24} />
                   </div>
                   <div>
                     <Text size="sm" muted>Location</Text>
@@ -118,7 +118,7 @@ export function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-cyan transition-colors"
+                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-amber transition-colors"
                     placeholder="Your name"
                   />
                 </div>
@@ -134,7 +134,7 @@ export function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-cyan transition-colors"
+                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-amber transition-colors"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -150,7 +150,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-cyan transition-colors resize-none"
+                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-amber transition-colors resize-none"
                     placeholder="Tell me about your project..."
                   />
                 </div>

@@ -45,7 +45,7 @@ export function ArticlePage() {
         <div className="article-wide mt-8 px-4 sm:px-6">
           <Link
             to="/writing"
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)] transition-colors hover:text-accent-cyan"
+            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)] transition-colors hover:text-accent-amber"
           >
             <ArrowLeft size={12} />
             All {SERIES_TITLE} parts

@@ -72,16 +72,16 @@ export function Skills() {
                 <Card hover className="h-full">
                   <div className="flex items-center gap-3 mb-6">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center
-                      ${category.color === 'cyan' ? 'bg-accent-cyan/20' : ''}
-                      ${category.color === 'purple' ? 'bg-accent-purple/20' : ''}
-                      ${category.color === 'green' ? 'bg-accent-green/20' : ''}
-                      ${category.color === 'blue' ? 'bg-accent-cyan/20' : ''}
+                      ${category.color === 'cyan' ? 'bg-accent-amber/20' : ''}
+                      ${category.color === 'purple' ? 'bg-accent-patina/20' : ''}
+                      ${category.color === 'green' ? 'bg-accent-rust/20' : ''}
+                      ${category.color === 'blue' ? 'bg-accent-amber/20' : ''}
                     `}>
                       <Icon className={`
-                        ${category.color === 'cyan' ? 'text-accent-cyan' : ''}
-                        ${category.color === 'purple' ? 'text-accent-purple' : ''}
-                        ${category.color === 'green' ? 'text-accent-green' : ''}
-                        ${category.color === 'blue' ? 'text-accent-cyan' : ''}
+                        ${category.color === 'cyan' ? 'text-accent-amber' : ''}
+                        ${category.color === 'purple' ? 'text-accent-patina' : ''}
+                        ${category.color === 'green' ? 'text-accent-rust' : ''}
+                        ${category.color === 'blue' ? 'text-accent-amber' : ''}
                       `} size={20} />
                     </div>
                     <Heading as="h3" size="lg">
@@ -99,10 +99,10 @@ export function Skills() {
                         <div className="h-2 bg-[var(--bar-track)] rounded-full overflow-hidden">
                           <div 
                             className={`h-full rounded-full transition-all duration-1000 ease-out
-                              ${category.color === 'cyan' ? 'bg-gradient-to-r from-accent-cyan to-accent-purple' : ''}
-                              ${category.color === 'purple' ? 'bg-gradient-to-r from-accent-purple to-accent-cyan' : ''}
-                              ${category.color === 'green' ? 'bg-gradient-to-r from-accent-green to-accent-cyan' : ''}
-                              ${category.color === 'blue' ? 'bg-gradient-to-r from-accent-cyan to-accent-green' : ''}
+                              ${category.color === 'cyan' ? 'bg-gradient-to-r from-accent-amber to-accent-patina' : ''}
+                              ${category.color === 'purple' ? 'bg-gradient-to-r from-accent-patina to-accent-amber' : ''}
+                              ${category.color === 'green' ? 'bg-gradient-to-r from-accent-rust to-accent-amber' : ''}
+                              ${category.color === 'blue' ? 'bg-gradient-to-r from-accent-amber to-accent-rust' : ''}
                             `}
                             style={{ width: `${skill.level}%` }}
                           />

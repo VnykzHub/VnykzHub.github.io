@@ -20,7 +20,7 @@ export function LoadingScreen() {
           }}
           className="inline-block mb-4"
         >
-          <Brain size={48} className="text-accent-cyan" />
+          <Brain size={48} className="text-accent-amber" />
         </motion.div>
         <motion.p
           initial={{ opacity: 0 }}

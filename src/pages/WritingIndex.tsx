@@ -102,7 +102,7 @@ export function WritingIndex() {
           <div className="mt-10 grid gap-x-10 gap-y-10 md:grid-cols-2">
             {ATLAS_PAPERS.map((cat) => (
               <div key={cat.label}>
-                <h3 className="mb-4 font-mono text-[11px] uppercase tracking-[0.16em] text-accent-cyan">
+                <h3 className="mb-4 font-mono text-[11px] uppercase tracking-[0.16em] text-accent-amber">
                   {cat.label}
                 </h3>
                 <ul className="space-y-3">
@@ -120,7 +120,7 @@ export function WritingIndex() {
                             href={paper.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="hover:text-accent-cyan"
+                            className="hover:text-accent-amber"
                           >
                             {paper.t}
                           </a>
@@ -128,7 +128,7 @@ export function WritingIndex() {
                           paper.t
                         )}
                       </div>
-                      <div className="mt-0.5 font-mono text-[10px] text-accent-purple">
+                      <div className="mt-0.5 font-mono text-[10px] text-accent-patina">
                         {paper.v}
                       </div>
                       <p className="mt-2 font-serif text-[14px] leading-relaxed text-[var(--ink-soft)]">

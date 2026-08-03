@@ -29,7 +29,7 @@ export function DemoLoader({ project }: DemoLoaderProps) {
     return (
       <div className="w-full h-full flex items-center justify-center p-8">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-cyan mx-auto" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-amber mx-auto" />
           <p className="text-[var(--ink-soft)]">Loading demo...</p>
         </div>
       </div>
@@ -82,7 +82,7 @@ export function DemoLoader({ project }: DemoLoaderProps) {
     
     default:
       return (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-accent-cyan/10 to-accent-purple/10">
+        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-accent-amber/10 to-accent-patina/10">
           <div className="text-center space-y-4 p-8">
             <div className="text-6xl">🚀</div>
             <p className="text-[var(--heading)] font-semibold">{project.title}</p>

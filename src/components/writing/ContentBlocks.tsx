@@ -83,8 +83,8 @@ function CopyButton({ value, label }: { value: string; label: string }) {
         'flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em]',
         'rounded px-2 py-1 border border-[var(--rule)] transition-colors',
         copied
-          ? 'text-accent-green border-accent-green'
-          : 'text-[var(--ink-faint)] hover:text-accent-cyan hover:border-accent-cyan'
+          ? 'text-accent-rust border-accent-rust'
+          : 'text-[var(--ink-faint)] hover:text-accent-amber hover:border-accent-amber'
       )}
     >
       {copied ? <Check size={11} /> : <Copy size={11} />}

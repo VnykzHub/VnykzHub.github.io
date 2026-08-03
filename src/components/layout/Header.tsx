@@ -73,8 +73,8 @@ export function Header() {
                 >
                   <NavItemLink
                     item={item}
-                    activeClassName="text-accent-cyan"
-                    className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer"
+                    activeClassName="text-accent-amber"
+                    className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer"
                   >
                     {item.label}
                   </NavItemLink>
@@ -100,7 +100,7 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
+              className="md:hidden p-2 text-[var(--ink-soft)] hover:text-accent-amber transition-colors"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -159,7 +159,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
                   <NavItemLink
                     item={item}
                     onClick={onClose}
-                    className="flex items-center gap-3 text-lg text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer py-2"
+                    className="flex items-center gap-3 text-lg text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer py-2"
                   >
                     <item.icon size={20} />
                     {item.label}
@@ -188,7 +188,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
                   href={link.href}
                   target={link.id === 'email' ? undefined : '_blank'}
                   rel={link.id === 'email' ? undefined : 'noopener noreferrer'}
-                  className="text-[var(--ink-faint)] hover:text-accent-cyan transition-colors"
+                  className="text-[var(--ink-faint)] hover:text-accent-amber transition-colors"
                 >
                   <Icon size={24} />
                 </a>

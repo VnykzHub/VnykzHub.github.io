@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion'
 import { Code2, Brain, Cpu, Database, Cloud, GitBranch } from 'lucide-react'
 
+// Cycles the three accent tokens rather than six stock Tailwind hues. The old
+// blue/purple/green/yellow/cyan/pink rainbow predated the design system.
 const techIcons = [
-  { Icon: Code2, color: 'text-blue-400', delay: 0 },
-  { Icon: Brain, color: 'text-purple-400', delay: 0.5 },
-  { Icon: Cpu, color: 'text-green-400', delay: 1 },
-  { Icon: Database, color: 'text-yellow-400', delay: 1.5 },
-  { Icon: Cloud, color: 'text-cyan-400', delay: 2 },
-  { Icon: GitBranch, color: 'text-pink-400', delay: 2.5 },
+  { Icon: Code2,     color: 'text-accent-amber',  delay: 0 },
+  { Icon: Brain,     color: 'text-accent-patina', delay: 0.5 },
+  { Icon: Cpu,       color: 'text-accent-rust',   delay: 1 },
+  { Icon: Database,  color: 'text-accent-amber',  delay: 1.5 },
+  { Icon: Cloud,     color: 'text-accent-patina', delay: 2 },
+  { Icon: GitBranch, color: 'text-accent-rust',   delay: 2.5 },
 ]
 
 export function FloatingElements() {

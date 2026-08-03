@@ -95,7 +95,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                 <ul className="space-y-2">
                   {project.highlights.map((highlight, i) => (
                     <li key={i} className="flex gap-2">
-                      <span className="text-accent-cyan mt-1">•</span>
+                      <span className="text-accent-amber mt-1">•</span>
                       <Text size="sm" muted>{highlight}</Text>
                     </li>
                   ))}
@@ -120,7 +120,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                       <Text
                         size="xl"
                         className={`font-bold ${
-                          metric.improvement ? 'text-green-400' : 'text-accent-cyan'
+                          metric.improvement ? 'text-green-400' : 'text-accent-amber'
                         }`}
                       >
                         {metric.value}

@@ -30,7 +30,7 @@ export function Experience() {
                   {/* Timeline dot */}
                   <div className={`absolute -left-2 top-6 w-4 h-4 rounded-full border-2 ${
                     exp.current 
-                      ? 'bg-accent-cyan border-accent-cyan animate-pulse' 
+                      ? 'bg-accent-amber border-accent-amber animate-pulse' 
                       : 'bg-[var(--ink-faint)] border-[var(--ink-faint)]'
                   }`} />
 
@@ -54,7 +54,7 @@ export function Experience() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar size={16} className="text-[var(--ink-soft)]" />
-                        <Text size="sm" className={exp.current ? 'text-accent-cyan' : 'text-[var(--ink-soft)]'}>
+                        <Text size="sm" className={exp.current ? 'text-accent-amber' : 'text-[var(--ink-soft)]'}>
                           {exp.duration}
                         </Text>
                       </div>
@@ -64,7 +64,7 @@ export function Experience() {
                     <ul className="space-y-2">
                       {exp.achievements.map((achievement, i) => (
                         <li key={i} className="flex gap-2">
-                          <ChevronRight size={16} className="text-accent-cyan mt-0.5 flex-shrink-0" />
+                          <ChevronRight size={16} className="text-accent-amber mt-0.5 flex-shrink-0" />
                           <Text size="sm" muted>
                             {achievement}
                           </Text>

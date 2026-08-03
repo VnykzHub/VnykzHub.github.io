@@ -15,7 +15,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label="Toggle light/dark mode"
       title="Toggle light/dark mode"
       className={cn(
-        'flex items-center gap-2 bg-[var(--panel)] border border-[var(--panel-border)] rounded-[28px] px-2.5 py-1.5 cursor-pointer select-none transition-colors duration-400 focus-visible:outline-2 focus-visible:outline-accent-cyan focus-visible:outline-offset-[3px]',
+        'flex items-center gap-2 bg-[var(--panel)] border border-[var(--panel-border)] rounded-[28px] px-2.5 py-1.5 cursor-pointer select-none transition-colors duration-400 focus-visible:outline-2 focus-visible:outline-accent-amber focus-visible:outline-offset-[3px]',
         className
       )}
       style={{ WebkitTapHighlightColor: 'transparent' }}

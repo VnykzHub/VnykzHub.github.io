@@ -75,7 +75,7 @@ export function Hero() {
             transition={{ delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--panel)]/60 backdrop-blur-sm border border-[var(--panel-border)] mb-8"
           >
-            <Sparkles className="w-4 h-4 text-accent-cyan animate-pulse" />
+            <Sparkles className="w-4 h-4 text-accent-amber animate-pulse" />
             <Text size="sm">AI Engineer | ML Specialist | GenAI Expert</Text>
           </motion.div>
 
@@ -90,7 +90,7 @@ export function Hero() {
               <span className="relative">
                 <span className="text-gradient">Vinayak Mathur</span>
                 <motion.span
-                  className="absolute -inset-1 bg-accent-cyan/20 blur-2xl"
+                  className="absolute -inset-1 bg-accent-amber/20 blur-2xl"
                   animate={{
                     opacity: [0.5, 0.8, 0.5],
                   }}
@@ -134,7 +134,7 @@ export function Hero() {
             className="flex flex-wrap justify-center gap-4 mb-8"
           >
             <div className="flex items-center gap-2 px-3 py-1 bg-[var(--panel)]/60 rounded-full">
-              <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-accent-rust rounded-full animate-pulse" />
               <Text size="sm">Available for opportunities</Text>
             </div>
             <div className="px-3 py-1 bg-[var(--panel)]/60 rounded-full">
@@ -182,7 +182,7 @@ export function Hero() {
               href="https://github.com/VnykzHub"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
+              className="p-2 text-[var(--ink-soft)] hover:text-accent-amber transition-colors"
             >
               <Github size={20} />
             </a>
@@ -190,7 +190,7 @@ export function Hero() {
               href="https://linkedin.com/in/vinayakmathur2000"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
+              className="p-2 text-[var(--ink-soft)] hover:text-accent-amber transition-colors"
             >
               <Linkedin size={20} />
             </a>
@@ -207,7 +207,7 @@ export function Hero() {
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
           >
             <ScrollLink to="about" smooth duration={500} offset={-80}>
-              <div className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer">
+              <div className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer">
                 <div className="flex flex-col items-center gap-2">
                   <Text size="xs" className="uppercase tracking-wider">Scroll</Text>
                   <ArrowDown className="w-5 h-5" />

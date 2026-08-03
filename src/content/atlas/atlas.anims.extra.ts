@@ -11,8 +11,8 @@ import type { AtlasAnim } from './types'
 const RULE = '#3A342E'
 const INK = '#D9D3CC'
 const FAINT = '#9D968E'
-const CYAN = '#00D9FF'
-const GREEN = '#10B981'
+const CAPTION = '#F0B84C'
+const PATINA = '#4A9E93'
 const AMBER = '#F0B84C'
 
 function roundRect(
@@ -74,9 +74,9 @@ const kvcache: AtlasAnim = (ctx, w, h, t) => {
           stroke = AMBER
           ink = AMBER
         } else {
-          fill = 'rgba(16,185,129,0.13)'
-          stroke = GREEN
-          ink = GREEN
+          fill = 'rgba(74,158,147,0.13)'
+          stroke = PATINA
+          ink = PATINA
         }
       }
 
@@ -112,7 +112,7 @@ const kvcache: AtlasAnim = (ctx, w, h, t) => {
 
   // Cost annotation
   ctx.textAlign = 'center'
-  ctx.fillStyle = CYAN
+  ctx.fillStyle = CAPTION
   ctx.font = "10px 'IBM Plex Mono'"
   ctx.fillText('O(n²) total  →  O(n) total', w / 2, 195)
 }

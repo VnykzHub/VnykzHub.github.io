@@ -145,33 +145,36 @@ fs.writeFileSync(path.join(OUT_DIR, 'atlas.meta.ts'), metaOut)
 // the animations keep a single dark-surface palette — no runtime theming
 // needed. These substitutions only realign the hues with the site's accents.
 const COLOR_MAP = [
-  // primary: indigo -> cyan
-  ['#6C63FF', '#00D9FF'],
-  ['108,99,255', '0,217,255'],
-  // mint -> emerald
-  ['#00C9A7', '#10B981'],
-  ['0,201,167', '16,185,129'],
-  ['#00B894', '#10B981'],
-  ['0,200,100', '16,185,129'],
-  ['#55EFC4', '#4FD1B8'],
-  // yellow -> amber
-  ['#F7B731', '#F0B84C'],
-  ['247,183,49', '240,184,76'],
-  ['#FDCB6E', '#F0B84C'],
-  // lavender -> purple
-  ['#A29BFE', '#8B5CF6'],
-  ['162,155,254', '139,92,246'],
+  // primary: indigo -> amber. Was cyan — cyan was the last survivor of the
+  // original cyberpunk palette, and is why the blog figures still read blue
+  // after the neutrals had already gone warm.
+  ['#6C63FF', '#F0B84C'],
+  ['108,99,255', '240,184,76'],
+  // mint -> patina
+  ['#00C9A7', '#4A9E93'],
+  ['0,201,167', '74,158,147'],
+  ['#00B894', '#4A9E93'],
+  ['0,200,100', '74,158,147'],
+  ['#55EFC4', '#6FBCB0'],
+  // yellow -> pale brass. Deliberately NOT #F0B84C: amber is the primary now,
+  // and figures using indigo and yellow together need the two to stay distinct.
+  ['#F7B731', '#E8C77A'],
+  ['247,183,49', '232,199,122'],
+  ['#FDCB6E', '#E8C77A'],
+  // lavender -> light patina
+  ['#A29BFE', '#6FBCB0'],
+  ['162,155,254', '111,188,176'],
   // reds/oranges -> a single coral
   ['#FF6B6B', '#E0705C'],
   ['255,107,107', '224,112,92'],
   ['#E17055', '#E0705C'],
   ['225,112,85', '224,112,92'],
   ['255,0,0', '224,112,92'],
-  // pink -> muted rose
-  ['#FD79A8', '#C77DBB'],
-  ['253,121,168', '199,125,187'],
-  // light blue
-  ['#74B9FF', '#6BC5DB'],
+  // pink -> rust
+  ['#FD79A8', '#C4703F'],
+  ['253,121,168', '196,112,63'],
+  // light blue -> pale patina. The one remaining cool hue in the figures.
+  ['#74B9FF', '#8FCFC4'],
   // text ramp -> ink tokens
   ['#e8eaf0', '#E8E2D9'],
   ['#c8d0e8', '#D9D3CC'],

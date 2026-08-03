@@ -8,11 +8,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Instrument register: brass, oxidised copper, iron oxide. Deliberately
+        // no cool-blue accent — the electric cyan these replaced was the last
+        // survivor of the original cyberpunk palette, and was the reason the
+        // site still read blue against warm-black neutrals.
         accent: {
-          cyan: '#00D9FF',
-          purple: '#8B5CF6',
-          green: '#10B981',
-          amber: '#F0B84C',
+          amber:  '#F0B84C', // primary   — buttons, name gradient, drop caps
+          patina: '#4A9E93', // secondary — links, hover, live status
+          rust:   '#C4703F', // tertiary  — third category, warm accents
         },
       },
       fontFamily: {

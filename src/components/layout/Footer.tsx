@@ -29,7 +29,7 @@ export function Footer() {
                 href="https://github.com/VnykzHub"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
+                className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors"
                 aria-label="GitHub"
               >
                 <Github size={20} />
@@ -38,14 +38,14 @@ export function Footer() {
                 href="https://linkedin.com/in/vinayakmathur2000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
+                className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={20} />
               </a>
               <a
                 href="mailto:vinayak.k.mathur@gmail.com"
-                className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
+                className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors"
                 aria-label="Email"
               >
                 <Mail size={20} />
@@ -63,7 +63,7 @@ export function Footer() {
                 <li key={item.id}>
                   <NavItemLink
                     item={item}
-                    className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer text-sm"
+                    className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer text-sm"
                   >
                     {item.label}
                   </NavItemLink>
@@ -81,7 +81,7 @@ export function Footer() {
               <li>
                 <a
                   href="/resume.pdf"
-                  className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors text-sm inline-flex items-center gap-1"
+                  className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors text-sm inline-flex items-center gap-1"
                 >
                   Resume <ExternalLink size={12} />
                 </a>
@@ -91,7 +91,7 @@ export function Footer() {
                   href="https://github.com/VnykzHub"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors text-sm inline-flex items-center gap-1"
+                  className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors text-sm inline-flex items-center gap-1"
                 >
                   GitHub <ExternalLink size={12} />
                 </a>
@@ -99,7 +99,7 @@ export function Footer() {
               <li>
                 <RouterLink
                   to="/writing"
-                  className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors text-sm"
+                  className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors text-sm"
                 >
                   Writing
                 </RouterLink>
@@ -107,7 +107,7 @@ export function Footer() {
               <li>
                 <NavItemLink
                   item={projectsItem}
-                  className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer text-sm"
+                  className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer text-sm"
                 >
                   Projects
                 </NavItemLink>
@@ -115,7 +115,7 @@ export function Footer() {
               <li>
                 <NavItemLink
                   item={contactItem}
-                  className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer text-sm"
+                  className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer text-sm"
                 >
                   Contact
                 </NavItemLink>
