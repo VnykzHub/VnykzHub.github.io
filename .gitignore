@@ -13,6 +13,16 @@ dist-ssr
 *.local
 project-structure.txt
 
+# Credentials. A missing .env rule is exactly how 3dagent and data_agent ended
+# up in quarantine — see PROJECT_REPO_PLAN.md §0. Keep .env.example tracked.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+service-account*.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

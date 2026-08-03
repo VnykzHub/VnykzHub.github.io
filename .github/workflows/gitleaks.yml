@@ -1,0 +1,27 @@
+name: Secret scan
+
+# Runs independently of the Pages deploy so a finding surfaces loudly without
+# taking the site offline. One leaked key on a public repo undoes the whole
+# portfolio exercise — see PROJECT_REPO_PLAN.md §0.
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history: a secret committed and later deleted is still a
+          # leaked secret, and a shallow clone would miss it.
+          fetch-depth: 0
+
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

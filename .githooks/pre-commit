@@ -1,0 +1,26 @@
+#!/bin/sh
+# Block commits containing credentials.
+#
+# Enable once per clone:
+#     git config core.hooksPath .githooks
+#
+# Git will not run this until you do — hooks live outside the tree by default,
+# which is why this is opt-in rather than automatic.
+#
+# The CI workflow (.github/workflows/gitleaks.yml) is the real safety net; this
+# hook just catches it a few seconds earlier, before it reaches a remote.
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "pre-commit: gitleaks not installed — skipping local scan."
+  echo "            CI will still scan. Install: https://github.com/gitleaks/gitleaks"
+  exit 0
+fi
+
+if ! gitleaks protect --staged --redact --no-banner; then
+  echo ""
+  echo "pre-commit: BLOCKED — a credential was found in the staged changes."
+  echo "  1. Remove it from the commit."
+  echo "  2. Rotate the key. It is already on disk and must be assumed burned."
+  echo "  3. If it is a false positive, add a narrow rule to .gitleaks.toml."
+  exit 1
+fi

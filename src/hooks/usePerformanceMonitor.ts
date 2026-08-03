@@ -5,6 +5,14 @@ interface PerformanceMetrics {
   memory?: number
 }
 
+/**
+ * `performance.memory` is a non-standard Chrome extension with no lib.dom
+ * typing, hence the cast. Optional because Firefox and Safari omit it.
+ */
+interface PerformanceWithMemory extends Performance {
+  memory?: { usedJSHeapSize: number }
+}
+
 export function usePerformanceMonitor() {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({ fps: 60 })
   
@@ -20,7 +28,7 @@ export function usePerformanceMonitor() {
       if (currentTime >= lastTime + 1000) {
         setMetrics({
           fps: Math.round((frameCount * 1000) / (currentTime - lastTime)),
-          memory: (performance as any).memory?.usedJSHeapSize
+          memory: (performance as PerformanceWithMemory).memory?.usedJSHeapSize
         })
         
         frameCount = 0
