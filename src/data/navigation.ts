@@ -1,20 +1,27 @@
-import { Home, User, Briefcase, Code2, Mail, Brain } from 'lucide-react'
+import { Home, User, Briefcase, Code2, Mail, Brain, PenLine } from 'lucide-react'
 import { LucideIcon } from 'lucide-react'
 
 export interface NavItem {
   id: string
   label: string
+  /** Section id when kind is 'scroll'; an absolute path when kind is 'route'. */
   href: string
   icon: LucideIcon
+  /**
+   * 'scroll' targets a section of the home page — smooth-scrolled in place, or
+   * navigated to as /#id from another route. 'route' is a page of its own.
+   */
+  kind: 'scroll' | 'route'
 }
 
 export const navigationItems: NavItem[] = [
-  { id: 'home', label: 'Home', href: 'home', icon: Home },
-  { id: 'about', label: 'About', href: 'about', icon: User },
-  { id: 'projects', label: 'Projects', href: 'projects', icon: Code2 },
-  { id: 'experience', label: 'Experience', href: 'experience', icon: Briefcase },
-  { id: 'skills', label: 'Skills', href: 'skills', icon: Brain },
-  { id: 'contact', label: 'Contact', href: 'contact', icon: Mail },
+  { id: 'home', label: 'Home', href: 'home', icon: Home, kind: 'scroll' },
+  { id: 'about', label: 'About', href: 'about', icon: User, kind: 'scroll' },
+  { id: 'projects', label: 'Projects', href: 'projects', icon: Code2, kind: 'scroll' },
+  { id: 'experience', label: 'Experience', href: 'experience', icon: Briefcase, kind: 'scroll' },
+  { id: 'writing', label: 'Writing', href: '/writing', icon: PenLine, kind: 'route' },
+  { id: 'skills', label: 'Skills', href: 'skills', icon: Brain, kind: 'scroll' },
+  { id: 'contact', label: 'Contact', href: 'contact', icon: Mail, kind: 'scroll' },
 ]
 
 export const socialLinks = [
