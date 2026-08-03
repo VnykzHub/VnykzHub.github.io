@@ -215,6 +215,71 @@
 }
 .glow-effect { animation: glow-pulse 3s ease-in-out infinite; }
 
+/* ---- prose blocks: lists, tables, callouts, inline code ----
+   Added for the AI Engineering Atlas, which is comparison-heavy where the LLM
+   Atlas was narrative. Tables get their own scroll container so a wide table
+   never gives the page body a horizontal scrollbar. */
+
+.prose-list {
+  margin: 1.35rem 0;
+  padding-left: 1.35rem;
+  list-style: disc;
+}
+.prose-list-ordered { list-style: decimal; }
+.prose-list li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+.prose-list li::marker { color: var(--accent-1); }
+
+.prose-code-inline {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.86em;
+  padding: 0.12em 0.36em;
+  border-radius: 4px;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  color: var(--ink);
+}
+
+.prose-callout {
+  margin: 1.6rem 0;
+  padding: 0.9rem 1.15rem;
+  border-left: 2px solid var(--accent-1);
+  background: var(--callout-bg);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.prose-table-wrap {
+  margin: 1.75rem 0;
+  overflow-x: auto;
+  border: 1px solid var(--table-rule);
+  border-radius: 8px;
+}
+.prose-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--table-bg);
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 0.86rem;
+}
+.prose-table th {
+  background: var(--table-th);
+  text-align: left;
+  font-weight: 600;
+  color: var(--heading);
+  white-space: nowrap;
+}
+.prose-table th,
+.prose-table td {
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid var(--table-rule);
+  vertical-align: top;
+}
+.prose-table tr:last-child td { border-bottom: none; }
+
 /* Hero backdrop orbs. transform/opacity only — both compositable, so these run
    off the main thread. The version this replaced animated background-image
    through framer-motion, which repaints a viewport-sized element every frame. */

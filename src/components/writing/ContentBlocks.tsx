@@ -14,18 +14,89 @@ import { cn } from '@/utils/cn'
    elements rather than HTML strings keeps it injection-proof.
    ──────────────────────────────────────────────────────────────── */
 
-const INLINE = /(\*\*[^*]+\*\*|\*[^*]+\*)/g
+const INLINE = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g
 
 function renderInline(text: string): ReactNode[] {
   return text.split(INLINE).map((chunk, i) => {
     if (chunk.startsWith('**') && chunk.endsWith('**')) {
       return <strong key={i}>{chunk.slice(2, -2)}</strong>
     }
+    if (chunk.startsWith('`') && chunk.endsWith('`')) {
+      return (
+        <code key={i} className="prose-code-inline">
+          {chunk.slice(1, -1)}
+        </code>
+      )
+    }
     if (chunk.startsWith('*') && chunk.endsWith('*')) {
       return <em key={i}>{chunk.slice(1, -1)}</em>
     }
     return <Fragment key={i}>{chunk}</Fragment>
   })
+}
+
+/**
+ * Block grammar.
+ *
+ * The LLM Atlas only ever needed paragraphs, because its source was prose. The
+ * AI Engineering Atlas is comparison-heavy — tables carry a large share of its
+ * meaning — so the parser recognises a few more block types.
+ *
+ * Everything is still classified per blank-line-separated block, and everything
+ * still becomes React elements rather than an HTML string. That is what keeps
+ * this injection-proof by construction, and it is the property to preserve if
+ * this grammar grows again.
+ */
+type Block =
+  | { kind: 'p'; lines: string[] }
+  | { kind: 'ul'; items: string[] }
+  | { kind: 'ol'; items: string[] }
+  | { kind: 'quote'; lines: string[] }
+  | { kind: 'table'; head: string[]; rows: string[][] }
+
+/** Splits `| a | b |` into cells, dropping the leading and trailing empties. */
+const cells = (row: string): string[] =>
+  row
+    .trim()
+    .replace(/^\||\|$/g, '')
+    .split('|')
+    .map((c) => c.trim())
+
+/** A markdown table delimiter row: |---|:--:|---| */
+const isDelimiter = (line: string): boolean =>
+  /^\|?[\s:|-]+\|[\s:|-]*$/.test(line) && line.includes('-')
+
+function parseBlocks(source: string): Block[] {
+  return source
+    .split(/\n\s*\n/)
+    .map((b) => b.trim())
+    .filter(Boolean)
+    .map((block): Block => {
+      const lines = block.split('\n').map((l) => l.trim())
+
+      // Table: a pipe row, then a delimiter row, then body rows.
+      if (lines.length >= 2 && lines[0].startsWith('|') && isDelimiter(lines[1])) {
+        return {
+          kind: 'table',
+          head: cells(lines[0]),
+          rows: lines.slice(2).filter(Boolean).map(cells),
+        }
+      }
+
+      if (lines.every((l) => /^[-*]\s+/.test(l))) {
+        return { kind: 'ul', items: lines.map((l) => l.replace(/^[-*]\s+/, '')) }
+      }
+
+      if (lines.every((l) => /^\d+[.)]\s+/.test(l))) {
+        return { kind: 'ol', items: lines.map((l) => l.replace(/^\d+[.)]\s+/, '')) }
+      }
+
+      if (lines.every((l) => l.startsWith('>'))) {
+        return { kind: 'quote', lines: lines.map((l) => l.replace(/^>\s?/, '')) }
+      }
+
+      return { kind: 'p', lines }
+    })
 }
 
 interface ProseProps {
@@ -36,20 +107,67 @@ interface ProseProps {
 }
 
 export function Prose({ children, dropCap, className }: ProseProps) {
-  const paragraphs = useMemo(
-    () =>
-      children
-        .split(/\n\s*\n/)
-        .map((p) => p.trim())
-        .filter(Boolean),
-    [children]
-  )
+  const blocks = useMemo(() => parseBlocks(children), [children])
 
   return (
     <div className={cn('prose-article', dropCap && 'prose-dropcap', className)}>
-      {paragraphs.map((p, i) => (
-        <p key={i}>{renderInline(p)}</p>
-      ))}
+      {blocks.map((block, i) => {
+        switch (block.kind) {
+          case 'ul':
+            return (
+              <ul key={i} className="prose-list">
+                {block.items.map((item, j) => (
+                  <li key={j}>{renderInline(item)}</li>
+                ))}
+              </ul>
+            )
+
+          case 'ol':
+            return (
+              <ol key={i} className="prose-list prose-list-ordered">
+                {block.items.map((item, j) => (
+                  <li key={j}>{renderInline(item)}</li>
+                ))}
+              </ol>
+            )
+
+          case 'quote':
+            return (
+              <blockquote key={i} className="prose-callout">
+                {renderInline(block.lines.join(' '))}
+              </blockquote>
+            )
+
+          case 'table':
+            // Wide tables scroll inside their own container rather than
+            // widening the article and giving the page a horizontal scrollbar.
+            return (
+              <div key={i} className="prose-table-wrap">
+                <table className="prose-table">
+                  <thead>
+                    <tr>
+                      {block.head.map((cell, j) => (
+                        <th key={j}>{renderInline(cell)}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {block.rows.map((row, j) => (
+                      <tr key={j}>
+                        {row.map((cell, k) => (
+                          <td key={k}>{renderInline(cell)}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
+
+          default:
+            return <p key={i}>{renderInline(block.lines.join(' '))}</p>
+        }
+      })}
     </div>
   )
 }
