@@ -120,9 +120,9 @@ export function Hero() {
             transition={{ delay: 0.6 }}
           >
             <Text size="lg" muted className="mb-8 max-w-2xl mx-auto">
-              From Machine Learning to Generative AI, I architect intelligent solutions 
-              that transform businesses. Explore my journey through 21+ AI projects, 
-              each demonstrating real-world impact and cutting-edge innovation.
+              I build multi-agent systems and RAG pipelines that survive contact with
+              production — currently a GCP-native data platform at Deloitte, previously
+              agentic systems at Cognizant and speech models at Samsung R&amp;D.
             </Text>
           </motion.div>
 
@@ -138,7 +138,7 @@ export function Hero() {
               <Text size="sm">Available for opportunities</Text>
             </div>
             <div className="px-3 py-1 bg-[var(--panel)]/60 rounded-full">
-              <Text size="sm">Cognizant • Samsung R&D • 21+ Projects</Text>
+              <Text size="sm">Deloitte • Cognizant • Samsung R&D</Text>
             </div>
             <div className="px-3 py-1 bg-[var(--panel)]/60 rounded-full">
               <Text size="sm">NVIDIA Certified • AWS • Azure</Text>

@@ -10,7 +10,7 @@ export function ArticleHeader({ article }: { article: ArticleMeta }) {
   return (
     <header className="article-measure px-4 pt-14 pb-10 sm:px-6 md:pt-20">
       <div className="mb-5 flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.18em]">
-        <Link to="/writing" className="text-accent-amber hover:underline">
+        <Link to="/blog" className="text-accent-amber hover:underline">
           {SERIES_TITLE}
         </Link>
         <span className="text-[var(--ink-faint)]">/</span>
@@ -112,7 +112,7 @@ export function SeriesNav({ prev, next }: { prev?: ArticleMeta; next?: ArticleMe
     >
       {prev ? (
         <Link
-          to={`/writing/${prev.slug}`}
+          to={`/blog/${prev.slug}`}
           className="group rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 transition-colors hover:border-accent-amber"
         >
           <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
@@ -128,7 +128,7 @@ export function SeriesNav({ prev, next }: { prev?: ArticleMeta; next?: ArticleMe
 
       {next && (
         <Link
-          to={`/writing/${next.slug}`}
+          to={`/blog/${next.slug}`}
           className="group rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 text-right transition-colors hover:border-accent-amber sm:col-start-2"
         >
           <span className="flex items-center justify-end gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">

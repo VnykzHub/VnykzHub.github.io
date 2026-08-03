@@ -24,7 +24,7 @@ export function Writing() {
     <Section id="writing">
       <Container>
         <AnimatedSection animation="fadeIn">
-          <Eyebrow>Writing</Eyebrow>
+          <Eyebrow>Blog</Eyebrow>
           <Heading as="h2" size="3xl" gradient className="text-center mb-4">
             {SERIES_TITLE}
           </Heading>
@@ -53,7 +53,7 @@ export function Writing() {
         <AnimatedSection animation="fadeIn" delay={0.2}>
           <div className="mt-10 text-center">
             <Link
-              to="/writing"
+              to="/blog"
               className="inline-flex items-center gap-2 rounded-lg border border-[var(--rule)] px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ink-soft)] transition-colors hover:border-accent-amber hover:text-accent-amber"
             >
               Read all {SERIES_TOTALS.parts} parts

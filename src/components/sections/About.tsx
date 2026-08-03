@@ -40,7 +40,7 @@ export function About() {
                 Continuous Learning
               </Heading>
               <Text muted size="sm">
-                Pursuing Master's in Data Science at Deakin University while staying updated with latest AI advancements
+                M.S. Data Science from Deakin University (2023–2025), earned by distance alongside full-time engineering work
               </Text>
             </Card>
           </AnimatedSection>

@@ -29,7 +29,7 @@ function Stat({ value, label }: { value: string | number; label: string }) {
 export function WritingIndex() {
   return (
     <>
-      <title>Writing — LLM Atlas | Vinayak Mathur</title>
+      <title>Blog — LLM Atlas | Vinayak Mathur</title>
       <meta
         name="description"
         content="LLM Atlas: a 14-part series on how language model architecture evolved from 2017 to 2026 — attention variants, efficiency lineages, tokenizers, serving, and scaling laws."
@@ -39,7 +39,7 @@ export function WritingIndex() {
         {/* ── Series masthead ─────────────────────────────────── */}
         <header className="border-b border-[var(--rule)] py-16 md:py-24">
           <div className="max-w-3xl">
-            <Eyebrow>Writing</Eyebrow>
+            <Eyebrow>Blog</Eyebrow>
 
             <h1 className="font-sans text-[2.6rem] font-bold leading-[1.05] text-[var(--heading)] sm:text-[3.4rem]">
               <span className="text-gradient">{SERIES_TITLE}</span>

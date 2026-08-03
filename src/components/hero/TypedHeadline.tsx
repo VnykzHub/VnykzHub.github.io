@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import Typewriter from 'typewriter-effect'
 
+// Concrete properties of a shipped system, not adjectives. The previous set
+// ("Drives Innovation", "Creates Impact", "Transforms Data") said nothing a
+// reader could check or an interviewer could ask about.
 const phrases = [
-  'Solves Problems',
-  'Drives Innovation',
-  'Builds Intelligence',
-  'Creates Impact',
-  'Transforms Data',
+  'Ships to Production',
+  'Cites Its Sources',
+  'Survives Real Traffic',
+  'Degrades Gracefully',
+  'Runs on a Budget',
 ]
 
 export function TypedHeadline() {

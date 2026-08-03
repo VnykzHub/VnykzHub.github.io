@@ -22,7 +22,7 @@ export function NotFound() {
             <Link to="/" className="text-accent-amber hover:underline">
               Home
             </Link>
-            <Link to="/writing" className="text-accent-amber hover:underline">
+            <Link to="/blog" className="text-accent-amber hover:underline">
               Writing
             </Link>
           </div>

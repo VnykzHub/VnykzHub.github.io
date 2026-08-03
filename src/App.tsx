@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { Layout } from '@/components/layout'
 import { Home } from '@/pages/Home'
 
@@ -53,6 +53,12 @@ function ScrollToTop() {
   return null
 }
 
+/** Carries the slug across the /writing -> /blog rename. */
+function RedirectArticle() {
+  const { slug } = useParams()
+  return <Navigate to={`/blog/${slug}`} replace />
+}
+
 function App() {
   return (
     <Layout>
@@ -60,8 +66,13 @@ function App() {
       <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/writing" element={<WritingIndex />} />
-          <Route path="/writing/:slug" element={<ArticlePage />} />
+          <Route path="/blog" element={<WritingIndex />} />
+          <Route path="/blog/:slug" element={<ArticlePage />} />
+          {/* /writing was the original path and is already linked from the
+              deployed site. Redirect rather than rename, so anything shared
+              externally keeps resolving instead of 404ing. */}
+          <Route path="/writing" element={<Navigate to="/blog" replace />} />
+          <Route path="/writing/:slug" element={<RedirectArticle />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

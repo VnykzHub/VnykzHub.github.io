@@ -19,7 +19,7 @@ export const navigationItems: NavItem[] = [
   { id: 'about', label: 'About', href: 'about', icon: User, kind: 'scroll' },
   { id: 'projects', label: 'Projects', href: 'projects', icon: Code2, kind: 'scroll' },
   { id: 'experience', label: 'Experience', href: 'experience', icon: Briefcase, kind: 'scroll' },
-  { id: 'writing', label: 'Writing', href: '/writing', icon: PenLine, kind: 'route' },
+  { id: 'blog', label: 'Blog', href: '/blog', icon: PenLine, kind: 'route' },
   { id: 'skills', label: 'Skills', href: 'skills', icon: Brain, kind: 'scroll' },
   { id: 'contact', label: 'Contact', href: 'contact', icon: Mail, kind: 'scroll' },
 ]

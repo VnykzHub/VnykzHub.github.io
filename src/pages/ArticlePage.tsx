@@ -16,7 +16,7 @@ export function ArticlePage() {
   const section = article ? getSection(article.id) : undefined
 
   // An unknown slug is a dead link, not an error state worth a page of its own.
-  if (!article || !section) return <Navigate to="/writing" replace />
+  if (!article || !section) return <Navigate to="/blog" replace />
 
   const { prev, next } = getNeighbours(article.slug)
 
@@ -44,7 +44,7 @@ export function ArticlePage() {
 
         <div className="article-wide mt-8 px-4 sm:px-6">
           <Link
-            to="/writing"
+            to="/blog"
             className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)] transition-colors hover:text-accent-amber"
           >
             <ArrowLeft size={12} />

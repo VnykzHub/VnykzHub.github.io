@@ -1,53 +1,102 @@
 import { Section, Container, AnimatedSection, Grid } from '@/components/common'
 import { Eyebrow, Heading, Text, Card } from '@/components/ui'
-import { Code2, Brain, Cloud, Layers } from 'lucide-react'
+import { Boxes, Brain, Cloud, Server } from 'lucide-react'
+import { skillGroups, TIER_LABEL, TIER_ORDER, type SkillGroup, type SkillTier } from '@/data/skills'
 
-const skillCategories = [
-  {
-    title: 'Programming',
-    icon: Code2,
-    color: 'cyan',
-    skills: [
-      { name: 'Python', level: 95 },
-      { name: 'JavaScript/TypeScript', level: 85 },
-      { name: 'SQL', level: 90 },
-      { name: 'NoSQL', level: 85 }
-    ]
-  },
-  {
-    title: 'AI/ML',
-    icon: Brain,
-    color: 'purple',
-    skills: [
-      { name: 'LLMs & Generative AI', level: 95 },
-      { name: 'Multi-Agent Systems', level: 90 },
-      { name: 'RAG Systems', level: 95 },
-      { name: 'NLP & Deep Learning', level: 90 }
-    ]
-  },
-  {
-    title: 'Frameworks',
-    icon: Layers,
-    color: 'green',
-    skills: [
-      { name: 'Langchain & Autogen', level: 95 },
-      { name: 'PyTorch & HuggingFace', level: 85 },
-      { name: 'FastAPI & Flask', level: 85 },
-      { name: 'Nvidia NIM', level: 85 }
-    ]
-  },
-  {
-    title: 'Cloud & MLOps',
-    icon: Cloud,
-    color: 'blue',
-    skills: [
-      { name: 'AWS & Azure', level: 85 },
-      { name: 'Docker & Kubernetes', level: 80 },
-      { name: 'Git & CI/CD', level: 90 },
-      { name: 'MLOps', level: 80 }
-    ]
-  }
-]
+/**
+ * Skills without progress bars.
+ *
+ * The previous version rendered 16 percentages ("Python 95%") that had no
+ * source. Depth tiers replace them: each label is a claim that can be defended
+ * in an interview, which a number cannot.
+ */
+
+const GROUP_ICON: Record<string, typeof Brain> = {
+  'ai-engineering': Boxes,
+  ml: Brain,
+  platform: Server,
+  cloud: Cloud,
+}
+
+const ACCENT_TEXT = {
+  amber: 'text-accent-amber',
+  patina: 'text-accent-patina',
+  rust: 'text-accent-rust',
+} as const
+
+const ACCENT_BG = {
+  amber: 'bg-accent-amber/15',
+  patina: 'bg-accent-patina/15',
+  rust: 'bg-accent-rust/15',
+} as const
+
+/** Solid dot for daily, ringed for production, hollow for working knowledge. */
+function TierMark({ tier, accent }: { tier: SkillTier; accent: SkillGroup['accent'] }) {
+  const color = ACCENT_TEXT[accent]
+  if (tier === 'daily') return <span className={`h-1.5 w-1.5 rounded-full bg-current ${color}`} />
+  if (tier === 'production')
+    return <span className={`h-1.5 w-1.5 rounded-full border border-current ${color}`} />
+  return <span className="h-1.5 w-1.5 rounded-full border border-[var(--rule)]" />
+}
+
+function GroupCard({ group }: { group: SkillGroup }) {
+  const Icon = GROUP_ICON[group.id] ?? Brain
+
+  return (
+    <Card hover className="h-full">
+      <div className="mb-5 flex items-start gap-3">
+        <div
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${ACCENT_BG[group.accent]}`}
+        >
+          <Icon className={ACCENT_TEXT[group.accent]} size={20} />
+        </div>
+        <div>
+          <Heading as="h3" size="lg">
+            {group.label}
+          </Heading>
+          <Text size="sm" muted className="mt-0.5">
+            {group.blurb}
+          </Text>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {TIER_ORDER.map((tier) => {
+          const items = group.skills.filter((s) => s.tier === tier)
+          if (items.length === 0) return null
+
+          return (
+            <div key={tier}>
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+                {TIER_LABEL[tier]}
+              </p>
+              <ul className="flex flex-wrap gap-x-2 gap-y-2">
+                {items.map((skill) => (
+                  <li
+                    key={skill.name}
+                    className="flex items-center gap-1.5 rounded-md border border-[var(--rule)] bg-[var(--panel2)] px-2.5 py-1"
+                  >
+                    <TierMark tier={tier} accent={group.accent} />
+                    {skill.evidence ? (
+                      <a
+                        href={skill.evidence.href}
+                        className="text-xs text-[var(--ink)] underline decoration-dotted underline-offset-2 hover:text-accent-patina"
+                      >
+                        {skill.name}
+                      </a>
+                    ) : (
+                      <span className="text-xs text-[var(--ink)]">{skill.name}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        })}
+      </div>
+    </Card>
+  )
+}
 
 export function Skills() {
   return (
@@ -55,65 +104,33 @@ export function Skills() {
       <Container>
         <AnimatedSection animation="fadeIn">
           <Eyebrow>Skills</Eyebrow>
-          <Heading as="h2" size="3xl" gradient className="text-center mb-4">
+          <Heading as="h2" size="3xl" gradient className="mb-4 text-center">
             Technical Skills
           </Heading>
-          <Text size="lg" muted className="text-center max-w-2xl mx-auto mb-12">
-            Comprehensive expertise across the AI/ML technology stack
+          <Text size="lg" muted className="mx-auto mb-4 max-w-2xl text-center">
+            Grouped by what they are for, and graded by how far I have actually taken them —
+            not by a percentage I made up.
           </Text>
+
+          {/* Legend. The tiers only mean something if they are stated. */}
+          <ul className="mx-auto mb-12 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {TIER_ORDER.map((tier) => (
+              <li key={tier} className="flex items-center gap-2">
+                <TierMark tier={tier} accent="amber" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+                  {TIER_LABEL[tier]}
+                </span>
+              </li>
+            ))}
+          </ul>
         </AnimatedSection>
 
         <Grid cols={2} gap={6}>
-          {skillCategories.map((category, index) => {
-            const Icon = category.icon
-            
-            return (
-              <AnimatedSection key={category.title} animation="slideUp" delay={index * 0.1}>
-                <Card hover className="h-full">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center
-                      ${category.color === 'cyan' ? 'bg-accent-amber/20' : ''}
-                      ${category.color === 'purple' ? 'bg-accent-patina/20' : ''}
-                      ${category.color === 'green' ? 'bg-accent-rust/20' : ''}
-                      ${category.color === 'blue' ? 'bg-accent-amber/20' : ''}
-                    `}>
-                      <Icon className={`
-                        ${category.color === 'cyan' ? 'text-accent-amber' : ''}
-                        ${category.color === 'purple' ? 'text-accent-patina' : ''}
-                        ${category.color === 'green' ? 'text-accent-rust' : ''}
-                        ${category.color === 'blue' ? 'text-accent-amber' : ''}
-                      `} size={20} />
-                    </div>
-                    <Heading as="h3" size="lg">
-                      {category.title}
-                    </Heading>
-                  </div>
-
-                  <div className="space-y-4">
-                    {category.skills.map((skill) => (
-                      <div key={skill.name}>
-                        <div className="flex justify-between mb-1">
-                          <Text size="sm">{skill.name}</Text>
-                          <Text size="sm" muted>{skill.level}%</Text>
-                        </div>
-                        <div className="h-2 bg-[var(--bar-track)] rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full rounded-full transition-all duration-1000 ease-out
-                              ${category.color === 'cyan' ? 'bg-gradient-to-r from-accent-amber to-accent-patina' : ''}
-                              ${category.color === 'purple' ? 'bg-gradient-to-r from-accent-patina to-accent-amber' : ''}
-                              ${category.color === 'green' ? 'bg-gradient-to-r from-accent-rust to-accent-amber' : ''}
-                              ${category.color === 'blue' ? 'bg-gradient-to-r from-accent-amber to-accent-rust' : ''}
-                            `}
-                            style={{ width: `${skill.level}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </AnimatedSection>
-            )
-          })}
+          {skillGroups.map((group, index) => (
+            <AnimatedSection key={group.id} animation="slideUp" delay={index * 0.1}>
+              <GroupCard group={group} />
+            </AnimatedSection>
+          ))}
         </Grid>
       </Container>
     </Section>

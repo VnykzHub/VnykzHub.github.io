@@ -98,7 +98,7 @@ export function Footer() {
               </li>
               <li>
                 <RouterLink
-                  to="/writing"
+                  to="/blog"
                   className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors text-sm"
                 >
                   Writing
