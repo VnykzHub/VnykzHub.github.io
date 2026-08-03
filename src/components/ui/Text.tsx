@@ -6,14 +6,16 @@ interface TextProps {
   size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl'
   className?: string
   muted?: boolean
+  mono?: boolean
   as?: 'p' | 'span' | 'div'
 }
 
-export function Text({ 
+export function Text({
   children,
   size = 'base',
   className,
   muted = false,
+  mono = false,
   as: Component = 'p'
 }: TextProps) {
   const sizeClasses = {
@@ -25,10 +27,12 @@ export function Text({
   }
 
   return (
-    <Component 
+    <Component
       className={cn(
+        'font-serif',
         sizeClasses[size],
-        muted && 'text-gray-400',
+        muted && 'text-[var(--ink-soft)]',
+        mono && 'font-mono',
         className
       )}
     >

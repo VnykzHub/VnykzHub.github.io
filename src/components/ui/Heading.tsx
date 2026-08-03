@@ -29,9 +29,9 @@ export function Heading({
   gradient = false
 }: HeadingProps) {
   return (
-    <Component 
+    <Component
       className={cn(
-        'font-bold tracking-tight',
+        'font-bold tracking-tight font-sans',
         sizeClasses[size],
         gradient && 'text-gradient',
         className

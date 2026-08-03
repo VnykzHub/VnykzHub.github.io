@@ -1,51 +1,14 @@
 import { Section, Container, AnimatedSection } from '@/components/common'
-import { Heading, Text, Card } from '@/components/ui'
+import { Heading, Text, Card, Eyebrow } from '@/components/ui'
+import { experiences } from "@/data/experience"
 import { Building2, Calendar, MapPin, ChevronRight } from 'lucide-react'
-
-const experiences = [
-  {
-    title: 'Associate AI Engineer',
-    company: 'Cognizant',
-    location: 'Gurugram, Haryana',
-    duration: 'July 2022 – Present',
-    current: true,
-    achievements: [
-      'Architected autonomous multi-agent system using Nvidia NIM framework',
-      'Developed automated interview platform with 99.9% uptime',
-      'Deployed RAG-driven audit automation reducing prep time by 65%',
-      'Led LLM benchmarking research (GPT, Claude, Llama, Gemini)'
-    ]
-  },
-  {
-    title: 'AI/ML Intern',
-    company: 'Cognizant',
-    location: 'Pune, Maharashtra',
-    duration: 'Jan 2022 - Jul 2022',
-    current: false,
-    achievements: [
-      'Developed predictive models using Random Forest, GBM, Neural Networks',
-      'Conducted sentiment analysis for actionable insights extraction'
-    ]
-  },
-  {
-    title: 'Samsung PRISM Researcher',
-    company: 'Samsung R&D',
-    location: 'Bangalore, India',
-    duration: 'Oct 2020 – Mar 2021',
-    current: false,
-    achievements: [
-      'Built hybrid sound classification engine with 4.44% EER',
-      'Implemented Residual Squeeze-and-Excitation Networks',
-      'Published research at ICCNT 2021 conference'
-    ]
-  }
-]
 
 export function Experience() {
   return (
-    <Section id="experience" className="bg-gray-900/50">
+    <Section id="experience" className="bg-[var(--panel)]/20">
       <Container>
         <AnimatedSection animation="fadeIn">
+          <Eyebrow>Experience</Eyebrow>
           <Heading as="h2" size="3xl" gradient className="text-center mb-4">
             Experience
           </Heading>
@@ -60,7 +23,7 @@ export function Experience() {
               <div className="relative">
                 {/* Timeline line */}
                 {index !== experiences.length - 1 && (
-                  <div className="absolute left-8 top-16 bottom-0 w-0.5 bg-gray-800" />
+                  <div className="absolute left-8 top-16 bottom-0 w-0.5 bg-[var(--rule)]" />
                 )}
                 
                 <Card hover className="mb-8 relative">
@@ -68,7 +31,7 @@ export function Experience() {
                   <div className={`absolute -left-2 top-6 w-4 h-4 rounded-full border-2 ${
                     exp.current 
                       ? 'bg-accent-cyan border-accent-cyan animate-pulse' 
-                      : 'bg-gray-700 border-gray-600'
+                      : 'bg-[var(--ink-faint)] border-[var(--ink-faint)]'
                   }`} />
 
                   <div className="ml-8">
@@ -78,7 +41,7 @@ export function Experience() {
                         <Heading as="h3" size="xl" className="mb-1">
                           {exp.title}
                         </Heading>
-                        <div className="flex items-center gap-4 text-gray-400">
+                        <div className="flex items-center gap-4 text-[var(--ink-soft)]">
                           <span className="flex items-center gap-1">
                             <Building2 size={16} />
                             {exp.company}
@@ -90,8 +53,8 @@ export function Experience() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Calendar size={16} className="text-gray-400" />
-                        <Text size="sm" className={exp.current ? 'text-accent-cyan' : 'text-gray-400'}>
+                        <Calendar size={16} className="text-[var(--ink-soft)]" />
+                        <Text size="sm" className={exp.current ? 'text-accent-cyan' : 'text-[var(--ink-soft)]'}>
                           {exp.duration}
                         </Text>
                       </div>

@@ -1,5 +1,5 @@
 import { Section, Container, AnimatedSection, Grid } from '@/components/common'
-import { Heading, Text, Card } from '@/components/ui'
+import { Eyebrow, Heading, Text, Card } from '@/components/ui'
 import { Code2, Brain, Cloud, Layers } from 'lucide-react'
 
 const skillCategories = [
@@ -54,6 +54,7 @@ export function Skills() {
     <Section id="skills">
       <Container>
         <AnimatedSection animation="fadeIn">
+          <Eyebrow>Skills</Eyebrow>
           <Heading as="h2" size="3xl" gradient className="text-center mb-4">
             Technical Skills
           </Heading>
@@ -74,13 +75,13 @@ export function Skills() {
                       ${category.color === 'cyan' ? 'bg-accent-cyan/20' : ''}
                       ${category.color === 'purple' ? 'bg-accent-purple/20' : ''}
                       ${category.color === 'green' ? 'bg-accent-green/20' : ''}
-                      ${category.color === 'blue' ? 'bg-blue-500/20' : ''}
+                      ${category.color === 'blue' ? 'bg-accent-cyan/20' : ''}
                     `}>
                       <Icon className={`
                         ${category.color === 'cyan' ? 'text-accent-cyan' : ''}
                         ${category.color === 'purple' ? 'text-accent-purple' : ''}
                         ${category.color === 'green' ? 'text-accent-green' : ''}
-                        ${category.color === 'blue' ? 'text-blue-500' : ''}
+                        ${category.color === 'blue' ? 'text-accent-cyan' : ''}
                       `} size={20} />
                     </div>
                     <Heading as="h3" size="lg">
@@ -95,13 +96,13 @@ export function Skills() {
                           <Text size="sm">{skill.name}</Text>
                           <Text size="sm" muted>{skill.level}%</Text>
                         </div>
-                        <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                        <div className="h-2 bg-[var(--bar-track)] rounded-full overflow-hidden">
                           <div 
                             className={`h-full rounded-full transition-all duration-1000 ease-out
-                              ${category.color === 'cyan' ? 'bg-gradient-to-r from-accent-cyan to-blue-500' : ''}
-                              ${category.color === 'purple' ? 'bg-gradient-to-r from-accent-purple to-pink-500' : ''}
-                              ${category.color === 'green' ? 'bg-gradient-to-r from-accent-green to-emerald-500' : ''}
-                              ${category.color === 'blue' ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : ''}
+                              ${category.color === 'cyan' ? 'bg-gradient-to-r from-accent-cyan to-accent-purple' : ''}
+                              ${category.color === 'purple' ? 'bg-gradient-to-r from-accent-purple to-accent-cyan' : ''}
+                              ${category.color === 'green' ? 'bg-gradient-to-r from-accent-green to-accent-cyan' : ''}
+                              ${category.color === 'blue' ? 'bg-gradient-to-r from-accent-cyan to-accent-green' : ''}
                             `}
                             style={{ width: `${skill.level}%` }}
                           />

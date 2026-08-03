@@ -20,7 +20,7 @@ export function Section({
     <section 
       id={id}
       className={cn(
-        'py-16 md:py-24 lg:py-32',
+        'py-16 md:py-24 lg:py-32 transition-colors duration-400',
         fullHeight && 'min-h-screen',
         centered && 'flex items-center justify-center',
         className

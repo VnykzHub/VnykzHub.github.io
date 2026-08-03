@@ -6,7 +6,7 @@ export function LoadingScreen() {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-gray-950 z-50 flex items-center justify-center"
+      className="fixed inset-0 bg-[var(--paper)] z-50 flex items-center justify-center"
     >
       <div className="text-center">
         <motion.div

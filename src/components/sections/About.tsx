@@ -1,12 +1,13 @@
 import { Section, Container, AnimatedSection, Grid } from '@/components/common'
-import { Heading, Text, Card } from '@/components/ui'
+import { Heading, Text, Card, Eyebrow } from '@/components/ui'
 import { GraduationCap, Award, Target, Sparkles } from 'lucide-react'
 
 export function About() {
   return (
-    <Section id="about" className="bg-gray-900/50">
+    <Section id="about" className="bg-[var(--panel)]/20">
       <Container>
         <AnimatedSection animation="fadeIn">
+          <Eyebrow>About</Eyebrow>
           <Heading as="h2" size="3xl" gradient className="text-center mb-4">
             About Me
           </Heading>

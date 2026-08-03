@@ -1,78 +1,221 @@
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
-@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/space-grotesk/400.css';
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/newsreader/400.css';
+@import '@fontsource/newsreader/500.css';
+@import '@fontsource/newsreader/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   SINGLE CSS SOURCE OF TRUTH
+   All design tokens, base styles, component variants, animations.
+   Edit colors here — they propagate everywhere via var().
+   ============================================================ */
+
+/* ---- DEFAULT THEME (dark mode — always available, no JS needed) ---- */
+:root {
+  --paper:      #100E0C;
+  --panel:      #1A1714;
+  --panel2:     #24211D;
+  --ink:        #D9D3CC;
+  --ink-soft:   #9D968E;
+  --ink-faint:  #6E6862;
+  --heading:    #E8E2D9;
+  --bold:       #E8E2D9;
+  --accent-1:   #00D9FF;  /* cyan */
+  --accent-2:   #8B5CF6;  /* purple */
+  --accent-3:   #10B981;  /* green */
+  --accent-4:   #F0B84C;  /* amber */
+  --grid:       #181512;
+  --rule:       #2A2622;
+  --panel-border: #2E2A26;
+  --bar-track:  #0E0C0A;
+  --card-bg:    #1A1714;
+  --card-border:#2A2622;
+  --table-bg:   #1A1714;
+  --table-th:   #24211D;
+  --table-rule: #2A2622;
+  --code-bg:    #1A1714;
+  --code-border:#2A2622;
+  --callout-bg: #1A1714;
+  --callout-warn-bg:  #1D1810;
+  --callout-dead-bg:  #1D1414;
+  --tag-ok-bg:  #0F241C;   --tag-ok-ink:  #4FD1B8;
+  --tag-dead-bg:#2A1418;   --tag-dead-ink:#E0705C;
+  --tag-sleep-bg:#1C1830;  --tag-sleep-ink:#8F7CF0;
+  --tag-wait-bg:#2A2010;   --tag-wait-ink:#F0B84C;
+  --select-bg:  #F0B84C;
+  --select-ink: #100E0C;
+  --btn-ink:    #100E0C;
+  --panel-shadow: 0 24px 60px -28px rgba(0,0,0,0.7);
+  --hero-overlay-from: #100E0C;
+  --toggle-track:#2A2622;
+  --toggle-thumb:#F0B84C;
+  --toggle-icon:#6E6862;
+}
+
+/* ---- LIGHT MODE — paper-light with warm dark panels ---- */
+:root[data-theme="light"] {
+  --paper:      #F3F5F8;
+  --panel:      #1A1714;
+  --panel2:     #24211D;
+  --ink:        #111C2E;
+  --ink-soft:   #3D4A61;
+  --ink-faint:  #7B879B;
+  --heading:    #111C2E;
+  --bold:       #111C2E;
+  --accent-1:   #00B8D4;
+  --accent-2:   #7C3AED;
+  --accent-3:   #059669;
+  --accent-4:   #DF8A0C;
+  /* Light paper shows the grid far more readily than the darkroom does;
+     kept close to --paper so it reads as texture, not as graph paper. */
+  --grid:       #E4E9F1;
+  --rule:       #C6CEDA;
+  --panel-border: #2E2A26;
+  --bar-track:  #0E0C0A;
+  --card-bg:    #fff;
+  --card-border:#C6CEDA;
+  --table-bg:   #fff;
+  --table-th:   #E7EBF3;
+  --table-rule: #C6CEDA;
+  --code-bg:    #E5EAF2;
+  --code-border:#C6CEDA;
+  --callout-bg: #E9EDF7;
+  --callout-warn-bg:  #F6EEDD;
+  --callout-dead-bg:  #F4E4E0;
+  --tag-ok-bg:  #DCEFE4;   --tag-ok-ink:  #116B45;
+  --tag-dead-bg:#F4E0DB;   --tag-dead-ink:#C8452C;
+  --tag-sleep-bg:#E7E4F4;  --tag-sleep-ink:#4B3FA8;
+  --tag-wait-bg:#F3EAD3;   --tag-wait-ink:#8A6208;
+  --select-bg:  #2743D6;
+  --select-ink: #fff;
+  --btn-ink:    #E8E2D9;
+  --panel-shadow: 0 24px 60px -28px rgba(0,0,0,0.55);
+  --hero-overlay-from: #030712;
+  --toggle-track:#C6CEDA;
+  --toggle-thumb:#DF8A0C;
+  --toggle-icon:#7B879B;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
 @layer base {
-  html {
-    @apply scroll-smooth;
-  }
-  
+  html { @apply scroll-smooth; }
+
   body {
-    @apply bg-gray-950 text-gray-100 antialiased;
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Newsreader', Georgia, serif;
+    @apply antialiased;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  ::selection {
+    background: var(--select-bg);
+    color: var(--select-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-1);
+    outline-offset: 2px;
   }
 }
 
-@layer utilities {
-  .text-gradient {
-    @apply bg-gradient-to-r from-accent-cyan via-accent-purple to-accent-green bg-clip-text text-transparent;
-  }
-  
-  .glow {
-    box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
-  }
+/* ---- gradient text (uses Tailwind accent tokens) ---- */
+.text-gradient {
+  @apply bg-gradient-to-r from-accent-cyan via-accent-purple to-accent-green bg-clip-text text-transparent;
 }
+
+/* ============================================================
+   COMPONENT STYLES
+   Semantic classes — use these instead of raw Tailwind in JSX.
+   ============================================================ */
+
+/* ---- surface ---- */
+.surface-paper     { background-color: var(--paper); }
+.surface-panel     { background-color: var(--panel); }
+.surface-panel2    { background-color: var(--panel2); }
+.surface-card      { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; }
+.surface-card-hover:hover { border-color: var(--panel-border); box-shadow: var(--panel-shadow); }
+
+/* ---- text ---- */
+.text-ink           { color: var(--ink); }
+.text-ink-soft      { color: var(--ink-soft); }
+.text-ink-faint     { color: var(--ink-faint); }
+.text-heading       { color: var(--heading); }
+.text-bold          { color: var(--bold); }
+
+/* ---- rules ---- */
+.rule-b       { border-color: var(--rule); }
+.rule-bt      { border-top: 1px solid var(--rule); }
+.rule-bb      { border-bottom: 1px solid var(--rule); }
+
+/* ---- bar fills ---- */
+.bar-fill-blue   { background: linear-gradient(90deg, #4A6AE0, #8BA0F5); }
+.bar-fill-teal   { background: linear-gradient(90deg, #1A8A74, #4FD1B8); }
+.bar-fill-amber  { background: linear-gradient(90deg, #C97C09, #F0B84C); }
+.bar-fill-red    { background: linear-gradient(90deg, #B23A24, #E0705C); }
+.bar-fill-dim    { background-color: var(--bar-track); }
+
+/* ---- tags ---- */
+.tag-base {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  border-radius: 5px; padding: 2px 8px; margin-left: 8px; vertical-align: 2px;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
 
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
-
 .animate-shimmer {
   animation: shimmer 2s infinite linear;
-  background: linear-gradient(
-    90deg,
-    #1f2937 25%,
-    #374151 50%,
-    #1f2937 75%
-  );
+  background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
   background-size: 200% 100%;
 }
 
-/* WebGL Canvas Styles */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; filter: blur(20px); }
+  50% { opacity: 0.8; filter: blur(30px); }
+}
+.glow-effect { animation: glow-pulse 3s ease-in-out infinite; }
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ---- WebGL canvas ---- */
 .webgl-canvas {
   position: fixed !important;
-  top: 0;
-  left: 0;
-  outline: none;
+  top: 0; left: 0; outline: none;
 }
 
-/* Glow Effects */
-@keyframes glow-pulse {
-  0%, 100% {
-    opacity: 0.5;
-    filter: blur(20px);
-  }
-  50% {
-    opacity: 0.8;
-    filter: blur(30px);
-  }
+/* ---- typewriter cursor ---- */
+.Typewriter__cursor {
+  color: var(--accent-1);
+  animation: blink 1s infinite;
 }
 
-.glow-effect {
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
-/* Performance optimizations */
+/* ---- performance ---- */
 .gpu-accelerated {
   transform: translateZ(0);
   will-change: transform;
@@ -80,37 +223,181 @@
   perspective: 1000px;
 }
 
-/* Typewriter cursor */
-.Typewriter__cursor {
-  color: #00D9FF;
-  animation: blink 1s infinite;
+/* ============================================================
+   ARTICLE / LONG-FORM READING
+   Used by /writing and /writing/:slug. The measure is deliberately
+   narrow (~64ch) and the body face is the serif — this is the only
+   part of the site optimised for sustained reading rather than scanning.
+   ============================================================ */
+
+.article-measure {
+  max-width: 38rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+/* Figures and code break out past the text measure on wide viewports. */
+.article-wide {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Reduce motion for accessibility */
+.prose-article {
+  color: var(--ink);
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.1875rem;   /* 19px */
+  line-height: 1.75;
+  letter-spacing: 0.003em;
+}
+
+.prose-article p { margin-bottom: 1.35em; }
+.prose-article p:last-child { margin-bottom: 0; }
+
+.prose-article strong {
+  color: var(--bold);
+  font-weight: 600;
+}
+
+.prose-article em {
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* Drop cap opens each article — amber, the "this matters" accent. */
+.prose-dropcap > p:first-of-type::first-letter {
+  float: left;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 3.1em;
+  line-height: 0.82;
+  font-weight: 700;
+  color: var(--accent-4);
+  padding: 0.06em 0.1em 0 0;
+}
+
+/* ---- section marker: the number lives in the margin like a gauge index ---- */
+.article-section-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--accent-4);
+}
+
+/* ---- figure: instrument readout, dark panel in BOTH themes ---- */
+.article-figure {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.article-figure-label {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  z-index: 2;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6E6862;
+  pointer-events: none;
+}
+
+.article-figure canvas {
+  display: block;
+  width: 100%;
+  height: 220px;
+}
+
+/* ---- equation callout ---- */
+.article-eq {
+  background: var(--callout-bg);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--accent-4);
+  border-radius: 0 10px 10px 0;
+  padding: 1.15rem 1.35rem;
+}
+
+/* KaTeX inherits the ink colour and scrolls rather than overflowing. */
+.article-eq .katex-display {
+  margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+}
+.article-eq .katex { color: var(--ink); }
+
+/* ---- code block ---- */
+.article-code {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.article-code pre {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  background: transparent;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.article-code code { font-family: inherit; background: none; }
+
+/* Prism token colours mapped onto the site accents, dark-surface only. */
+.article-code .token.comment,
+.article-code .token.prolog,
+.article-code .token.doctype,
+.article-code .token.cdata       { color: #6E6862; font-style: italic; }
+.article-code .token.punctuation { color: #9D968E; }
+.article-code .token.keyword,
+.article-code .token.boolean,
+.article-code .token.important   { color: var(--accent-2); }
+.article-code .token.string,
+.article-code .token.char,
+.article-code .token.attr-value  { color: var(--accent-3); }
+.article-code .token.number,
+.article-code .token.constant    { color: var(--accent-4); }
+.article-code .token.function,
+.article-code .token.class-name  { color: var(--accent-1); }
+.article-code .token.operator,
+.article-code .token.builtin     { color: #D9D3CC; }
+
+/* ---- reading progress ---- */
+.reading-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--accent-1);
+  z-index: 60;
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+
+/* ---- table of contents ---- */
+.toc-link {
+  display: block;
+  padding: 5px 0 5px 12px;
+  border-left: 1px solid var(--rule);
+  color: var(--ink-faint);
+  font-size: 12.5px;
+  line-height: 1.45;
+  transition: color 0.2s, border-color 0.2s;
+}
+.toc-link:hover { color: var(--ink); }
+.toc-link[aria-current='true'] {
+  color: var(--accent-1);
+  border-left-color: var(--accent-1);
+}
+
+/* ---- reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-}
-
-@layer utilities {
-  .text-gradient {
-    @apply bg-gradient-to-r from-accent-cyan via-accent-purple to-accent-green bg-clip-text text-transparent;
-  }
-  
-  .glow {
-    box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
-  }
-  
-  /* Add this new utility */
-  .bg-radial-gradient {
-    background: radial-gradient(circle at center, var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to));
   }
 }

@@ -26,7 +26,7 @@ export function Skeleton({
   return (
     <div
       className={cn(
-        'bg-gray-800',
+        'bg-[var(--bar-track)]',
         animations[animation],
         variants[variant],
         className

@@ -2,3 +2,4 @@ export { useMediaQuery, useIsMobile, useIsTablet, useIsDesktop } from './useMedi
 export { useScrollProgress } from './useScrollProgress'
 export { useIntersectionObserver } from './useIntersectionObserver'
 export { usePerformanceMonitor } from './usePerformanceMonitor'
+export { useTheme } from './useTheme'

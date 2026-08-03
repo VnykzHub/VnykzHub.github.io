@@ -26,15 +26,17 @@ export function Card({
   }
 
   return (
-    <div 
+    <div
       className={cn(
-        'rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800',
-        hover && 'hover:border-gray-700 hover:shadow-xl hover:scale-[1.02] transition-all duration-300',
-        gradient && 'bg-gradient-to-br from-gray-900/50 to-gray-800/50',
+        'rounded-xl border transition-all duration-300',
+        gradient
+          ? 'bg-gradient-to-br from-[var(--panel)] to-[var(--panel2)] border-[var(--panel-border)]'
+          : 'bg-[var(--card-bg)] border-[var(--card-border)]',
+        hover && 'hover:border-[var(--panel-border)] hover:shadow-[0_16px_48px_-20px_var(--panel-shadow)] hover:scale-[1.02]',
         paddingClasses[padding],
         className
       )}
-      {...props}  // Spread all props to the div (this includes event handlers)
+      {...props}
     >
       {children}
     </div>

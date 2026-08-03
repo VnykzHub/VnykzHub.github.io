@@ -18,7 +18,7 @@ export function TypedHeadline() {
   
   return (
     <div className="text-4xl md:text-5xl lg:text-6xl font-bold">
-      <span className="text-gray-100">I Build AI That </span>
+      <span className="text-[var(--heading)]">I Build AI That </span>
       {isVisible && (
         <span className="text-accent-cyan inline-block">
           <Typewriter

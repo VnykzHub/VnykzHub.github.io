@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Link as ScrollLink } from 'react-scroll'
+import { Link as RouterLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Github, Linkedin, Mail } from 'lucide-react'
 import { Container } from '@/components/common'
-import { Button } from '@/components/ui'
+import { Button, ThemeToggle } from '@/components/ui'
 import { navigationItems, socialLinks } from '@/data/navigation'
 import { cn } from '@/utils/cn'
 import { useMediaQuery } from '@/hooks'
+import { NavItemLink } from './NavItemLink'
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -34,17 +35,16 @@ export function Header() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
           isScrolled
-            ? 'bg-gray-950/80 backdrop-blur-lg border-b border-gray-800'
+            ? 'bg-[var(--paper)]/80 backdrop-blur-lg border-b border-[var(--rule)]'
             : 'bg-transparent'
         )}
       >
         <Container>
           <nav className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <ScrollLink
-              to="home"
-              smooth
-              duration={500}
+            <RouterLink
+              to="/"
+              aria-label="Home"
               className="cursor-pointer"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -55,7 +55,7 @@ export function Header() {
               >
                 VM
               </motion.div>
-            </ScrollLink>
+            </RouterLink>
 
             {/* Desktop Navigation */}
             <motion.ul
@@ -71,28 +71,25 @@ export function Header() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + index * 0.05 }}
                 >
-                  <ScrollLink
-                    to={item.href}
-                    smooth
-                    duration={500}
-                    offset={-80}
-                    spy
-                    activeClass="text-accent-cyan"
-                    className="text-gray-300 hover:text-accent-cyan transition-colors cursor-pointer"
+                  <NavItemLink
+                    item={item}
+                    activeClassName="text-accent-cyan"
+                    className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer"
                   >
                     {item.label}
-                  </ScrollLink>
+                  </NavItemLink>
                 </motion.li>
               ))}
             </motion.ul>
 
-            {/* Desktop CTA */}
+            {/* Desktop controls */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="hidden md:block"
+              className="hidden md:flex items-center gap-3"
             >
+              <ThemeToggle />
               <Button size="sm" className="shadow-lg">
                 Download Resume
               </Button>
@@ -103,7 +100,7 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-gray-300 hover:text-accent-cyan transition-colors"
+              className="md:hidden p-2 text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -137,7 +134,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-gray-950/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-[var(--paper)]/80 backdrop-blur-sm"
       />
 
       {/* Menu Panel */}
@@ -146,7 +143,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 20 }}
-        className="absolute right-0 top-0 h-full w-full max-w-sm bg-gray-900 border-l border-gray-800"
+        className="absolute right-0 top-0 h-full w-full max-w-sm bg-[var(--panel)] border-l border-[var(--rule)]"
       >
         <div className="flex flex-col h-full pt-20 pb-6 px-6">
           {/* Navigation Links */}
@@ -159,21 +156,20 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <ScrollLink
-                    to={item.href}
-                    smooth
-                    duration={500}
-                    offset={-80}
+                  <NavItemLink
+                    item={item}
                     onClick={onClose}
-                    className="flex items-center gap-3 text-lg text-gray-300 hover:text-accent-cyan transition-colors cursor-pointer py-2"
+                    className="flex items-center gap-3 text-lg text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer py-2"
                   >
                     <item.icon size={20} />
                     {item.label}
-                  </ScrollLink>
+                  </NavItemLink>
                 </motion.li>
               ))}
             </ul>
           </nav>
+
+          <ThemeToggle className="mb-6 self-start" />
 
           {/* Social Links */}
           <div className="flex items-center gap-4 mb-6">
@@ -192,7 +188,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
                   href={link.href}
                   target={link.id === 'email' ? undefined : '_blank'}
                   rel={link.id === 'email' ? undefined : 'noopener noreferrer'}
-                  className="text-gray-400 hover:text-accent-cyan transition-colors"
+                  className="text-[var(--ink-faint)] hover:text-accent-cyan transition-colors"
                 >
                   <Icon size={24} />
                 </a>

@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "gen:atlas": "node scripts/generate-atlas-content.mjs"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.2.6",
-    "@fontsource/jetbrains-mono": "^5.2.6",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/newsreader": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
     "@react-three/drei": "^10.7.4",
     "@react-three/fiber": "^9.3.0",
     "@react-three/postprocessing": "^3.0.4",
@@ -19,7 +21,9 @@
     "axios": "^1.11.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
+    "katex": "^0.18.1",
     "lucide-react": "^0.542.0",
+    "prismjs": "^1.30.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-intersection-observer": "^9.16.0",
@@ -32,7 +36,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@types/katex": "^0.16.8",
     "@types/node": "^24.3.0",
+    "@types/prismjs": "^1.26.6",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@types/react-scroll": "^1.8.10",

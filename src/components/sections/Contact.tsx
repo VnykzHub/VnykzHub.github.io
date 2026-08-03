@@ -1,5 +1,5 @@
 import { Section, Container, AnimatedSection, Grid } from '@/components/common'
-import { Heading, Text, Card, Button } from '@/components/ui'
+import { Heading, Text, Card, Button, Eyebrow } from '@/components/ui'
 import { Mail, Phone, Linkedin, Github, Send, MapPin } from 'lucide-react'
 import { useState } from 'react'
 
@@ -24,9 +24,10 @@ export function Contact() {
   }
 
   return (
-    <Section id="contact" className="bg-gray-900/50">
+    <Section id="contact" className="bg-[var(--panel)]/20">
       <Container>
         <AnimatedSection animation="fadeIn">
+          <Eyebrow>Contact</Eyebrow>
           <Heading as="h2" size="3xl" gradient className="text-center mb-4">
             Let's Connect
           </Heading>
@@ -117,7 +118,7 @@ export function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-accent-cyan transition-colors"
+                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-cyan transition-colors"
                     placeholder="Your name"
                   />
                 </div>
@@ -133,7 +134,7 @@ export function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-accent-cyan transition-colors"
+                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-cyan transition-colors"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -149,7 +150,7 @@ export function Contact() {
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-accent-cyan transition-colors resize-none"
+                    className="w-full px-4 py-2 bg-[var(--panel)] border border-[var(--card-border)] rounded-lg focus:outline-none focus:border-accent-cyan transition-colors resize-none"
                     placeholder="Tell me about your project..."
                   />
                 </div>

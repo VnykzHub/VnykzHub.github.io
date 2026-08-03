@@ -3,10 +3,16 @@ import { Container, Section } from '@/components/common'
 import { Heading, Text, Button } from '@/components/ui'
 import { ArrowDown, Sparkles, Code2, Brain, Github, Linkedin } from 'lucide-react'
 import { Link as ScrollLink } from 'react-scroll'
-import { useState, useEffect } from 'react'
-import { HeroCanvas } from '@/components/hero/HeroCanvas'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { TypedHeadline } from '@/components/hero/TypedHeadline'
 import { StaticBackground } from '@/components/hero/StaticBackground'
+
+// three.js + fiber + drei + postprocessing is ~950 kB — as a static import it
+// blocks the hero copy from painting. Streamed in behind StaticBackground
+// instead, so the text is readable immediately and the WebGL layer swaps in.
+const HeroCanvas = lazy(() =>
+  import('@/components/hero/HeroCanvas').then((m) => ({ default: m.HeroCanvas }))
+)
 
 export function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -32,7 +38,7 @@ export function Hero() {
       const canvas = document.createElement('canvas')
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
       setWebGLSupported(!!gl)
-    } catch (e) {
+    } catch {
       setWebGLSupported(false)
     }
   }, [])
@@ -41,19 +47,17 @@ export function Hero() {
     <Section id="home" fullHeight centered className="relative overflow-hidden">
       {/* 3D Neural Network Background */}
       {webGLSupported ? (
-        <HeroCanvas mousePosition={mousePosition} />
+        <Suspense fallback={<StaticBackground />}>
+          <HeroCanvas mousePosition={mousePosition} />
+        </Suspense>
       ) : (
         <StaticBackground />
       )}
       
-      {/* Gradient Overlay */}
-      {/* <div className="absolute inset-0 bg-gradient-to-b from-gray-950/50 via-transparent to-gray-950/50 z-[1]" /> */}
-      {/* Enhanced Gradient Overlay for better text readability */}
+      {/* Gradient Overlay for text readability over WebGL canvas */}
       <div className="absolute inset-0 z-[1]">
-        {/* Center dark spot for text */}
-        <div className="absolute inset-0 bg-radial-gradient from-gray-950/80 via-gray-950/40 to-transparent" />
-        {/* Top and bottom gradients */}
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-950/60 via-transparent to-gray-950/60" />
+        <div className="absolute inset-0 bg-radial-gradient from-[var(--paper)]/80 via-[var(--paper)]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--paper)]/60 via-transparent to-[var(--paper)]/60" />
       </div>
       
       {/* Content */}
@@ -69,7 +73,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--panel)]/60 backdrop-blur-sm border border-[var(--panel-border)] mb-8"
           >
             <Sparkles className="w-4 h-4 text-accent-cyan animate-pulse" />
             <Text size="sm">AI Engineer | ML Specialist | GenAI Expert</Text>
@@ -129,14 +133,14 @@ export function Hero() {
             transition={{ delay: 0.7 }}
             className="flex flex-wrap justify-center gap-4 mb-8"
           >
-            <div className="flex items-center gap-2 px-3 py-1 bg-gray-800/30 rounded-full">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <div className="flex items-center gap-2 px-3 py-1 bg-[var(--panel)]/60 rounded-full">
+              <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse" />
               <Text size="sm">Available for opportunities</Text>
             </div>
-            <div className="px-3 py-1 bg-gray-800/30 rounded-full">
+            <div className="px-3 py-1 bg-[var(--panel)]/60 rounded-full">
               <Text size="sm">Cognizant • Samsung R&D • 21+ Projects</Text>
             </div>
-            <div className="px-3 py-1 bg-gray-800/30 rounded-full">
+            <div className="px-3 py-1 bg-[var(--panel)]/60 rounded-full">
               <Text size="sm">NVIDIA Certified • AWS • Azure</Text>
             </div>
           </motion.div>
@@ -178,7 +182,7 @@ export function Hero() {
               href="https://github.com/VnykzHub"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-gray-400 hover:text-accent-cyan transition-colors"
+              className="p-2 text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
             >
               <Github size={20} />
             </a>
@@ -186,7 +190,7 @@ export function Hero() {
               href="https://linkedin.com/in/vinayakmathur2000"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-gray-400 hover:text-accent-cyan transition-colors"
+              className="p-2 text-[var(--ink-soft)] hover:text-accent-cyan transition-colors"
             >
               <Linkedin size={20} />
             </a>
@@ -203,7 +207,7 @@ export function Hero() {
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
           >
             <ScrollLink to="about" smooth duration={500} offset={-80}>
-              <div className="text-gray-400 hover:text-accent-cyan transition-colors cursor-pointer">
+              <div className="text-[var(--ink-soft)] hover:text-accent-cyan transition-colors cursor-pointer">
                 <div className="flex flex-col items-center gap-2">
                   <Text size="xs" className="uppercase tracking-wider">Scroll</Text>
                   <ArrowDown className="w-5 h-5" />
