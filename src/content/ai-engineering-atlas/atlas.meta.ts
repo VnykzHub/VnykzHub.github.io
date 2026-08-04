@@ -110,8 +110,8 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "model-landscape",
     "dek": "Buy, host, or adapt — and how to defend the choice. API tradeoffs, open weights, and why fine-tuning is almost never the first move.",
     "subCount": 4,
-    "wordCount": 1416,
-    "figureCount": 0,
+    "wordCount": 2717,
+    "figureCount": 3,
     "equationCount": 0
   },
   {
@@ -139,5 +139,18 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "wordCount": 4248,
     "figureCount": 5,
     "equationCount": 1
+  },
+  {
+    "id": "rapid-fire",
+    "label": "Rapid Fire",
+    "title": "Rapid Fire",
+    "color": "#C4703F",
+    "icon": "zap",
+    "slug": "rapid-fire",
+    "dek": "Ten sections compressed to their load-bearing claims, plus the fifteen questions an interview actually probes and the one-line answers that show you shipped rather than read.",
+    "subCount": 11,
+    "wordCount": 3440,
+    "figureCount": 3,
+    "equationCount": 0
   }
 ]

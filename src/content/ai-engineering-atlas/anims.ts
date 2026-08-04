@@ -1,4 +1,10 @@
 import type { AtlasAnim } from '../llm-atlas/types'
+import { FIGURES_01 } from './figures/01-llm-fundamentals'
+import { FIGURES_02_03 } from './figures/02-03-search'
+import { FIGURES_04_06 } from './figures/04-06-rag-agents-mcp'
+import { FIGURES_07_09 } from './figures/07-09-production'
+import { FIGURES_10_11 } from './figures/10-11-design'
+
 
 /**
  * Canvas figures for the AI Engineering Atlas.
@@ -369,6 +375,11 @@ const agentVsPipelineControlFlow: AtlasAnim = (ctx, w, h, t) => {
  * box, so what is still owed stays visible on the page.
  */
 export const AI_ATLAS_FIGURES: Record<string, AtlasAnim> = {
+  ...FIGURES_01,
+  ...FIGURES_02_03,
+  ...FIGURES_04_06,
+  ...FIGURES_07_09,
+  ...FIGURES_10_11,
   'rag-pipeline-overview': ragPipelineOverview,
   'chunking-boundary-loss': chunkingBoundaryLoss,
   'latency-waterfall': latencyWaterfall,

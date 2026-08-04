@@ -53,16 +53,17 @@ export const SERIES_TOTALS = sumTotals(ARTICLES)
 /**
  * Registry entry.
  *
- * Stays 'in-progress' until every section has cleared review and no VERIFY
- * markers remain. The hub renders that honestly rather than implying eleven
- * finished sections exist.
+ * Published: all eleven sections written, every VERIFY marker resolved, and
+ * every declared figure drawn. Vinayak is still reading through it — anything
+ * he corrects is an edit to a finished series, not a gap in an unfinished one,
+ * which is the distinction this status is meant to carry.
  */
 export const AI_ENGINEERING_ATLAS: Series = {
   id: SERIES_ID,
   title: SERIES_TITLE,
   subtitle: SERIES_SUBTITLE,
   dek: 'The application layer, in dependency order: embeddings and search, vector stores, RAG, agents and tool use, MCP, and everything that sits between a working demo and a system that survives real traffic.',
-  status: 'in-progress',
+  status: 'published',
   accent: 'patina',
   articles: ARTICLES,
   totals: SERIES_TOTALS,

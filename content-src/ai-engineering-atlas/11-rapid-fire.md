@@ -10,7 +10,7 @@ dek: Ten sections compressed to their load-bearing claims, plus the fifteen ques
 
 ## Fundamentals, Compressed
 
-Every property below traces back to one fact: an LLM is a probability distribution over next tokens, trained to predict plausible continuations, not true or correct ones.
+Every property below traces back to one fact: an LLM is a probability distribution over next tokens, trained to predict plausible continuations, not true or correct ones. Everything downstream — the prompting, the retrieval, the guardrails — is a mitigation for that one training objective, not a fix to it.
 
 :::figure rapid-fire-dependency-map
 The eleven sections as a dependency graph: Fundamentals and Embeddings & Search feeding into both RAG and Vector Databases, which feed Agents and MCP, all four feeding Production and Model Choice, with System Design drawing on everything above it and Multimodal sitting alongside RAG as a parallel retrieval concern.
@@ -23,10 +23,11 @@ The eleven sections as a dependency graph: Fundamentals and Embeddings & Search 
 | Temperature 0 is not determinism | Batching, floating-point accumulation order and hardware all drift, even at a fixed seed | A reproducibility guarantee gets built on top of one the API never made |
 | Context windows degrade before they fill | Attention is quadratic and dilutes with distance; recall is U-shaped, not flat | The window gets stuffed instead of retrieved, and the middle goes missing silently |
 | Hallucination is a baseline property, not a bug | The same mechanism that produces fluent, correct text produces fluent, false text | Effort goes into prompting it away instead of designing verification and abstention around it |
+| Sampling parameters reshape the distribution you draw from, not the distribution itself | Temperature scales logits; top-k and top-p truncate the tail; none of them add reasoning | "Lower temperature" gets read as "better output" instead of "lower variance, lower ceiling on creativity" |
 
 ## Embeddings and Search, Compressed
 
-An embedding is a lossy projection chosen by someone else's training run, not meaning itself — search is only as good as how well that projection matches your domain.
+An embedding is a lossy projection chosen by someone else's training run, not meaning itself — search is only as good as how well that projection matches your domain, and a model trained on someone else's text carries someone else's blind spots into yours.
 
 | Claim | Why it holds | What breaks if ignored |
 |---|---|---|
@@ -35,10 +36,11 @@ An embedding is a lossy projection chosen by someone else's training run, not me
 | ef_search and nprobe are search-time knobs, not index properties | They control how many candidates get examined per query, set at query time | The index gets blamed for low recall instead of the default parameter |
 | Dense embeddings miss exact terms; BM25 misses paraphrase | Each retrieval mode was built for one kind of match | A product ID or version number never surfaces in dense-only retrieval |
 | A cross-encoder reranker beats retrieval ranking at roughly 100x the cost per pair | It scores query and document together instead of independently | Either reranking is skipped and relevant results stay buried mid-list, or the whole index gets reranked and the bill follows |
+| Embeddings have uses past retrieval: clustering, deduplication, drift detection | The geometry a model learned for one purpose still encodes usable structure for others | Drift in a production corpus goes unnoticed until a classifier or a support macro quietly stops matching reality |
 
 ## Vector Databases, Compressed
 
-A library gives you fast approximate search; a database gives you concurrent writers, durability, and someone else's on-call rotation — pay for the second only once you need it.
+A library gives you fast approximate search; a database gives you concurrent writers, durability, and someone else's on-call rotation — pay for the second only once you need it, because crossing a process boundary costs latency no in-memory lookup ever pays.
 
 | Claim | Why it holds | What breaks if ignored |
 |---|---|---|
@@ -47,10 +49,11 @@ A library gives you fast approximate search; a database gives you concurrent wri
 | Deletes should be tombstones, not immediate reindexes | The index structure is built for near-immutability; removing an element means rebuilding | Every delete becomes an expensive reindex instead of an O(1) flag |
 | Memory, not compute, is the binding operational cost | float32 storage is N × D × 4 bytes; 100M vectors at 1536 dimensions is roughly 600GB | The instance gets sized for compute and pages out on memory instead |
 | Quantization buys 4–16x memory at a few points of recall | int8 and int4 shrink storage; the top-k set shifts slightly | Quantization ships blind, and the recall actually given up is never measured |
+| A library is enough below roughly a million vectors with no concurrent writers | A sub-millisecond in-memory lookup beats any network hop a database adds | A database gets adopted early and pays a latency and cost premium nothing in the workload needed yet |
 
 ## RAG, Compressed
 
-Almost every RAG failure is a retrieval failure — check what was actually retrieved before touching the prompt or swapping the model.
+Almost every RAG failure is a retrieval failure — check what was actually retrieved before touching the prompt or swapping the model, because the generator is usually doing exactly what it was asked to do with the wrong material.
 
 | Claim | Why it holds | What breaks if ignored |
 |---|---|---|
@@ -59,6 +62,7 @@ Almost every RAG failure is a retrieval failure — check what was actually retr
 | Top-k is a token budget, not a recall dial | Every retrieved chunk is billed on every request, forever | Raising k "to be safe" quietly doubles cost and dilutes context with noise |
 | A relevance floor makes "no answer" a legitimate outcome | Without one, the system always returns k chunks, including for questions the corpus cannot address | The model attends to a plausible wrong chunk and answers confidently anyway |
 | Retrieve wide, then rerank narrow | Bi-encoders are cheap and index-wide; cross-encoders are accurate but affordable only over a shortlist | The system is either cheap-but-coarse or accurate-but-unaffordable, never both |
+| Overlap between chunks is a real trade, not a free win | It mitigates boundary loss but stores and searches roughly a fifth more vectors, competing near-duplicates for the same top-k slots | Overlap gets raised indefinitely as a fix, and cost climbs faster than recall does |
 
 ## Agents, Compressed
 
@@ -71,6 +75,7 @@ An agent is any system where the model, not your code, decides what happens next
 | Tool failures split into four categories, each needing different handling | Malformed args self-correct; tool errors retry only if transient; wrong tool throws no exception; loops need repeat detection | Treating all four as "retry" produces an agent that gives up too early or loops forever |
 | Gate placement follows reversibility, not perceived risk | A cheap-to-undo action costs a review cycle if wrong; an irreversible one costs an incident | Everything gets gated and the human stops reading, or nothing does and something unrecoverable ships |
 | Resent transcripts make agent cost quadratic in step count | Every step bills the full growing history, not just its own new content | A loop that runs twice as long costs closer to four times as much, not twice |
+| A genuine multi-agent split reduces what each agent holds in context; a cosmetic one just relabels the same prompt | Splitting only helps when each agent's tools and context are a strict subset of the combined whole | Two "agents" pass the full transcript back and forth, adding round trips and cost with no reliability gain |
 
 ## MCP, Compressed
 
@@ -83,10 +88,11 @@ MCP standardises the socket between a model and its tools — N×M integrations 
 | A local stdio server inherits the host's trust level | Credentials come from the host process's own environment, not a scoped grant | A tool call becomes an unreviewed RPC into your infrastructure |
 | Sessions are stateful; a dropped connection can lose the whole toolset | Reconnection is the runtime's responsibility, not the protocol's | Tools vanish from the model's options mid-conversation with nothing in the transcript to explain why |
 | Skipping MCP is correct if you own both ends | One app, one model, a handful of internal functions is fewer moving parts without a server, transport and handshake | A subprocess and a versioning story get added for a reuse benefit that never materialises |
+| Versioning a tool's name or schema breaks every caller's implicit understanding of it | A deployed agent has learned to call a tool a specific way, through prompting or its own priors | Renaming a parameter surfaces later as malformed calls with no obvious cause, not as a type error at deploy time |
 
 ## Production, Compressed
 
-The number that decides whether a system feels slow is time-to-first-token; the number that decides whether it's reliable is p99 — neither is the average.
+The number that decides whether a system feels slow is time-to-first-token; the number that decides whether it's reliable is p99 — neither is the average, and optimising the average is how a team ships a demo that pages someone in production.
 
 | Claim | Why it holds | What breaks if ignored |
 |---|---|---|
@@ -95,10 +101,11 @@ The number that decides whether a system feels slow is time-to-first-token; the 
 | Semantic caching fails confidently | A near-neighbour query returns a fluent answer indistinguishable from a fresh one | "Refund window, annual plan" silently answers as "refund window, monthly plan" |
 | A guardrail that only logs isn't a guardrail | It has produced forensic evidence, not prevented anything | A PII leak or a bad tool call still reaches the user before anyone reads the log |
 | Degradation should follow an ordered cascade, not retry-until-it-works | Rate limits, timeouts and degraded 200s each need a different response | Every failure becomes the same long wait ending in a spinner or an error page |
+| Traces beat aggregate dashboards for answering why one specific answer was wrong | A trace ties the prompt, retrieved chunks, tool calls and versions together under one request id | A dropped retrieved-chunks field makes it impossible to tell a retrieval failure from a generation failure after the fact |
 
 ## Model Choice, Compressed
 
-The decision order is prompting, then retrieval, then fine-tuning last — and the model that wins the public leaderboard is not the model that wins your golden set.
+The decision order is prompting, then retrieval, then fine-tuning last — and the model that wins the public leaderboard is not the model that wins your golden set, so the reversible decision matters more than the initial one, since most of these choices get revisited within a year regardless.
 
 :::figure rapid-fire-decision-tree
 A decision tree: does better prompting with examples solve it — stop there. Does the answer need live or private data — add retrieval. Does the output need a format, tone or size prompting can't enforce — only then fine-tune. Self-hosting is drawn as a separate branch, gated on throughput, latency floor and data residency rather than on capability.
@@ -111,6 +118,7 @@ A decision tree: does better prompting with examples solve it — stop there. Do
 | Fine-tuning buys format, tone and size — not knowledge | A model cannot learn facts from a training run unless they appear thousands of times | Fine-tuning gets used to fix hallucination, and the bias in the weights doesn't move |
 | The leaderboard is not your task | Public benchmarks are measured on data that isn't yours, solving problems that aren't yours | The model ranked first publicly ranks seventh on your golden set |
 | Make the model choice reversible | Providers reprice, models improve, requirements change within a year | A hard-coded model choice becomes a rewrite of the whole pipeline |
+| Self-hosting genuinely wins only past a real throughput, latency-floor or residency threshold | Below that threshold it's a productivity trade a team can't afford, not a cost saver | Self-hosting gets adopted for control's sake and the on-call burden it creates goes unbudgeted |
 
 ## Multimodal, Compressed
 
@@ -123,6 +131,7 @@ Vision-language models describe images reliably and read exact numbers off them 
 | VLMs are unreliable at counting, fine spatial relations and chart values | Sub-pixel precision and symbol recognition across every font and chart library was never the training objective | A bar chart returns plausible-sounding, wrong revenue numbers with full confidence |
 | Naive text extraction on tables and multi-column PDFs is corruption, not just loss | Reading order crosses column and table boundaries, interleaving unrelated content | The embedding model or reranker gets debugged when the fault was upstream, at extraction |
 | Embed images for discovery, extract text for values | The two modalities answer different questions — why a page is relevant, versus what it says | A number gets read off a page image and comes back as a confident hallucination |
+| Citations need to point at page regions, not chunks, once documents are visual | Storage has to record the bounding box and page number alongside the extracted text or image | A citation can't be verified because the original page structure was never kept |
 
 ## System Design, Compressed
 
@@ -135,10 +144,11 @@ Five underspecified questions — who asks, how often, how wrong can it be, who 
 | Little's Law ties latency to capacity: L = λW | In-flight requests equal arrival rate times time spent in the system | A latency regression silently becomes a capacity regression, undersizing every queue sized for the old number |
 | Conflicting constraints get resolved, not eliminated | Accuracy vs latency, cost vs quality, freshness vs stability cannot all be maximised at once | A design tries to win every axis and ships something mediocre on all of them instead of a stated tradeoff on one |
 | Failure has at least three shapes: no answer, confidently wrong, stale | Each needs a different response — abstention, a confidence threshold, a staleness alarm | One shape gets handled and the other two turn up in an incident review instead |
+| The reference architecture is seven boxes, but only four are load-bearing at small scale | Ingestion, index, retrieval and serving make the core loop function; orchestration, evaluation and observability can start as placeholders | A placeholder stays in place past the point the failure it was skipping actually happens |
 
 ## The Questions You Will Actually Be Asked
 
-An interviewer testing for shipped experience asks about the failure, not the happy path — the answer that shows it has a mechanism in it, not a definition.
+An interviewer testing for shipped experience asks about the failure, not the happy path.
 
 | Question | The answer that shows you've shipped |
 |---|---|
