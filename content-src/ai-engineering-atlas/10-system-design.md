@@ -22,6 +22,12 @@ Every AI system design starts with someone saying "build a chatbot for our docs"
 
 **What happens when it fails.** Failure has at least three different shapes, and a design that handles one silently ignores the others: no answer at all (safe, if visible), a confidently wrong answer (the dangerous default), or a stale answer that was correct last week. Which of these the business can tolerate determines whether the system needs an abstention path, a confidence threshold, or a staleness alarm — none of which show up in a demo, all of which show up in an incident review.
 
+Read the five in sequence and they stop looking like a checklist and start looking like a tree: each answer forks the next question, and every leaf points at a different part of the architecture below.
+
+:::figure framing-question-tree
+A tree with the request at the root ("build a chatbot for our docs") and five branches — who asks and how many, how often, how wrong the answer can be, who pays, what happens on failure — each branch ending at the architecture piece it constrains (auth and rate limits, caching and infra sizing, the abstention path, the cost ceiling, the fallback and kill switch), showing the five questions as gates that fork the design rather than a flat list answered in isolation.
+:::
+
 | Question | What it decides | What happens if you skip it |
 |---|---|---|
 | Who asks, how many | UI polish, auth, abuse handling | An internal tool ships without rate limits and takes down the index on day one |
@@ -83,6 +89,12 @@ A latency budget is not a target to hit — it is a fixed amount of time that ha
 
 Assume, for a worked example, a 3-second P95 budget for a chat-style interface — a number chosen for this illustration, not a claim about any real system. That budget has to cover embedding the query, searching the index, optionally reranking, generating the answer, and the network and serialisation overhead between each hop. A plausible split for that assumed budget: roughly 50ms for query embedding, 100ms for vector search, 400ms for a rerank pass, 2000ms for generation (offset by streaming tokens back as they are produced, so perceived latency runs lower than the raw total), and the remaining budget as overhead and margin. The arithmetic has to close before the system ships, not after a user notices it does not.
 
+Laid out as a bar, that split — and the same stages left unconstrained — makes the arithmetic legible at a glance instead of buried in a sentence of numbers.
+
+:::figure latency-budget-allocation
+A single horizontal bar for the 3-second P95 budget, segmented into query embedding (50ms), vector search (100ms), rerank (400ms), generation (2000ms), and remaining overhead/margin, drawn to scale. Beneath it, a second bar shows the same five stages running at their unconstrained cost — no top-k narrowing, no rerank skip, a slower model — extending past the 3-second line to show exactly which stages caused the overrun and by how much.
+:::
+
 As a rough anchor, a production retrieval pipeline might spend tens of milliseconds on retrieval and low hundreds on reranking, with generation dominating the remainder — but those figures move by an order of magnitude across hardware and model choices, which is why the budget matters more than any single number.
 
 When the budget is tight, stages get cut in a fairly consistent order, because they differ in how removable they are. Reranking goes first — it is a discrete, separable stage, and removing it degrades quality gracefully rather than breaking anything. Top-k narrows next, trading a small chance of missing the right chunk for a shorter context to generate over. Generation itself is the next lever: a smaller or faster model produces a worse answer, but a bounded one, in bounded time. Streaming the response is the last resort that does not remove any quality at all — it does not reduce total latency, but it reduces the time until the user sees the first token, which is often the number that actually determines whether the system feels slow.
@@ -129,6 +141,12 @@ Published limits scale with cumulative spend rather than time, so a mid-tier acc
 
 **Cost per request.** This one does not fall with scale by default. A per-token-billed system costs linearly more as volume grows, full stop — there is no economy of scale in the bill itself. The only way cost per request drops is by spending engineering effort on it directly: shorter context, a smaller model for the easy majority of queries, caching repeated queries, batching where the provider prices it cheaper. Cost is the one row in this table that horizontal infrastructure does not touch at all.
 
+Lay the four rows side by side at 1x, 10x, and 100x, and the pattern separates cleanly: three of them scale horizontally, if with growing complexity; one does not scale down at all, regardless of infrastructure.
+
+:::figure scaling-breakpoints
+Four rows — index size, ingestion throughput, concurrent requests, cost per request — each plotted across 1x, 10x, and 100x load. The 10x column for the first three is marked "absorbed by more hardware." The 100x column marks where each one actually breaks: memory for the index (fixed by quantisation or sharding), the embedding API's rate limit for ingestion (fixed by batching or self-hosting), the generation model's account-level rate limit for concurrency (fixed by queueing or multiple accounts, not more servers). The cost-per-request row carries no 100x break at all — it is drawn as a straight line climbing through every column, the one row infrastructure does not touch.
+:::
+
 :::math Little's Law — the queueing identity that governs concurrency
 L = \lambda W
 :::
@@ -138,6 +156,12 @@ Little's Law ties the three infrastructure rows together: the number of requests
 ## Conflicting Constraints
 
 This is the actual skill in system design, and the reason the earlier sections existed: every real system reaches a point where two requirements cannot both be maximised, and the job is not picking a universal winner. It is choosing a resolution for this system, stating what it costs, and being honest that a different system with different stakes would resolve it the other way.
+
+Three of these constraints sit at the corners of one triangle, and the three tensions below are what it looks like when a design pulls on any one of them.
+
+:::figure conflicting-constraints-triangle
+A triangle with accuracy, latency, and cost at the three corners. An arrow along one edge shows that pulling a corner further out — more reranking for accuracy, a bigger model for quality, a shorter timeout for latency — drags the opposite two corners inward. The two resolutions that live on this triangle (conditional rerank, difficulty-based routing) are marked as points pulled inside it rather than sitting at any single corner — each a specific, named compromise rather than a maximum on any one axis. Freshness vs stability sits outside this particular triangle, on its own separate axis.
+:::
 
 **Accuracy vs latency.** Reranking measurably improves which chunks reach the generator, and it costs a discrete chunk of the latency budget on every single request, whether or not that request needed it. One resolution: rerank conditionally — skip it when the top retrieval result is decisively ahead of the rest by similarity score, and run it only when the top few candidates are close enough that the ranking is actually ambiguous. This buys most of the accuracy gain on the queries that need it, at the cost of an extra heuristic — a confidence threshold that itself has to be tuned and can silently drift as the corpus or query mix changes.
 

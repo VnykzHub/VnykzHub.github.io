@@ -4,7 +4,7 @@ import 'katex/dist/katex.min.css'
 import Prism from 'prismjs'
 import 'prismjs/components/prism-python'
 import { Check, Copy } from 'lucide-react'
-import { ANIMS } from '@/content/llm-atlas/anims'
+import { FIGURES } from '@/content/figures'
 import type { AtlasCode, AtlasEquation } from '@/content/llm-atlas/types'
 import { cn } from '@/utils/cn'
 
@@ -312,7 +312,7 @@ const MIN_DRAW_WIDTH = 540
 export function AtlasFigure({ anim, label }: { anim: string; label?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [visible, setVisible] = useState(false)
-  const draw = ANIMS[anim]
+  const draw = FIGURES[anim]
 
   useEffect(() => {
     const canvas = canvasRef.current

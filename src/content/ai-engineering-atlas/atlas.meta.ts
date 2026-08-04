@@ -57,10 +57,10 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "icon": "layers",
     "slug": "rag",
     "dek": "The most-built system in applied AI, and the one most often described too shallowly. Chunking, retrieval, generation, and the evaluation that tells you which half is broken.",
-    "subCount": 4,
-    "wordCount": 927,
-    "figureCount": 2,
-    "equationCount": 1
+    "subCount": 7,
+    "wordCount": 2821,
+    "figureCount": 4,
+    "equationCount": 2
   },
   {
     "id": "agents",
@@ -136,8 +136,8 @@ export const AI_ATLAS_META: AiAtlasMeta[] = [
     "slug": "system-design",
     "dek": "Everything above, assembled into one system, under constraints that conflict. The AI-system-design interview, and the section that proves the rest was understood rather than collected.",
     "subCount": 7,
-    "wordCount": 4116,
-    "figureCount": 1,
+    "wordCount": 4248,
+    "figureCount": 5,
     "equationCount": 1
   }
 ]
