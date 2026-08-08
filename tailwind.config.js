@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
   theme: {
@@ -46,5 +46,13 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.bg-radial-gradient': {
+          backgroundImage: 'radial-gradient(var(--tw-gradient-stops))',
+        },
+      })
+    },
+  ],
 }

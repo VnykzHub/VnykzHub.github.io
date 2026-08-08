@@ -208,7 +208,7 @@ const latencyBudgetAllocation: AtlasAnim = (ctx, w, h, t) => {
     seg(ctx, x, y1, Math.max(sw - 2, 0), bh, s.c, s.a)
     if (sw > 34) {
       ctx.fillStyle = '#100E0C'
-      ctx.font = `600 8.5px ${MONO}`
+      ctx.font = `600 10px ${MONO}`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillText(s.label, x + sw / 2, y1 + bh / 2)
@@ -229,7 +229,7 @@ const latencyBudgetAllocation: AtlasAnim = (ctx, w, h, t) => {
     seg(ctx, x, y2, Math.max(sw - 2, 0), bh, s.c, 0.85)
     if (sw > 34) {
       ctx.fillStyle = '#100E0C'
-      ctx.font = `600 8.5px ${MONO}`
+      ctx.font = `600 10px ${MONO}`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillText(s.label, x + sw / 2, y2 + bh / 2)
@@ -287,7 +287,7 @@ const scalingBreakpoints: AtlasAnim = (ctx, w, h, t) => {
 
   ;['1x', '10x', '100x'].forEach((c, j) => {
     ctx.fillStyle = SOFT
-    ctx.font = `600 9px ${MONO}`
+    ctx.font = `600 11px ${MONO}`
     ctx.textAlign = 'center'
     ctx.fillText(c, gridX0 + colW * (j + 0.5), headerY)
   })
@@ -418,7 +418,7 @@ const conflictingConstraintsTriangle: AtlasAnim = (ctx, w, h, t) => {
     ctx.arc(p.x, p.y, 3, 0, Math.PI * 2)
     ctx.fill()
     ctx.fillStyle = SOFT
-    ctx.font = `8.5px ${SANS}`
+    ctx.font = `10px ${SANS}`
     ctx.textAlign = 'center'
     ctx.fillText(txt, p.x, p.y - 8)
   })
@@ -428,15 +428,15 @@ const conflictingConstraintsTriangle: AtlasAnim = (ctx, w, h, t) => {
   const axisX0 = ox + W * 0.62
   const axisX1 = Math.min(ox + W - 12, axisX0 + 110)
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${SANS}`
+  ctx.font = `10px ${SANS}`
   ctx.textAlign = 'center'
-  ctx.fillText('separate axis', (axisX0 + axisX1) / 2, axisY - 14)
+  ctx.fillText('separate axis', (axisX0 + axisX1) / 2, axisY - 12)
   arrow(ctx, axisX0, axisY, axisX1, SOFT)
   arrow(ctx, axisX1, axisY + 6, axisX0, SOFT)
   ctx.textAlign = 'left'
-  ctx.fillText('freshness', axisX0, axisY + 20)
+  ctx.fillText('freshness', axisX0, axisY + 18)
   ctx.textAlign = 'right'
-  ctx.fillText('stability', axisX1, axisY + 20)
+  ctx.fillText('stability', axisX1, axisY + 18)
 
   caption(ctx, 'pulling one corner drags the other two inward', ox + W / 2, h - 6)
 }
@@ -581,17 +581,17 @@ const rapidFireDecisionTree: AtlasAnim = (ctx, w, h, t) => {
     box(ctx, qX, y, qW, bh, s.q, on ? AMBER : PATINA, on ? 1 : 0.85)
     arrow(ctx, qX + qW + 4, y + bh / 2, yesX - 4, on ? AMBER : PATINA)
     ctx.fillStyle = SOFT
-    ctx.font = `8px ${MONO}`
+    ctx.font = `10px ${MONO}`
     ctx.textAlign = 'center'
-    ctx.fillText('yes', (qX + qW + yesX) / 2, y + bh / 2 - 5)
+    ctx.fillText('yes', (qX + qW + yesX) / 2, y + bh / 2 - 7)
     box(ctx, yesX, y, yesW, bh, s.yes, PATINA, on ? 1 : 0.7)
 
     if (i < steps.length - 1) {
       arrowDown(ctx, qX + qW / 2, y + bh + 2, y + stepH - 2, RULE)
       ctx.fillStyle = SOFT
-      ctx.font = `8px ${MONO}`
+      ctx.font = `10px ${MONO}`
       ctx.textAlign = 'left'
-      ctx.fillText('no', qX + qW / 2 + 6, y + bh + 14)
+      ctx.fillText('no', qX + qW / 2 + 6, y + bh + 16)
     }
   })
 
@@ -618,7 +618,7 @@ const rapidFireDecisionTree: AtlasAnim = (ctx, w, h, t) => {
   gates.forEach((g, i) => {
     const gy = top + bh + 16 + i * 18
     ctx.fillStyle = SOFT
-    ctx.font = `8.5px ${MONO}`
+    ctx.font = `10px ${MONO}`
     ctx.textAlign = 'left'
     ctx.fillText(`· ${g}`, shX + 4, gy)
   })
@@ -666,9 +666,9 @@ const rapidFireQuestionMap: AtlasAnim = (ctx, w, h, t) => {
     const barW = barAreaW * (r.count / maxCount)
     seg(ctx, barX, y + 3, barW, rowH - 6, r.count === 3 ? AMBER : PATINA, on ? 0.95 : 0.75)
     ctx.fillStyle = SOFT
-    ctx.font = `9px ${MONO}`
+    ctx.font = `11px ${MONO}`
     ctx.textAlign = 'left'
-    ctx.fillText(String(r.count), barX + barW + 6, y + rowH * 0.68)
+    ctx.fillText(String(r.count), barX + barW + 10, y + rowH * 0.68)
   })
 
   const foundY = topY + rows.length * rowH + 10
@@ -683,7 +683,7 @@ const rapidFireQuestionMap: AtlasAnim = (ctx, w, h, t) => {
   ctx.globalAlpha = 1
 
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${SANS}`
+  ctx.font = `11px ${SANS}`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
   ctx.fillText(

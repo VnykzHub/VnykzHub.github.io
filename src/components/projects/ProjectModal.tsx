@@ -1,3 +1,5 @@
+'use client'
+
 // src/components/projects/ProjectModal.tsx
 import { motion } from 'framer-motion'
 import { X, Github, Maximize2 } from 'lucide-react'

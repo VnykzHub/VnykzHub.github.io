@@ -1,5 +1,7 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Github, Linkedin, Mail } from 'lucide-react'
 import { Container } from '@/components/common'
@@ -42,8 +44,8 @@ export function Header() {
         <Container>
           <nav className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <RouterLink
-              to="/"
+            <Link
+              href="/"
               aria-label="Home"
               className="cursor-pointer"
               onClick={() => setIsMobileMenuOpen(false)}
@@ -55,7 +57,7 @@ export function Header() {
               >
                 VM
               </motion.div>
-            </RouterLink>
+            </Link>
 
             {/* Desktop Navigation */}
             <motion.ul
@@ -73,7 +75,6 @@ export function Header() {
                 >
                   <NavItemLink
                     item={item}
-                    activeClassName="text-accent-amber"
                     className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer"
                   >
                     {item.label}

@@ -1,8 +1,9 @@
+'use client'
+
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Container, Section } from '@/components/common'
 import { Heading, Text, Button } from '@/components/ui'
 import { ArrowDown, Sparkles, Code2, Brain, Github, Linkedin } from 'lucide-react'
-import { Link as ScrollLink } from 'react-scroll'
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { TypedHeadline } from '@/components/hero/TypedHeadline'
 import { StaticBackground } from '@/components/hero/StaticBackground'
@@ -160,7 +161,7 @@ export function Hero() {
             transition={{ delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
           >
-            <ScrollLink to="projects" smooth duration={500} offset={-80}>
+            <a href="#projects" onClick={(e) => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) }}>
               <Button size="lg" icon={Code2} className="group">
                 Explore Live Demos
                 <motion.span
@@ -171,12 +172,12 @@ export function Hero() {
                   →
                 </motion.span>
               </Button>
-            </ScrollLink>
-            <ScrollLink to="contact" smooth duration={500} offset={-80}>
+            </a>
+            <a href="#contact" onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}>
               <Button size="lg" variant="outline" icon={Brain}>
                 Let's Build Together
               </Button>
-            </ScrollLink>
+            </a>
           </motion.div>
 
           {/* Social Links */}
@@ -231,7 +232,7 @@ export function Hero() {
             y: { duration: 2, repeat: Infinity },
           }}
         >
-          <ScrollLink to="about" smooth duration={500} offset={-80}>
+          <a href="#about" onClick={(e) => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }) }}>
             <div
               role="link"
               tabIndex={0}
@@ -243,7 +244,7 @@ export function Hero() {
                 <ArrowDown className="h-5 w-5" />
               </div>
             </div>
-          </ScrollLink>
+          </a>
         </motion.div>
       </motion.div>
     </Section>

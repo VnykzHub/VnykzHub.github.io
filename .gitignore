@@ -1,35 +1,6 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-project-structure.txt
-
-# Credentials. A missing .env rule is exactly how 3dagent and data_agent ended
-# up in quarantine — see PROJECT_REPO_PLAN.md §0. Keep .env.example tracked.
-.env
-.env.*
-!.env.example
-*.pem
-*.key
-secrets.json
-service-account*.json
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+node_modules/
+.next/
+out/
+.env*.local
+*.tsbuildinfo
+next-env.d.ts

@@ -28,7 +28,7 @@ const cacheLayers: AtlasAnim = (ctx, w, h, t) => {
   box(ctx, outerX, outerY, outerW, outerH, '', PATINA, 0.45)
   label(ctx, '1 · exact-match', outerX + 10, outerY + 16, PATINA, 10)
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${SANS}`
+  ctx.font = `11px ${SANS}`
   ctx.textAlign = 'right'
   ctx.fillText('fails: any prompt diff invalidates it', outerX + outerW - 10, outerY + 16)
 
@@ -41,7 +41,7 @@ const cacheLayers: AtlasAnim = (ctx, w, h, t) => {
   box(ctx, midX, midY, midW, midH, '', AMBER, 0.45)
   label(ctx, '2 · semantic', midX + 10, midY + 16, AMBER, 10)
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${SANS}`
+  ctx.font = `11px ${SANS}`
   ctx.textAlign = 'right'
   ctx.fillText('fails: confident wrong-question answer', midX + midW - 10, midY + 16)
 
@@ -96,7 +96,7 @@ const cacheLayers: AtlasAnim = (ctx, w, h, t) => {
   ctx.setLineDash([])
   label(ctx, '3 · prefix caching — provider-side, underneath both', outerX + 10, bandY + 15, BRASS, 9.5)
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${SANS}`
+  ctx.font = `11px ${SANS}`
   ctx.textAlign = 'left'
   ctx.fillText('fails: edit before the cached boundary invalidates it', outerX + 10, bandY + 28)
 
@@ -119,7 +119,7 @@ const traceAnatomy: AtlasAnim = (ctx, w, h, t) => {
   const rootX = cx - rootW / 2
   box(ctx, rootX, rootY, rootW, rootH, 'query', SOFT)
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${MONO}`
+  ctx.font = `10px ${MONO}`
   ctx.textAlign = 'center'
   ctx.fillText('22 tok', cx, rootY + rootH + 12)
 
@@ -145,7 +145,7 @@ const traceAnatomy: AtlasAnim = (ctx, w, h, t) => {
     ctx.stroke()
     box(ctx, lx, leafY, leafW, leafH, lf.label, lf.c)
     ctx.fillStyle = SOFT
-    ctx.font = `8px ${MONO}`
+    ctx.font = `10px ${MONO}`
     ctx.textAlign = 'center'
     ctx.fillText(lf.note, lx + leafW / 2, leafY + leafH + 11)
   })
@@ -164,7 +164,7 @@ const traceAnatomy: AtlasAnim = (ctx, w, h, t) => {
   })
   box(ctx, mergeX, mergeY, mergeW, mergeH, 'prompt assembled', SOFT)
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${MONO}`
+  ctx.font = `10px ${MONO}`
   ctx.textAlign = 'center'
   ctx.fillText('1,240 tok in · 4ms', cx, mergeY + mergeH + 12)
 
@@ -174,7 +174,7 @@ const traceAnatomy: AtlasAnim = (ctx, w, h, t) => {
   arrowDown(ctx, cx, mergeY + mergeH + 4, modelY - 4, RULE)
   box(ctx, cx - modelW / 2, modelY, modelW, modelH, 'model call', AMBER)
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${MONO}`
+  ctx.font = `10px ${MONO}`
   ctx.textAlign = 'center'
   ctx.fillText('640ms · 180 tok out', cx, modelY + modelH + 12)
 
@@ -184,7 +184,7 @@ const traceAnatomy: AtlasAnim = (ctx, w, h, t) => {
   arrowDown(ctx, cx, modelY + modelH + 4, outY - 4, RULE)
   box(ctx, cx - outW / 2, outY, outW, outH, 'output', CORAL)
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${MONO}`
+  ctx.font = `10px ${MONO}`
   ctx.textAlign = 'center'
   ctx.fillText('streamed · 80ms', cx, outY + outH + 12)
 
@@ -230,9 +230,9 @@ const apiVsSelfHostedDecision: AtlasAnim = (ctx, w, h) => {
     const y = top + i * (bh + gap)
     box(ctx, pad, y, bw, bh, a.label, SOFT)
     ctx.fillStyle = SOFT
-    ctx.font = `8.5px ${SANS}`
+    ctx.font = `10px ${SANS}`
     ctx.textAlign = 'left'
-    ctx.fillText(a.note, pad + bw + 8, y + bh / 2 - 5)
+    ctx.fillText(a.note, pad + bw + 8, y + bh / 2 - 8)
     ctx.strokeStyle = RULE
     ctx.lineWidth = 1.2
     ctx.beginPath()
@@ -258,7 +258,7 @@ const apiVsSelfHostedDecision: AtlasAnim = (ctx, w, h) => {
   arrow(ctx, busX, (busTop + busBottom) / 2, leafX - 4, RUST)
   box(ctx, leafX, selfY, leafW, leafH, 'self-hosted', RUST)
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${SANS}`
+  ctx.font = `10px ${SANS}`
   ctx.textAlign = 'center'
   ctx.fillText('any one, unambiguous', leafX + leafW / 2, selfY - 8)
 
@@ -275,7 +275,7 @@ const apiVsSelfHostedDecision: AtlasAnim = (ctx, w, h) => {
   ctx.setLineDash([])
   box(ctx, apiX, apiY, leafW, leafH, 'API', PATINA)
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${SANS}`
+  ctx.font = `10px ${SANS}`
   ctx.textAlign = 'center'
   ctx.fillText('default — none unambiguous', apiX + leafW / 2, apiY + leafH + 14)
 
@@ -317,7 +317,7 @@ const openWeightsLicenceSpectrum: AtlasAnim = (ctx, w, h) => {
   ctx.lineWidth = 1.2
   arrow(ctx, pad, y - 22, w - pad, SOFT)
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${SANS}`
+  ctx.font = `11px ${SANS}`
   ctx.textAlign = 'left'
   ctx.fillText('fewer restrictions', pad, y - 30)
   ctx.textAlign = 'right'
@@ -327,10 +327,10 @@ const openWeightsLicenceSpectrum: AtlasAnim = (ctx, w, h) => {
     const x = pad + i * (bw + gap)
     box(ctx, x, y, bw, bh, b.label, b.c)
     ctx.fillStyle = SOFT
-    ctx.font = `8.5px ${SANS}`
+    ctx.font = `10px ${SANS}`
     ctx.textAlign = 'center'
     b.lines.forEach((ln, li) => {
-      ctx.fillText(ln, x + bw / 2, y + bh + 16 + li * 13)
+      ctx.fillText(ln, x + bw / 2, y + bh + 16 + li * 15)
     })
   })
 
@@ -423,13 +423,13 @@ const promptingRagFineTuningLadder: AtlasAnim = (ctx, w, h) => {
     const { x, y } = positions[i]
     box(ctx, x, y, bw, bh, r.label, r.c)
     ctx.fillStyle = SOFT
-    ctx.font = `8.5px ${SANS}`
+    ctx.font = `10px ${SANS}`
     ctx.textAlign = 'left'
-    ctx.fillText(r.buys, x + bw + 10, y + 10)
-    ctx.fillText(r.costs, x + bw + 10, y + 22)
+    ctx.fillText(r.buys, x + bw + 10, y + 12)
+    ctx.fillText(r.costs, x + bw + 10, y + 26)
     if (r.stop) {
       ctx.fillStyle = SOFT
-      ctx.font = `8px ${SANS}`
+      ctx.font = `10px ${SANS}`
       const midX = (x + bw / 2 + positions[i + 1].x + bw / 2) / 2
       const midY = (y + positions[i + 1].y + bh) / 2
       ctx.textAlign = 'center'
@@ -458,7 +458,7 @@ const vlmTokenCost: AtlasAnim = (ctx, w, h, t) => {
   ctx.fillStyle = SOFT
   ctx.font = `9.5px ${SANS}`
   ctx.textAlign = 'left'
-  ctx.fillText('image → 16×16 patches', gridX, gridY - 10)
+  ctx.fillText('image → 16×16 patches', gridX, gridY - 14)
 
   for (let r = 0; r < gridN; r++) {
     for (let c = 0; c < gridN; c++) {
@@ -469,9 +469,9 @@ const vlmTokenCost: AtlasAnim = (ctx, w, h, t) => {
     }
   }
   ctx.fillStyle = PATINA
-  ctx.font = `600 10px ${MONO}`
+  ctx.font = `600 12px ${MONO}`
   ctx.textAlign = 'left'
-  ctx.fillText('~4,096 raw', gridX, gridY + gridW + 16)
+  ctx.fillText('~4,096 raw', gridX, gridY + gridW + 20)
 
   // pooling gate in the middle
   const poolX = gridX + gridW + 26
@@ -494,12 +494,12 @@ const vlmTokenCost: AtlasAnim = (ctx, w, h, t) => {
     ctx.globalAlpha = 1
   }
   ctx.fillStyle = AMBER
-  ctx.font = `600 10px ${MONO}`
+  ctx.font = `600 12px ${MONO}`
   ctx.textAlign = 'left'
-  ctx.fillText('~300 billed', outX, gridY + gridW + 16)
+  ctx.fillText('~300 billed', outX, gridY + gridW + 20)
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${SANS}`
-  ctx.fillText('fixed budget, resolution-independent', outX, gridY - 10)
+  ctx.font = `11px ${SANS}`
+  ctx.fillText('fixed budget, resolution-independent', outX, gridY - 14)
 
   // the gap is the point — pulse a bracket between the two counts
   const bracketY = gridY + gridW + 34
@@ -517,9 +517,9 @@ const vlmTokenCost: AtlasAnim = (ctx, w, h, t) => {
   ctx.setLineDash([])
   ctx.globalAlpha = 1
   ctx.fillStyle = RUST
-  ctx.font = `600 10px ${MONO}`
+  ctx.font = `600 12px ${MONO}`
   ctx.textAlign = 'center'
-  ctx.fillText('~13× gap', (bracketX1 + bracketX2) / 2, bracketY + 14)
+  ctx.fillText('~13× gap', (bracketX1 + bracketX2) / 2, bracketY + 18)
 
   caption(ctx, 'bill the pooled tokens, not the raw patch count — text page ≈ 400 tok', w / 2, bracketY + 32)
 }

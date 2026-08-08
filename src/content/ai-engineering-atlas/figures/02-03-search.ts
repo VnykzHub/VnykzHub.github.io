@@ -325,7 +325,7 @@ const vectorDbVsLibrary: AtlasAnim = (ctx, w, h, t) => {
   box(ctx, appX, ly + 70, appW, 26, 'vectors in RAM', PATINA)
 
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${SANS}`
+  ctx.font = `10px ${SANS}`
   ctx.textAlign = 'center'
   ctx.fillText('in RAM only — no persistence', appX + appW / 2, ly + lh - 12)
 
@@ -432,7 +432,7 @@ const metadataFilteringRecall: AtlasAnim = (ctx, w, h, t) => {
   }
   const tag = (p: [number, number], text: string, colour: string) => {
     ctx.fillStyle = colour
-    ctx.font = `8.5px ${MONO}`
+    ctx.font = `10px ${MONO}`
     ctx.textAlign = 'center'
     ctx.fillText(text, p[0], p[1] + 16)
   }
@@ -501,7 +501,7 @@ const quantizationTradeoff: AtlasAnim = (ctx, w, h, t) => {
   ctx.beginPath()
   ctx.arc(query[0], query[1], 4.5, 0, Math.PI * 2)
   ctx.fill()
-  ctx.font = `8.5px ${MONO}`
+  ctx.font = `10px ${MONO}`
   ctx.textAlign = 'center'
   ctx.fillText('query', query[0], query[1] - 10)
 
@@ -554,7 +554,7 @@ const quantizationTradeoff: AtlasAnim = (ctx, w, h, t) => {
     ctx.fill()
 
     ctx.fillStyle = SOFT
-    ctx.font = `8.5px ${MONO}`
+    ctx.font = `10px ${MONO}`
     ctx.textAlign = 'left'
     ctx.fillText(id, po[0] + 6, po[1] - 6)
   })

@@ -1,3 +1,5 @@
+'use client'
+
 // src/components/hero/NeuralNetwork.tsx
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'

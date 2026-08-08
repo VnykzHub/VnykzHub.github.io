@@ -427,7 +427,7 @@ const hallucinationSources: AtlasAnim = (ctx, w, h, t) => {
     box(ctx, bx, by, cellW, cellH, it.title, it.c, i === active ? 1 : 0.75)
 
     ctx.fillStyle = SOFT
-    ctx.font = `600 8.5px ${MONO}`
+    ctx.font = `600 10px ${MONO}`
     ctx.textAlign = 'left'
     ctx.fillText(it.n, bx + 5, by + 11)
   })

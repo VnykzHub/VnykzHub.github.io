@@ -1,3 +1,5 @@
+'use client'
+
 // src/components/projects/ProjectGrid.tsx
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'

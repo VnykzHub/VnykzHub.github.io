@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Container } from '@/components/common'
 import { Eyebrow } from '@/components/ui'
@@ -87,7 +87,7 @@ function SeriesCard({ series }: { series: Series }) {
     'block surface-card p-7 transition-colors'
 
   return readable ? (
-    <Link to={`/blog/${series.id}`} className={`${base} hover:border-[var(--panel-border)]`}>
+     <Link href={`/blog/${series.id}`} className={`${base} hover:border-[var(--panel-border)]`}>
       {inner}
     </Link>
   ) : (

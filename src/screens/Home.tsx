@@ -1,3 +1,5 @@
+'use client'
+
 import { Suspense, lazy } from 'react'
 import { LoadingScreen } from '@/components/hero'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -24,12 +26,6 @@ const Contact = lazy(() =>
 export function Home() {
   return (
     <>
-      <title>Vinayak Mathur — ML Engineer | Production GenAI Systems</title>
-      <meta
-        name="description"
-        content="ML Engineer, 4 years shipping production AI. RAG pipelines, LLM fine-tuning and MLOps at enterprise scale. Open to senior roles and architecture consulting."
-      />
-
       <Suspense fallback={<LoadingScreen />}>
         <Hero />
       </Suspense>

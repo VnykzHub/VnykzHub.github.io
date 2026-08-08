@@ -73,7 +73,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
       ctx.fillStyle=p.c+"14";ctx.strokeStyle=p.c+"55";ctx.lineWidth=1.5;
       rr(ctx,x,y,pw,ph,10);ctx.fill();ctx.stroke();
       ctx.font="18px serif";ctx.textAlign="center";ctx.fillStyle="#fff";ctx.fillText(p.e,x+pw/2,y+26);
-      ctx.fillStyle="#E8E2D9";ctx.font="bold 12px 'Space Grotesk'";ctx.fillText(p.n,x+pw/2,y+48);
+      ctx.fillStyle="#E8E2D9";ctx.font="bold 10px 'Space Grotesk'";ctx.fillText(p.n,x+pw/2,y+48);
       ctx.fillStyle="#9D968E";ctx.font="10.5px 'Space Grotesk'";ctx.fillText(p.s,x+pw/2,y+66);
       if(i<2){
         ctx.strokeStyle="#3A342E";ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
@@ -89,7 +89,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     s.forEach((word,i)=>{
       ctx.fillStyle="rgba(240,184,76,.1)";ctx.strokeStyle="#F0B84C30";ctx.lineWidth=1;
       rr(ctx,sx+i*(tw+g),y,tw,th,5);ctx.fill();ctx.stroke();
-      ctx.fillStyle="#D9D3CC";ctx.font="12px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";
+      ctx.fillStyle="#D9D3CC";ctx.font="10px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";
       ctx.fillText(word,sx+i*(tw+g)+tw/2,y+th/2);ctx.textBaseline="alphabetic";
     });
     const fi=Math.floor((t*.7)%5),pair=[fi,fi+1];
@@ -97,7 +97,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
       ctx.fillStyle="rgba(74,158,147,.22)";ctx.strokeStyle="#4A9E93";ctx.lineWidth=2;
       rr(ctx,sx+i*(tw+g),y,tw,th,5);ctx.fill();ctx.stroke();
     });
-    ctx.fillStyle="#9D968E";ctx.font="11px 'Space Grotesk'";ctx.textAlign="center";
+    ctx.fillStyle="#9D968E";ctx.font="9px 'Space Grotesk'";ctx.textAlign="center";
     ctx.fillText(`P("${s[pair[1]]}" | "${s[pair[0]]}") = count(pair) / count(first)`,w/2,y+th+28);
   },
   w2v:(ctx,w,h,t)=>{
@@ -109,7 +109,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     pts.forEach(p=>{
       ctx.fillStyle=p.c+"30";ctx.strokeStyle=p.c;ctx.lineWidth=2;
       ctx.beginPath();ctx.arc(p.x*w,p.y*h,5,0,Math.PI*2);ctx.fill();ctx.stroke();
-      ctx.fillStyle="#E8E2D9";ctx.font="bold 12px 'Space Grotesk'";ctx.textAlign="left";
+      ctx.fillStyle="#E8E2D9";ctx.font="bold 10px 'Space Grotesk'";ctx.textAlign="left";
       ctx.fillText(p.w,p.x*w+9,p.y*h+4);
     });
     ctx.fillStyle="#9D968E";ctx.font="10.5px 'Space Grotesk'";ctx.textAlign="center";
@@ -158,7 +158,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
       const isF=i===fi;ctx.globalAlpha=isF?1:0.3;
       ctx.fillStyle=isF?"rgba(74,158,147,.25)":"rgba(240,184,76,.08)";ctx.strokeStyle=isF?"#4A9E93":"#F0B84C30";ctx.lineWidth=isF?2:1;
       rr(ctx,sx+i*(tw+g),ey,tw,th,5);ctx.fill();ctx.stroke();
-      ctx.fillStyle=isF?"#4A9E93":"#9D968E";ctx.font="12px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(word,sx+i*(tw+g)+tw/2,ey+th/2);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;
+      ctx.fillStyle=isF?"#4A9E93":"#9D968E";ctx.font="10px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(word,sx+i*(tw+g)+tw/2,ey+th/2);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;
       if(isF){
         ctx.strokeStyle="#4A9E93";ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(sx+i*(tw+g)+tw/2,ey+th);ctx.lineTo(w/2,h-48);ctx.stroke();
         ctx.fillStyle="#E8C77A";ctx.font="bold 10px 'IBM Plex Mono'";ctx.textAlign="center";
@@ -166,16 +166,16 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
       }
     });
     ctx.fillStyle="rgba(232,199,122,.12)";ctx.strokeStyle="#E8C77A70";ctx.lineWidth=2;rr(ctx,w/2-42,h-46,84,28,6);ctx.fill();ctx.stroke();
-    ctx.fillStyle="#E8C77A";ctx.font="bold 12px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Decoder",w/2,h-32);ctx.textBaseline="alphabetic";
+    ctx.fillStyle="#E8C77A";ctx.font="bold 10px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Decoder",w/2,h-32);ctx.textBaseline="alphabetic";
     ctx.fillStyle="#9D968E";ctx.font="10.5px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("c_t = Σ α_i·h_i — weighted blend of encoder states",w/2,(ey+th+h-46)/2+14);
   },
   seq2seq_bottle:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
     const ew=w*.36,eh=40,ex=w*.05,ey=h/2-eh/2,dw=w*.36,dx=w*.59;
     ctx.fillStyle="rgba(240,184,76,.1)";ctx.strokeStyle="#F0B84C";ctx.lineWidth=2;rr(ctx,ex,ey,ew,eh,8);ctx.fill();ctx.stroke();
-    ctx.fillStyle="#F0B84C";ctx.font="bold 12px 'Space Grotesk'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Encoder RNN",ex+ew/2,ey+eh/2);ctx.textBaseline="alphabetic";
+    ctx.fillStyle="#F0B84C";ctx.font="bold 10px 'Space Grotesk'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Encoder RNN",ex+ew/2,ey+eh/2);ctx.textBaseline="alphabetic";
     ctx.fillStyle="rgba(74,158,147,.1)";ctx.strokeStyle="#4A9E93";ctx.lineWidth=2;rr(ctx,dx,ey,dw,eh,8);ctx.fill();ctx.stroke();
-    ctx.fillStyle="#4A9E93";ctx.font="bold 12px 'Space Grotesk'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Decoder RNN",dx+dw/2,ey+eh/2);ctx.textBaseline="alphabetic";
+    ctx.fillStyle="#4A9E93";ctx.font="bold 10px 'Space Grotesk'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Decoder RNN",dx+dw/2,ey+eh/2);ctx.textBaseline="alphabetic";
     const mx=ex+ew+(dx-ex-ew)/2,my=h/2;
     ctx.fillStyle="rgba(232,199,122,.2)";ctx.strokeStyle="#E8C77A";ctx.lineWidth=2;ctx.beginPath();ctx.arc(mx,my,14,0,Math.PI*2);ctx.fill();ctx.stroke();
     ctx.fillStyle="#E8C77A";ctx.font="bold 10px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("c",mx,my);ctx.textBaseline="alphabetic";
@@ -199,7 +199,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     ctx.fillStyle="rgba(74,158,147,.1)";ctx.strokeStyle="#4A9E93";ctx.lineWidth=2;rr(ctx,dx,dy,dw,eh,12);ctx.fill();ctx.stroke();
     ctx.fillStyle="#4A9E93";ctx.font="bold 13px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("DECODER",dx+dw/2,dy+24);
     ctx.fillStyle="#9D968E";ctx.font="10px 'Space Grotesk'";ctx.fillText("Masked Self-Attn + Cross-Attn",dx+dw/2,dy+44);
-    ["Je","suis","ici"].forEach((tk,i)=>{const a=Math.min((t*.8-i*.4),1);if(a<=0)return;ctx.globalAlpha=a;ctx.fillStyle="rgba(74,158,147,.2)";ctx.strokeStyle="#4A9E9360";ctx.lineWidth=1;rr(ctx,dx+18+i*54,dy+eh-50,46,26,5);ctx.fill();ctx.stroke();ctx.fillStyle="#4A9E93";ctx.font="11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tk,dx+18+i*54+23,dy+eh-37);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;});
+    ["Je","suis","ici"].forEach((tk,i)=>{const a=Math.min((t*.8-i*.4),1);if(a<=0)return;ctx.globalAlpha=a;ctx.fillStyle="rgba(74,158,147,.2)";ctx.strokeStyle="#4A9E9360";ctx.lineWidth=1;rr(ctx,dx+18+i*54,dy+eh-50,46,26,5);ctx.fill();ctx.stroke();ctx.fillStyle="#4A9E93";ctx.font="9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tk,dx+18+i*54+23,dy+eh-37);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;});
   },
   posenc:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
@@ -218,7 +218,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
   attn:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
     const toks=["The","cat","sat"],n=3,tw=54,th=28,g=10,sx=(w-n*(tw+g))/2,ty=18;
-    toks.forEach((tok,i)=>{rr(ctx,sx+i*(tw+g),ty,tw,th,5);ctx.fillStyle="rgba(240,184,76,.1)";ctx.fill();ctx.strokeStyle="#F0B84C30";ctx.lineWidth=1;ctx.stroke();ctx.fillStyle="#D9D3CC";ctx.font="12px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tok,sx+i*(tw+g)+tw/2,ty+th/2);ctx.textBaseline="alphabetic";});
+    toks.forEach((tok,i)=>{rr(ctx,sx+i*(tw+g),ty,tw,th,5);ctx.fillStyle="rgba(240,184,76,.1)";ctx.fill();ctx.strokeStyle="#F0B84C30";ctx.lineWidth=1;ctx.stroke();ctx.fillStyle="#D9D3CC";ctx.font="10px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tok,sx+i*(tw+g)+tw/2,ty+th/2);ctx.textBaseline="alphabetic";});
     const ms=34,mx=(w-n*ms)/2,my=62;
     ctx.fillStyle="#9D968E";ctx.font="9.5px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("softmax(QKᵀ/√d_k) — attention weight matrix",w/2,my-9);
     const W=[[.8,.1,.1],[.2,.7,.1],[.1,.3,.6]];
@@ -246,7 +246,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     const ay=h*.14+hh+14;
     for(let i=0;i<nh;i++){const x=sx+i*(hw+g)+hw/2;ctx.strokeStyle="#6FBCB030";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,ay);ctx.lineTo(w/2,ay+24);ctx.stroke();}
     ctx.fillStyle="rgba(111,188,176,.12)";ctx.strokeStyle="#6FBCB0";ctx.lineWidth=1.8;rr(ctx,sx,ay+28,nh*hw+(nh-1)*g,28,6);ctx.fill();ctx.stroke();
-    ctx.fillStyle="#6FBCB0";ctx.font="bold 11px 'Space Grotesk'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Concat(h1…h4) · W_O  →  d_model output",w/2,ay+42);ctx.textBaseline="alphabetic";
+    ctx.fillStyle="#6FBCB0";ctx.font="bold 9px 'Space Grotesk'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Concat(h1…h4) · W_O  →  d_model output",w/2,ay+42);ctx.textBaseline="alphabetic";
   },
   ffn:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
@@ -269,13 +269,13 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     const toks=["The","[MASK]","sat","on","[MASK]","mat"],tw=60,th=32,g=8,sx=(w-toks.length*(tw+g))/2,y=22;
     toks.forEach((tok,i)=>{const isM=tok==="[MASK]";rr(ctx,sx+i*(tw+g),y,tw,th,5);ctx.fillStyle=isM?"rgba(196,112,63,.2)":"rgba(240,184,76,.1)";ctx.fill();ctx.strokeStyle=isM?"#C4703F":"#F0B84C30";ctx.lineWidth=isM?2:1;ctx.stroke();ctx.fillStyle=isM?"#C4703F":"#D9D3CC";ctx.font=isM?"bold 9.5px 'IBM Plex Mono'":"12px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tok,sx+i*(tw+g)+tw/2,y+th/2);ctx.textBaseline="alphabetic";});
     ctx.setLineDash([3,3]);ctx.strokeStyle="#F0B84C22";ctx.lineWidth=1;[1,4].forEach(mi=>{for(let i=0;i<toks.length;i++){if(i===mi)return;ctx.beginPath();ctx.moveTo(sx+i*(tw+g)+tw/2,y+th+5);ctx.lineTo(sx+mi*(tw+g)+tw/2,y+th+5);ctx.stroke();}});ctx.setLineDash([]);
-    const pa=Math.min(t-.5,1);if(pa>0){ctx.globalAlpha=pa;[{idx:1,pred:"cat",p:.82},{idx:4,pred:"the",p:.91}].forEach(({idx,pred,p})=>{const bx=sx+idx*(tw+g),by=y+th+22;rr(ctx,bx,by,tw,32,5);ctx.fillStyle="rgba(74,158,147,.15)";ctx.fill();ctx.strokeStyle="#4A9E93";ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle="#4A9E93";ctx.font="bold 11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText('"'+pred+'"',bx+tw/2,by+11);ctx.fillStyle="#E8C77A";ctx.font="9.5px 'IBM Plex Mono'";ctx.fillText(p,bx+tw/2,by+25);ctx.textBaseline="alphabetic";});ctx.globalAlpha=1;}
+    const pa=Math.min(t-.5,1);if(pa>0){ctx.globalAlpha=pa;[{idx:1,pred:"cat",p:.82},{idx:4,pred:"the",p:.91}].forEach(({idx,pred,p})=>{const bx=sx+idx*(tw+g),by=y+th+22;rr(ctx,bx,by,tw,32,5);ctx.fillStyle="rgba(74,158,147,.15)";ctx.fill();ctx.strokeStyle="#4A9E93";ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle="#4A9E93";ctx.font="bold 9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText('"'+pred+'"',bx+tw/2,by+11);ctx.fillStyle="#E8C77A";ctx.font="9.5px 'IBM Plex Mono'";ctx.fillText(p,bx+tw/2,by+25);ctx.textBaseline="alphabetic";});ctx.globalAlpha=1;}
     ctx.fillStyle="#9D968E";ctx.font="10.5px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("← Both left AND right context visible — bidirectional →",w/2,h-10);
   },
   gpt:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
     const gen=["Once","upon","a","time","there"],vis=Math.min(Math.floor(t*.55)+1,gen.length),tw=58,th=32,g=8,sx=(w-gen.length*(tw+g))/2,y=26;
-    for(let i=0;i<gen.length;i++){const x=sx+i*(tw+g),isNew=i===vis-1,hidden=i>=vis;rr(ctx,x,y,tw,th,5);ctx.fillStyle=isNew?"rgba(74,158,147,.2)":hidden?"rgba(26,23,20,.8)":"rgba(240,184,76,.1)";ctx.fill();ctx.strokeStyle=isNew?"#4A9E93":hidden?"#2A2622":"#F0B84C30";ctx.lineWidth=isNew?2:1;ctx.stroke();ctx.fillStyle=isNew?"#4A9E93":hidden?"#3A342E":"#D9D3CC";ctx.font="12px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(hidden?"?":gen[i],x+tw/2,y+th/2);ctx.textBaseline="alphabetic";}
+    for(let i=0;i<gen.length;i++){const x=sx+i*(tw+g),isNew=i===vis-1,hidden=i>=vis;rr(ctx,x,y,tw,th,5);ctx.fillStyle=isNew?"rgba(74,158,147,.2)":hidden?"rgba(26,23,20,.8)":"rgba(240,184,76,.1)";ctx.fill();ctx.strokeStyle=isNew?"#4A9E93":hidden?"#2A2622":"#F0B84C30";ctx.lineWidth=isNew?2:1;ctx.stroke();ctx.fillStyle=isNew?"#4A9E93":hidden?"#3A342E":"#D9D3CC";ctx.font="10px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(hidden?"?":gen[i],x+tw/2,y+th/2);ctx.textBaseline="alphabetic";}
     if(vis>1){const lx=sx+(vis-1)*(tw+g)+tw/2;for(let i=0;i<vis-1;i++){ctx.strokeStyle="rgba(240,184,76,.22)";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(sx+i*(tw+g)+tw/2,y-2);ctx.lineTo(lx,y-10);ctx.stroke();}}
     ctx.fillStyle="#9D968E";ctx.font="10.5px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("Causal mask: each token only attends left — no peeking right →",w/2,y+th+24);
     ctx.fillStyle="#4A9E93";ctx.font="bold 10.5px 'Space Grotesk'";ctx.fillText("Token generated one-at-a-time; appended as new context",w/2,y+th+42);
@@ -283,7 +283,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
   causal_mask:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
     const n=5,cs=24,sx=(w-n*cs)/2,sy=(h-n*cs)/2-10;
-    ctx.fillStyle="#9D968E";ctx.font="11px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("Causal Mask (Upper Triangular = -∞)",w/2,sy-16);
+    ctx.fillStyle="#9D968E";ctx.font="9px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("Causal Mask (Upper Triangular = -∞)",w/2,sy-16);
     for(let r=0;r<n;r++)for(let c=0;c<n;c++){
       const isMasked=c>r;
       const ts=Math.min(t*.8,1);
@@ -311,12 +311,12 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     ctx.fillStyle="#4A9E93";ctx.font="9.5px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("cross-attn",ex+ew+(dx-ex-ew)/2,h/2-9);
     ctx.fillStyle="rgba(74,158,147,.1)";ctx.strokeStyle="#4A9E93";ctx.lineWidth=2;rr(ctx,dx,dy,dw,eh,12);ctx.fill();ctx.stroke();
     ctx.fillStyle="#4A9E93";ctx.font="bold 13px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("DECODER",dx+dw/2,dy+22);
-    ["Hallo","Welt"].forEach((tk,i)=>{const a=Math.min((t*.8-i*.5),1);if(a<=0)return;ctx.globalAlpha=a;rr(ctx,dx+12+i*70,dy+eh-50,62,26,5);ctx.fillStyle="rgba(74,158,147,.2)";ctx.fill();ctx.strokeStyle="#4A9E9360";ctx.lineWidth=1;ctx.stroke();ctx.fillStyle="#4A9E93";ctx.font="11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tk,dx+12+i*70+31,dy+eh-37);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;});
+    ["Hallo","Welt"].forEach((tk,i)=>{const a=Math.min((t*.8-i*.5),1);if(a<=0)return;ctx.globalAlpha=a;rr(ctx,dx+12+i*70,dy+eh-50,62,26,5);ctx.fillStyle="rgba(74,158,147,.2)";ctx.fill();ctx.strokeStyle="#4A9E9360";ctx.lineWidth=1;ctx.stroke();ctx.fillStyle="#4A9E93";ctx.font="9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tk,dx+12+i*70+31,dy+eh-37);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;});
   },
   moe:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
     const ne=6,ew=46,eh=56,eg=12,sx=(w-ne*(ew+eg))/2,ey=h-84,tx=w/2,ty=22;
-    rr(ctx,tx-28,ty,56,26,6);ctx.fillStyle="rgba(240,184,76,.2)";ctx.fill();ctx.strokeStyle="#F0B84C";ctx.lineWidth=2;ctx.stroke();ctx.fillStyle="#fff";ctx.font="bold 11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("token",tx,ty+13);ctx.textBaseline="alphabetic";
+    rr(ctx,tx-28,ty,56,26,6);ctx.fillStyle="rgba(240,184,76,.2)";ctx.fill();ctx.strokeStyle="#F0B84C";ctx.lineWidth=2;ctx.stroke();ctx.fillStyle="#fff";ctx.font="bold 9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("token",tx,ty+13);ctx.textBaseline="alphabetic";
     const ry=68;rr(ctx,tx-44,ry,88,24,6);ctx.fillStyle="rgba(232,199,122,.14)";ctx.fill();ctx.strokeStyle="#E8C77A";ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle="#E8C77A";ctx.font="bold 10px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Router (top-k)",tx,ry+12);ctx.textBaseline="alphabetic";
     ctx.strokeStyle="#F0B84C40";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(tx,ty+26);ctx.lineTo(tx,ry);ctx.stroke();
     const active=[1,4],co=Math.floor(t*.35)%2,an=[active[co%2],active[(co+1)%2]];
@@ -340,10 +340,10 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     ctx.strokeStyle="#3A342E";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(half,14);ctx.lineTo(half,h-14);ctx.stroke();
     const cs=Math.min((half-30)/n,28);
     for(let i=0;i<n;i++)for(let j=0;j<n;j++){ctx.globalAlpha=Math.min(t*.5,1);ctx.fillStyle=`rgba(240,184,76,${.25+j/n*.45})`;ctx.fillRect(28+j*cs,26+i*cs,cs-1,cs-1);}
-    ctx.globalAlpha=1;ctx.fillStyle="#E0705C";ctx.font="bold 12px 'IBM Plex Mono'";ctx.textAlign="center";ctx.fillText(n+"x"+n+"="+n*n+" ops",w*.25,26+n*cs+18);
+    ctx.globalAlpha=1;ctx.fillStyle="#E0705C";ctx.font="bold 10px 'IBM Plex Mono'";ctx.textAlign="center";ctx.fillText(n+"x"+n+"="+n*n+" ops",w*.25,26+n*cs+18);
     const ms=Math.min((half-30)/d,28),ox=half+28;
     for(let i=0;i<d;i++)for(let j=0;j<d;j++){const a=Math.min((t-.6)*.6,1);ctx.globalAlpha=Math.max(0,a);ctx.fillStyle=`rgba(74,158,147,${.3+j/d*.5})`;ctx.fillRect(ox+j*ms,26+i*ms,ms-1,ms-1);}
-    ctx.globalAlpha=1;ctx.fillStyle="#4A9E93";ctx.font="bold 11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.fillText("φ(K)ᵀV: "+d+"x"+d+"="+d*d,w*.75,26+d*ms+18);ctx.fillText("then n×"+d*d+"="+n*d*d+" ops",w*.75,26+d*ms+34);
+    ctx.globalAlpha=1;ctx.fillStyle="#4A9E93";ctx.font="bold 9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.fillText("φ(K)ᵀV: "+d+"x"+d+"="+d*d,w*.75,26+d*ms+18);ctx.fillText("then n×"+d*d+"="+n*d*d+" ops",w*.75,26+d*ms+34);
   },
   rwkv:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
@@ -382,7 +382,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     const steps=[{toks:["l","o","w","e","r"," ","l","o","w"," ","n","e","w","e","r"],hl:[]},{toks:["l","o","w","er"," ","l","o","w"," ","n","e","w","er"],hl:[3,12]},{toks:["l","ow","er"," ","l","ow"," ","n","e","w","er"],hl:[1,5]},{toks:["low","er"," ","low"," ","n","e","w","er"],hl:[0,3]}];
     const si=Math.min(Math.floor(t*.45),steps.length-1),s=steps[si],tw_=30,th=26,g=5,sx=(w-s.toks.length*(tw_+g))/2,y=26;
     ctx.fillStyle="#9D968E";ctx.font="10px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("BPE Step "+si+": "+["Initial chars","Merge 'er'","Merge 'ow'","Merge 'low'"][si],w/2,14);
-    s.toks.forEach((tok,i)=>{const isH=s.hl.includes(i);rr(ctx,sx+i*(tw_+g),y,tw_,th,4);ctx.fillStyle=isH?"rgba(74,158,147,.25)":"rgba(240,184,76,.1)";ctx.fill();ctx.strokeStyle=isH?"#4A9E93":"#F0B84C30";ctx.lineWidth=isH?2:1;ctx.stroke();ctx.fillStyle=isH?"#4A9E93":"#D9D3CC";ctx.font="11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tok===" "?"_":tok,sx+i*(tw_+g)+tw_/2,y+th/2);ctx.textBaseline="alphabetic";});
+    s.toks.forEach((tok,i)=>{const isH=s.hl.includes(i);rr(ctx,sx+i*(tw_+g),y,tw_,th,4);ctx.fillStyle=isH?"rgba(74,158,147,.25)":"rgba(240,184,76,.1)";ctx.fill();ctx.strokeStyle=isH?"#4A9E93":"#F0B84C30";ctx.lineWidth=isH?2:1;ctx.stroke();ctx.fillStyle=isH?"#4A9E93":"#D9D3CC";ctx.font="9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(tok===" "?"_":tok,sx+i*(tw_+g)+tw_/2,y+th/2);ctx.textBaseline="alphabetic";});
     const by=y+th+22;[["er",3],["ow",2],["lo",1]].forEach(([p,f],i)=>{ctx.fillStyle="rgba(74,158,147,.15)";ctx.fillRect(20,by+i*24,f*44,16);ctx.fillStyle="#4A9E93";ctx.fillRect(20,by+i*24,f*44*(si>0?.95:.5),16);ctx.fillStyle="#E8E2D9";ctx.font="10px 'IBM Plex Mono'";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText('"'+p+'": count='+f,24+f*44+8,by+i*24+8);ctx.textBaseline="alphabetic";});
   },
   wordpiece:(ctx,w,h,t)=>{
@@ -467,7 +467,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     ctx.fillStyle="#E0705C";ctx.font="bold 9.5px 'Space Grotesk'";ctx.textAlign="left";ctx.fillText("FA2 O(n²)",sx+cw-100,sy+24);ctx.fillStyle="#4A9E93";ctx.fillText("SSA ~O(n log n)",sx+cw-100,sy+40);
     lens.forEach((n,i)=>{ctx.fillStyle="#3A342E";ctx.font="8.5px 'IBM Plex Mono'";ctx.textAlign="center";ctx.fillText(n+"K",sx+i*cw/(lens.length-1),sy+ch+14);});
     rr(ctx,sx+cw-186,sy+ch-46,182,40,7);ctx.fillStyle="rgba(74,158,147,.1)";ctx.fill();ctx.strokeStyle="#4A9E9340";ctx.lineWidth=1;ctx.stroke();
-    ctx.fillStyle="#4A9E93";ctx.font="bold 11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("56.2× speedup @ 1M tokens",sx+cw-95,sy+ch-28);ctx.textBaseline="alphabetic";
+    ctx.fillStyle="#4A9E93";ctx.font="bold 9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("56.2× speedup @ 1M tokens",sx+cw-95,sy+ch-28);ctx.textBaseline="alphabetic";
     ctx.fillStyle="#E0705C";ctx.font="9px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("⚠ Vendor-reported figures — pending independent reproduction",w/2,h-8);
   },
   datawall:(ctx,w,h,t)=>{
@@ -522,15 +522,15 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     let cy=y0;
     comps.forEach((c,i)=>{const bw=(c.s/total)*(w-sx-16),ia=Math.min((t*.5-i*.1),1);if(ia<=0){cy+=bh+g;return;}ctx.globalAlpha=ia;ctx.fillStyle=c.c;ctx.fillRect(sx,cy,bw,bh-2);ctx.fillStyle="#E8E2D9";ctx.font="10px 'IBM Plex Mono'";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(c.n,16,cy+bh/2-1);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;cy+=bh+g;});
     const fy=cy+8;rr(ctx,14,fy,w-28,36,7);ctx.fillStyle="rgba(232,199,122,.1)";ctx.fill();ctx.strokeStyle="#E8C77A";ctx.lineWidth=1.5;ctx.stroke();
-    ctx.fillStyle="#E8C77A";ctx.font="bold 11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Total ≈ n_layers × 12 × d_model² + vocab × d_model",w/2,fy+18);ctx.textBaseline="alphabetic";
+    ctx.fillStyle="#E8C77A";ctx.font="bold 9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Total ≈ n_layers × 12 × d_model² + vocab × d_model",w/2,fy+18);ctx.textBaseline="alphabetic";
     ctx.fillStyle="#9D968E";ctx.font="9.5px 'Space Grotesk'";ctx.textAlign="center";ctx.fillText("GPT-3: 96 × 12 × 12288² + 50K × 12288 ≈ 175B params",w/2,fy+44);
   },
   xent:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
     const vocab=["cat","dog","bird","fish","fox"],probs=[.65,.2,.08,.04,.03],sx=w*.2,maxW=w*.55,bh=26,g=5,sy=16;
     ctx.fillStyle="#9D968E";ctx.font="9.5px 'Space Grotesk'";ctx.textAlign="left";ctx.fillText("Softmax output probabilities over vocabulary:",sx,sy-5);
-    vocab.forEach((word,i)=>{const bw=probs[i]*maxW*Math.min(t,1),isT=i===0,y=sy+i*(bh+g);ctx.fillStyle=isT?"rgba(74,158,147,.13)":"rgba(240,184,76,.07)";ctx.fillRect(sx,y,maxW,bh);ctx.fillStyle=isT?"#4A9E93":"#F0B84C88";ctx.fillRect(sx,y,bw,bh);if(isT){ctx.strokeStyle="#4A9E93";ctx.lineWidth=1.8;ctx.strokeRect(sx,y,maxW,bh);}ctx.fillStyle="#E8E2D9";ctx.font="12px 'IBM Plex Mono'";ctx.textAlign="right";ctx.fillText(word,sx-8,y+bh/2+4);ctx.fillStyle="#D9D3CC";ctx.textAlign="right";ctx.fillText((probs[i]*100).toFixed(0)+"%",sx+maxW+42,y+bh/2+4);if(isT){ctx.fillStyle="#4A9E93";ctx.font="bold 9.5px 'IBM Plex Mono'";ctx.fillText("← TRUE",sx+maxW+82,y+bh/2+4);}});
-    const la=Math.min(t-.6,1);if(la>0){ctx.globalAlpha=la;const loss=-Math.log(.65),fy=sy+vocab.length*(bh+g)+10;rr(ctx,sx,fy,maxW,36,7);ctx.fillStyle="rgba(232,199,122,.12)";ctx.fill();ctx.strokeStyle="#E8C77A";ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle="#E8C77A";ctx.font="bold 11px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("L = -log(0.65) = "+loss.toFixed(3)+"  →  PPL = "+Math.exp(loss).toFixed(2),sx+maxW/2,fy+18);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;}
+    vocab.forEach((word,i)=>{const bw=probs[i]*maxW*Math.min(t,1),isT=i===0,y=sy+i*(bh+g);ctx.fillStyle=isT?"rgba(74,158,147,.13)":"rgba(240,184,76,.07)";ctx.fillRect(sx,y,maxW,bh);ctx.fillStyle=isT?"#4A9E93":"#F0B84C88";ctx.fillRect(sx,y,bw,bh);if(isT){ctx.strokeStyle="#4A9E93";ctx.lineWidth=1.8;ctx.strokeRect(sx,y,maxW,bh);}ctx.fillStyle="#E8E2D9";ctx.font="10px 'IBM Plex Mono'";ctx.textAlign="right";ctx.fillText(word,sx-8,y+bh/2+4);ctx.fillStyle="#D9D3CC";ctx.textAlign="right";ctx.fillText((probs[i]*100).toFixed(0)+"%",sx+maxW+42,y+bh/2+4);if(isT){ctx.fillStyle="#4A9E93";ctx.font="bold 9.5px 'IBM Plex Mono'";ctx.fillText("← TRUE",sx+maxW+82,y+bh/2+4);}});
+    const la=Math.min(t-.6,1);if(la>0){ctx.globalAlpha=la;const loss=-Math.log(.65),fy=sy+vocab.length*(bh+g)+10;rr(ctx,sx,fy,maxW,36,7);ctx.fillStyle="rgba(232,199,122,.12)";ctx.fill();ctx.strokeStyle="#E8C77A";ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle="#E8C77A";ctx.font="bold 9px 'IBM Plex Mono'";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("L = -log(0.65) = "+loss.toFixed(3)+"  →  PPL = "+Math.exp(loss).toFixed(2),sx+maxW/2,fy+18);ctx.textBaseline="alphabetic";ctx.globalAlpha=1;}
   },
   roofline:(ctx,w,h,t)=>{
     ctx.clearRect(0,0,w,h);
@@ -591,7 +591,7 @@ export const ATLAS_ANIMS: Record<string, AtlasAnim> = {
     ctx.clearRect(0,0,w,h);
     const sx=w*0.15, dw=w*0.7;
     const y1=h*0.25, y3=h*0.7;
-    ctx.fillStyle="#9D968E";ctx.font="11px 'Space Grotesk'";ctx.textAlign="center";
+    ctx.fillStyle="#9D968E";ctx.font="9px 'Space Grotesk'";ctx.textAlign="center";
     ctx.fillText("Polysemantic Neuron (Dense)", w/2, y1-25);
     ctx.fillText("Monosemantic Features (Sparse Autoencoder)", w/2, y3+25);
     ctx.fillStyle="rgba(240,184,76,0.2)"; ctx.strokeStyle="#F0B84C";

@@ -6,12 +6,19 @@ import { useTheme } from '@/hooks/useTheme'
 /**
  * Giscus-powered comments for article pages.
  *
- * Maps discussions to the current pathname so each article gets its own thread.
- * Theme follows the site so comments are legible in both modes.
+ * Silently no-ops until configured.
  *
- * Requires the giscus GitHub App installed on the repo and Discussions enabled.
- * Until then, the div renders as an empty container with no visible effect.
+ * Setup checklist:
+ *   1. Enable Discussions on the repo (Settings → Features)
+ *   2. Install giscus GitHub App on the repo
+ *   3. Visit giscus.app, enter repo name, copy repo-id and category-id
+ *   4. Replace the placeholder values below
  */
+
+// Replace with real values from https://giscus.app after setup.
+const REPO_ID = ''
+const CATEGORY_ID = ''
+
 export function GiscusComments() {
   const ref = useRef<HTMLDivElement>(null)
   const { theme } = useTheme()
@@ -19,17 +26,17 @@ export function GiscusComments() {
   useEffect(() => {
     const container = ref.current
     if (!container) return
+    if (!REPO_ID || !CATEGORY_ID) return
 
-    // Remove any previously-injected script (theme change re-mount).
     const existing = container.querySelector('script')
     if (existing) existing.remove()
 
     const script = document.createElement('script')
     script.src = 'https://giscus.app/client.js'
     script.setAttribute('data-repo', 'VnykzHub/VnykzHub.github.io')
-    script.setAttribute('data-repo-id', 'R_kgDO<placeholder>') // Replace from giscus.app after setup
+    script.setAttribute('data-repo-id', REPO_ID)
     script.setAttribute('data-category', 'Announcements')
-    script.setAttribute('data-category-id', 'DIC_kwDO<placeholder>') // Replace from giscus.app
+    script.setAttribute('data-category-id', CATEGORY_ID)
     script.setAttribute('data-mapping', 'pathname')
     script.setAttribute('data-strict', '0')
     script.setAttribute('data-reactions-enabled', '1')
@@ -42,6 +49,8 @@ export function GiscusComments() {
 
     container.appendChild(script)
   }, [theme])
+
+  if (!REPO_ID || !CATEGORY_ID) return null
 
   return (
     <section aria-label="Comments" className="article-wide mt-16 px-4 sm:px-6">

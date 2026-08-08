@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom'
+'use client'
+
+import Link from 'next/link'
 import { Container } from '@/components/common'
 import { Eyebrow } from '@/components/ui'
 
@@ -19,10 +21,10 @@ export function NotFound() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-5 font-mono text-[11px] uppercase tracking-[0.14em]">
-            <Link to="/" className="text-accent-amber hover:underline">
+             <Link href="/" className="text-accent-amber hover:underline">
               Home
             </Link>
-            <Link to="/blog" className="text-accent-amber hover:underline">
+             <Link href="/blog" className="text-accent-amber hover:underline">
               Writing
             </Link>
           </div>

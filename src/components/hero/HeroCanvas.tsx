@@ -1,3 +1,5 @@
+'use client'
+
 import { Canvas } from '@react-three/fiber'
 import { Preload, OrbitControls } from '@react-three/drei'
 import { Suspense } from 'react'

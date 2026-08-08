@@ -1,3 +1,5 @@
+'use client'
+
 // src/components/projects/DemoLoader.tsx
 import { useState, useEffect } from 'react'
 import { AlertCircle, RefreshCw } from 'lucide-react'

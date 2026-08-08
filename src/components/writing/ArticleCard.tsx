@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import type { Article } from '@/content/llm-atlas'
 import { pad } from './format'
@@ -12,7 +12,7 @@ interface ArticleCardProps {
 export function ArticleCard({ article, className }: ArticleCardProps) {
   return (
     <Link
-      to={`/blog/${article.series}/${article.slug}`}
+      href={`/blog/${article.series}/${article.slug}`}
       className={cn(
         'group relative flex flex-col surface-card p-6',
         'transition-colors duration-200 hover:border-accent-amber',

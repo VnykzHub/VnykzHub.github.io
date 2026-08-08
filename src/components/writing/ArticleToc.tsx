@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useMemo, useState } from 'react'
 import { useScrollProgress } from '@/hooks'
 import type { AtlasSection } from '@/content/llm-atlas/types'

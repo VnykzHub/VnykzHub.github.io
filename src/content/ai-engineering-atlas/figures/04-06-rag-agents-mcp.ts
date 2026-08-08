@@ -119,12 +119,12 @@ const evalMetricSplit: AtlasAnim = (ctx, w, h, t) => {
   rr(ctx, repX, repY, repW, repH, 6)
   ctx.stroke()
   ctx.fillStyle = SOFT
-  ctx.font = `600 9px ${SANS}`
+  ctx.font = `600 11px ${SANS}`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.fillText('report', repX + repW / 2, repY + repH / 2 - 6)
-  ctx.font = `9px ${SANS}`
-  ctx.fillText('side by side', repX + repW / 2, repY + repH / 2 + 8)
+  ctx.fillText('report', repX + repW / 2, repY + repH / 2 - 7)
+  ctx.font = `11px ${SANS}`
+  ctx.fillText('side by side', repX + repW / 2, repY + repH / 2 + 9)
   ctx.textBaseline = 'alphabetic'
 
   caption(ctx, 'never merged — a blended score can’t say which half broke', w / 2, h - 4)
@@ -154,9 +154,9 @@ const multiAgentHandoffSharedState: AtlasAnim = (ctx, w, h, t) => {
   const midX2 = ax2
   arrow(ctx, midX1 + 4, y + ah / 2, midX2 - 4, PATINA)
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${MONO}`
+  ctx.font = `11px ${MONO}`
   ctx.textAlign = 'center'
-  ctx.fillText('handoff: structured result', (midX1 + midX2) / 2, y + ah / 2 - 8)
+  ctx.fillText('handoff: structured result', (midX1 + midX2) / 2, y + ah / 2 - 12)
 
   // single shared state store below, one writer at a time
   const sw = Math.min(180, w - 60)
@@ -226,9 +226,9 @@ const mcpNTimesMProblem: AtlasAnim = (ctx, w, h, t) => {
   const lToolY = (j: number) => topY + j * ((h - topY - 20) / (toolsN - 1 || 1))
 
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${SANS}`
+  ctx.font = `11px ${SANS}`
   ctx.textAlign = 'center'
-  ctx.fillText('bespoke: 12 integrations', half / 2, 16)
+  ctx.fillText('bespoke: 12 integrations', half / 2, 18)
 
   // 12 crossing bespoke lines, drawn first so boxes sit on top
   for (let i = 0; i < clientsN; i++) {
@@ -261,9 +261,9 @@ const mcpNTimesMProblem: AtlasAnim = (ctx, w, h, t) => {
   const protoY = h / 2 - protoH / 2
 
   ctx.fillStyle = SOFT
-  ctx.font = `9px ${SANS}`
+  ctx.font = `11px ${SANS}`
   ctx.textAlign = 'center'
-  ctx.fillText('via protocol: 3 + 4 = 7', half + half / 2, 16)
+  ctx.fillText('via protocol: 3 + 4 = 7', half + half / 2, 18)
 
   const rClientY = (i: number) => topY + i * ((h - topY - 20) / (clientsN - 1 || 1))
   const rToolY = (j: number) => topY + j * ((h - topY - 20) / (toolsN - 1 || 1))
@@ -312,7 +312,7 @@ const mcpClientServerTopology: AtlasAnim = (ctx, w, h, t) => {
   rr(ctx, hostX, hostY, hostW, hostH, 8)
   ctx.stroke()
   ctx.fillStyle = SOFT
-  ctx.font = `600 9.5px ${SANS}`
+  ctx.font = `600 11.5px ${SANS}`
   ctx.textAlign = 'left'
   ctx.fillText('host process', hostX + 10, hostY + 16)
 
@@ -364,7 +364,7 @@ const mcpClientServerTopology: AtlasAnim = (ctx, w, h, t) => {
   })
 
   ctx.fillStyle = SOFT
-  ctx.font = `8.5px ${SANS}`
+  ctx.font = `10px ${SANS}`
   ctx.textAlign = 'left'
   ctx.fillText('← capabilities, at connection time', hostX + hostW + 8, hostY + hostH - 2)
 

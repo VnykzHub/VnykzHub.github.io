@@ -1,3 +1,5 @@
+'use client'
+
 import { Fragment, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
@@ -307,7 +309,9 @@ export function CodeBlock({ code }: { code: AtlasCode }) {
    ──────────────────────────────────────────────────────────────── */
 
 /** Below this width the original animations start colliding; scale instead. */
-const MIN_DRAW_WIDTH = 540
+const MIN_DRAW_WIDTH = 680
+
+const MAX_DPR = 2
 
 export function AtlasFigure({ anim, label }: { anim: string; label?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -338,7 +342,8 @@ export function AtlasFigure({ anim, label }: { anim: string; label?: string }) {
     let start: number | null = null
 
     const paint = (elapsed: number) => {
-      const dpr = window.devicePixelRatio || 1
+      const rawDpr = window.devicePixelRatio || 1
+      const dpr = Math.min(rawDpr, MAX_DPR)
       const cssW = canvas.offsetWidth
       const cssH = canvas.offsetHeight
       if (canvas.width !== cssW * dpr || canvas.height !== cssH * dpr) {
@@ -347,6 +352,10 @@ export function AtlasFigure({ anim, label }: { anim: string; label?: string }) {
       }
       ctx.save()
       ctx.scale(dpr, dpr)
+      // Improve text rendering on high-DPI canvases
+      if ('imageSmoothingEnabled' in ctx) {
+        ctx.imageSmoothingEnabled = true
+      }
       // Narrow viewports draw at MIN_DRAW_WIDTH then scale down, so the
       // fixed pixel geometry inside each animation stays legible.
       let vw = cssW
@@ -404,7 +413,9 @@ export function AtlasFigure({ anim, label }: { anim: string; label?: string }) {
   return (
     <figure className="article-figure">
       {label && <figcaption className="article-figure-label">{label}</figcaption>}
-      <canvas ref={canvasRef} role="img" aria-label={label ?? 'Diagram'} />
+      <div className="article-figure-canvas-wrap">
+        <canvas ref={canvasRef} role="img" aria-label={label ?? 'Diagram'} />
+      </div>
     </figure>
   )
 }

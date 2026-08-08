@@ -4,6 +4,7 @@
 export { Prose, MathBlock, CodeBlock, AtlasFigure } from './ContentBlocks'
 export { ArticleHeader, ArticleBody, SeriesNav } from './Article'
 export { ArticleToc, ReadingProgress } from './ArticleToc'
+export { InteractiveFigure } from './InteractiveFigure'
 export { GiscusComments } from './GiscusComments'
 export { ArticleCard } from './ArticleCard'
 export { splitTitle, formatDate, pad } from './format'

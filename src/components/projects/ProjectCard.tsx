@@ -1,3 +1,5 @@
+'use client'
+
 // src/components/projects/ProjectCard.tsx
 import { motion } from 'framer-motion'
 import { Card, Heading, Text, Button } from '@/components/ui'

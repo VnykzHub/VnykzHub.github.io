@@ -1,69 +1,39 @@
-# React + TypeScript + Vite
+# vnykzhub.com
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal site and technical writing platform. Built with Next.js 15, deployed on Vercel.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript (strict)
+- **Styling:** Tailwind CSS 3 + CSS custom properties (light/dark themes)
+- **Animation:** Framer Motion + Three.js (React Three Fiber)
+- **Content:** Markdown → TypeScript generator pipeline, rendered with KaTeX + Prism
 
-## Expanding the ESLint configuration
+## Atlas Series
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Long-form technical writing with animated canvas diagrams.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **[LLM Atlas](https://vnykzhub.com/blog/llm-atlas)** — 14 parts on language model architecture, 2017–2026
+- **[AI Engineering Atlas](https://vnykzhub.com/blog/ai-engineering-atlas)** — 11 parts on RAG, agents, MCP, vector databases, production systems
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Development
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev        # Start dev server
+npm run build      # Production build
+npm run typecheck  # TypeScript check
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Content generators run automatically before `npm run build`:
+```bash
+npm run gen:atlas       # LLM Atlas
+npm run gen:ai-atlas    # AI Engineering Atlas
 ```
+
+## Deployment
+
+Deployed on [Vercel](https://vercel.com). Push to `main` triggers automatic deployment.
+
+Custom domain: `vnykzhub.com`

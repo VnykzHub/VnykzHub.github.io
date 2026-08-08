@@ -1,8 +1,10 @@
+'use client'
+
 import { Container } from '@/components/common'
 import { Text } from '@/components/ui'
 import { Github, Linkedin, Mail, Heart, ExternalLink } from 'lucide-react'
 import { navigationItems } from '@/data/navigation'
-import { Link as RouterLink } from 'react-router-dom'
+import Link from 'next/link'
 import { NavItemLink } from './NavItemLink'
 
 const projectsItem = navigationItems.find((i) => i.id === 'projects')
@@ -97,12 +99,12 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <RouterLink
-                  to="/blog/llm-atlas"
+                <Link
+                  href="/blog/llm-atlas"
                   className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors text-sm"
                 >
                   Writing
-                </RouterLink>
+                </Link>
               </li>
               {projectsItem && (
                 <li>

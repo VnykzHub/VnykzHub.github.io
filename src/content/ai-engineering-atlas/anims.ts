@@ -30,9 +30,9 @@ const PATINA = '#4A9E93'
 const RUST = '#C4703F'
 const BRASS = '#E8C77A'
 const INK = '#D9D3CC'
-const SOFT = '#9D968E'
-const FAINT = '#3A342E'
-const RULE = '#2A2622'
+const SOFT = '#B5AEA6'
+const FAINT = '#8A847E'
+const RULE = '#5A5450'
 const PANEL2 = '#24211D'
 
 const MONO = "'IBM Plex Mono', monospace"
@@ -151,7 +151,7 @@ const chunkingBoundaryLoss: AtlasAnim = (ctx, w, h) => {
     { title: 'Document-aware', broken: false, c: PATINA },
   ]
   const pad = 20
-  const rowH = 46
+  const rowH = 48
   const top = h / 2 - rowH - 12
 
   rows.forEach((row, ri) => {
@@ -261,10 +261,10 @@ const latencyWaterfall: AtlasAnim = (ctx, w, h, t) => {
     ctx.fillStyle = m.c
     ctx.font = `9px ${MONO}`
     ctx.textAlign = 'center'
-    ctx.fillText(m.label, mx, y + 58)
+    ctx.fillText(m.label, mx, y + 62)
   })
 
-  caption(ctx, 'the tail is what users describe as "slow"', w / 2, y + 76)
+  caption(ctx, 'the tail is what users describe as "slow"', w / 2, y + 80)
 }
 
 /** Cascading fallback with a quality-loss marker per rung. */
@@ -297,7 +297,7 @@ const fallbackChain: AtlasAnim = (ctx, w, h, t) => {
     ctx.fillStyle = dead ? FAINT : SOFT
     ctx.font = `9px ${SANS}`
     ctx.textAlign = 'left'
-    ctx.fillText(r.note, x + bw + 12, y + bh / 2 + 3)
+    ctx.fillText(r.note, x + bw + 12, y + bh / 2 + 5)
     if (i < rungs.length - 1) {
       ctx.strokeStyle = dead ? RUST : RULE
       ctx.lineWidth = 1.2

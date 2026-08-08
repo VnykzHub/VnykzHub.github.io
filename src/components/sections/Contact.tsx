@@ -1,3 +1,5 @@
+'use client'
+
 import { Section, Container, AnimatedSection, Grid } from '@/components/common'
 import { Heading, Text, Card, Button, Eyebrow } from '@/components/ui'
 import { Mail, Phone, Linkedin, Github, Send, MapPin } from 'lucide-react'
@@ -13,7 +15,7 @@ export function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle form submission here
-    if (import.meta.env.DEV) console.log('Form submitted:', formData)
+    if (process.env.NODE_ENV === 'development') console.log('Form submitted:', formData)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

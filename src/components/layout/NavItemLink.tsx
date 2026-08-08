@@ -1,50 +1,50 @@
-import { ReactNode } from 'react'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
-import { Link as ScrollLink } from 'react-scroll'
+'use client'
+
+import { ReactNode, useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import type { NavItem } from '@/data/navigation'
 
 interface NavItemLinkProps {
   item: NavItem
   children: ReactNode
   className?: string
-  /** Applied by react-scroll's spy while the target section is in view. */
-  activeClassName?: string
   onClick?: () => void
 }
 
 /**
  * Resolves a nav item to the right kind of link.
  *
- * Sections of the home page are smooth-scrolled when you are already on the
- * home page, but from /writing there is nothing to scroll to — those become
- * ordinary navigations to /#section, which App's ScrollToTop then lands.
+ * react-scroll is deferred until after hydration — it accesses browser APIs
+ * (Events.scrollEvent) that are undefined during SSR.
  */
 export function NavItemLink({
   item,
   children,
   className,
-  activeClassName,
   onClick,
 }: NavItemLinkProps) {
-  const { pathname } = useLocation()
+  const pathname = usePathname()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
 
   if (item.kind === 'route') {
     return (
-      <RouterLink to={item.href} className={className} onClick={onClick}>
+      <Link href={item.href} className={className} onClick={onClick}>
         {children}
-      </RouterLink>
+      </Link>
     )
   }
 
-  if (pathname === '/') {
+  if (pathname === '/' && mounted) {
+    const ScrollLink = require('react-scroll').Link
     return (
       <ScrollLink
         to={item.href}
         smooth
         duration={500}
         offset={-80}
-        spy
-        activeClass={activeClassName}
         className={className}
         onClick={onClick}
       >
@@ -53,9 +53,17 @@ export function NavItemLink({
     )
   }
 
+  if (pathname === '/' && !mounted) {
+    return (
+      <a href={`#${item.href}`} className={className} onClick={onClick}>
+        {children}
+      </a>
+    )
+  }
+
   return (
-    <RouterLink to={`/#${item.href}`} className={className} onClick={onClick}>
+    <Link href={`/#${item.href}`} className={className} onClick={onClick}>
       {children}
-    </RouterLink>
+    </Link>
   )
 }
