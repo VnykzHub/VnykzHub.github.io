@@ -67,6 +67,9 @@
   --btn-ink:    #100E0C;
   --panel-shadow: 0 24px 60px -28px rgba(0,0,0,0.7);
   --hero-overlay-from: #100E0C;
+  --orb-amber:  rgba(240,184,76,0.10);
+  --orb-patina: rgba(74,158,147,0.10);
+  --orb-rust:   rgba(196,112,63,0.08);
   --toggle-track:#2A2622;
   --toggle-thumb:#F0B84C;
   --toggle-icon:#6E6862;
@@ -78,8 +81,8 @@
      grey-blue (#F3F5F8 paper, #111C2E navy ink) which fought the darkroom
      concept every bit as hard as the electric cyan did. */
   --paper:      #F5F2EC;
-  --panel:      #1A1714;
-  --panel2:     #24211D;
+  --panel:      #EDE6D9;
+  --panel2:     #E3DBCB;
   --ink:        #241F1A;
   --ink-soft:   #554E45;
   --ink-faint:  #8C837A;
@@ -95,8 +98,8 @@
      kept close to --paper so it reads as texture, not as graph paper. */
   --grid:       #E8E1D5;
   --rule:       #D5CCBE;
-  --panel-border: #2E2A26;
-  --bar-track:  #0E0C0A;
+  --panel-border: #D5CCBE;
+  --bar-track:  #E3DBCB;
   --card-bg:    #FFFDF9;
   --card-border:#D5CCBE;
   --table-bg:   #FFFDF9;
@@ -113,9 +116,12 @@
   --tag-wait-bg:#F3EAD3;   --tag-wait-ink:#8A6208;
   --select-bg:  #A9740E;
   --select-ink: #FFFDF9;
-  --btn-ink:    #E8E2D9;
-  --panel-shadow: 0 24px 60px -28px rgba(0,0,0,0.55);
-  --hero-overlay-from: #100E0C;
+  --btn-ink:    #FFFDF9;
+  --panel-shadow: 0 24px 60px -28px rgba(0,0,0,0.12);
+  --hero-overlay-from: #F5F2EC;
+  --orb-amber:  rgba(169,116,14,0.30);
+  --orb-patina: rgba(47,125,115,0.28);
+  --orb-rust:   rgba(165,85,42,0.25);
   --toggle-track:#D5CCBE;
   --toggle-thumb:#A9740E;
   --toggle-icon:#8C837A;

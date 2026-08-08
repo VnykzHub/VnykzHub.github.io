@@ -11,11 +11,28 @@ export function Contact() {
     email: '',
     message: ''
   })
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission here
-    if (process.env.NODE_ENV === 'development') console.log('Form submitted:', formData)
+    setStatus('loading')
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      if (res.ok) {
+        setFormData({ name: '', email: '', message: '' })
+        setStatus('success')
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -157,9 +174,25 @@ export function Contact() {
                   />
                 </div>
 
-                <Button type="submit" fullWidth size="lg" icon={Send}>
-                  Send Message
+                <Button
+                  type="submit"
+                  fullWidth
+                  size="lg"
+                  icon={Send}
+                  disabled={status === 'loading'}
+                >
+                  {status === 'loading' ? 'Sending...' : status === 'success' ? 'Message sent!' : 'Send Message'}
                 </Button>
+                {status === 'success' && (
+                  <p className="mt-3 text-center font-mono text-xs text-accent-patina uppercase tracking-[0.14em]">
+                    Thanks — I'll get back to you soon.
+                  </p>
+                )}
+                {status === 'error' && (
+                  <p className="mt-3 text-center font-mono text-xs text-accent-rust uppercase tracking-[0.14em]">
+                    Failed to send. Please try again or email me directly.
+                  </p>
+                )}
               </form>
             </Card>
           </AnimatedSection>

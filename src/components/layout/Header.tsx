@@ -91,9 +91,11 @@ export function Header() {
               className="hidden md:flex items-center gap-3"
             >
               <ThemeToggle />
-              <Button size="sm" className="shadow-lg">
-                Download Resume
-              </Button>
+              <a href="/resume.pdf" download>
+                <Button size="sm" className="shadow-lg">
+                  Download Resume
+                </Button>
+              </a>
             </motion.div>
 
             {/* Mobile Menu Button */}

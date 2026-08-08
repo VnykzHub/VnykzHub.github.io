@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { ThemeProvider } from 'next-themes'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Layout } from '@/components/layout/Layout'
 import { SkipLink } from '@/components/ui/SkipLink'
 import { BackToTop } from '@/components/ui/BackToTop'
@@ -58,6 +60,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SkipLink />
           <Layout>{children}</Layout>
           <BackToTop />
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>

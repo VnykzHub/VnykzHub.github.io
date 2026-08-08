@@ -1,15 +1,34 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useTheme } from '@/hooks/useTheme'
 import { cn } from '@/utils/cn'
 
 /**
- * Rocker switch. Positioning is the caller's job — it sits in the header's
- * right-hand cluster rather than floating over it, so it cannot collide
- * with the CTA button.
+ * Rocker switch. Deferred until mount to prevent hydration mismatch —
+ * the server always renders a neutral placeholder, the client swaps
+ * in the real toggle once the stored theme is known.
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, toggle } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
+  if (!mounted) {
+    return (
+      <div
+        className={cn(
+          'flex items-center gap-2 bg-[var(--panel)] border border-[var(--panel-border)] rounded-[28px] px-2.5 py-1.5',
+          className
+        )}
+        aria-hidden="true"
+      >
+        <span className="font-mono text-[10px] tracking-[0.12em] text-[var(--toggle-icon)]">DARK</span>
+        <span className="w-[42px] h-6 rounded-xl bg-[var(--toggle-track)]" />
+        <span className="font-mono text-[10px] tracking-[0.12em] text-[var(--toggle-icon)]">LIGHT</span>
+      </div>
+    )
+  }
 
   return (
     <button

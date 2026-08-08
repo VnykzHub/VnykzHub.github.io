@@ -19,6 +19,9 @@ const Writing = lazy(() =>
 const Skills = lazy(() =>
   import('@/components/sections/Skills').then((m) => ({ default: m.Skills }))
 )
+const Newsletter = lazy(() =>
+  import('@/components/sections/Newsletter').then((m) => ({ default: m.Newsletter }))
+)
 const Contact = lazy(() =>
   import('@/components/sections/Contact').then((m) => ({ default: m.Contact }))
 )
@@ -43,6 +46,9 @@ export function Home() {
       </Suspense>
       <Suspense fallback={<Skeleton className="h-48" />}>
         <Skills />
+      </Suspense>
+      <Suspense fallback={<Skeleton className="h-48" />}>
+        <Newsletter />
       </Suspense>
       <Suspense fallback={<Skeleton className="h-64" />}>
         <Contact />

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Container, Section } from '@/components/common'
 import { Heading, Text, Button } from '@/components/ui'
 import { ArrowDown, Sparkles, Code2, Brain, Github, Linkedin } from 'lucide-react'
@@ -8,6 +8,7 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { TypedHeadline } from '@/components/hero/TypedHeadline'
 import { StaticBackground } from '@/components/hero/StaticBackground'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
+import { useTheme } from '@/hooks/useTheme'
 
 // three.js + fiber + drei + postprocessing is ~950 kB — as a static import it
 // blocks the hero copy from painting. Streamed in behind StaticBackground
@@ -17,9 +18,12 @@ const HeroCanvas = lazy(() =>
 )
 
 export function Hero() {
+  const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isLoaded, setIsLoaded] = useState(false)
-  const [webGLSupported, setWebGLSupported] = useState(true) 
+  const [webGLSupported, setWebGLSupported] = useState(true)
+  useEffect(() => { setMounted(true) }, [])
   
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -36,8 +40,14 @@ export function Hero() {
   
   // Fade the scroll hint out over the first 200px — once you are scrolling, an
   // instruction to scroll is just something in the way.
-  const { scrollY } = useScroll()
-  const scrollHintOpacity = useTransform(scrollY, [0, 200], [1, 0])
+  const [scrollHintOpacity, setScrollHintOpacity] = useState(1)
+  useEffect(() => {
+    const onScroll = () => {
+      setScrollHintOpacity(Math.max(0, 1 - window.scrollY / 200))
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     // Check WebGL support
@@ -52,15 +62,16 @@ export function Hero() {
 
   return (
     <Section id="home" fullHeight centered className="relative overflow-hidden">
-      {/* 3D Neural Network Background */}
-      {webGLSupported ? (
+      {/* 3D Neural Network — dark mode only. Deferred until mount so the server
+           always sends the same StaticBackground regardless of stored theme. */}
+      {!mounted || !webGLSupported || theme !== 'dark' ? (
+        <StaticBackground />
+      ) : (
         <ErrorBoundary fallback={<StaticBackground />}>
           <Suspense fallback={<StaticBackground />}>
             <HeroCanvas mousePosition={mousePosition} />
           </Suspense>
         </ErrorBoundary>
-      ) : (
-        <StaticBackground />
       )}
       
       {/* Gradient Overlay for text readability over WebGL canvas */}
