@@ -14,7 +14,7 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
     <Link
       to={`/blog/${article.series}/${article.slug}`}
       className={cn(
-        'group relative flex flex-col rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-6',
+        'group relative flex flex-col surface-card p-6',
         'transition-colors duration-200 hover:border-accent-amber',
         className
       )}

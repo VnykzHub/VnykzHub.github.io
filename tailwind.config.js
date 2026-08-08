@@ -4,7 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
+  darkMode: ['selector', '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
@@ -12,10 +12,26 @@ export default {
         // no cool-blue accent — the electric cyan these replaced was the last
         // survivor of the original cyberpunk palette, and was the reason the
         // site still read blue against warm-black neutrals.
+        //
+        // All values now point at the CSS custom properties declared in
+        // src/index.css — the single source of truth for color. NOTE: Tailwind
+        // opacity modifiers (bg-accent-amber/50) do NOT work on var()-backed
+        // colors; use the arbitrary form bg-[var(--accent-1)]/50 instead.
         accent: {
-          amber:  '#F0B84C', // primary   — buttons, name gradient, drop caps
-          patina: '#4A9E93', // secondary — links, hover, live status
-          rust:   '#C4703F', // tertiary  — third category, warm accents
+          amber:  'var(--accent-1)',
+          patina: 'var(--accent-2)',
+          rust:   'var(--accent-3)',
+          slate:  'var(--accent-slate)',
+        },
+        surface: {
+          paper: 'var(--paper)',
+          panel: 'var(--panel)',
+          card:  'var(--card-bg)',
+        },
+        ink: {
+          DEFAULT: 'var(--ink)',
+          soft: 'var(--ink-soft)',
+          faint: 'var(--ink-faint)',
         },
       },
       fontFamily: {

@@ -4,6 +4,7 @@ import {
   ArticleBody,
   ArticleHeader,
   ArticleToc,
+  GiscusComments,
   ReadingProgress,
   SeriesNav,
 } from '@/components/writing'
@@ -11,6 +12,7 @@ import { getArticle, getNeighbours, getSeries } from '@/content/series'
 import type { AtlasSection } from '@/content/llm-atlas/types'
 import { getSection as getLlmAtlasSection } from '@/content/llm-atlas/content'
 import { getSection as getAiAtlasSection } from '@/content/ai-engineering-atlas/content'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 /**
  * Body getters, one per series.
@@ -54,7 +56,9 @@ export function ArticlePage() {
       <div className="mx-auto grid max-w-[92rem] grid-cols-1 gap-8 px-2 xl:grid-cols-[1fr_15rem]">
         <article>
           <ArticleHeader article={article} />
-          <ArticleBody section={section} />
+          <ErrorBoundary>
+            <ArticleBody section={section} />
+          </ErrorBoundary>
         </article>
 
         {/* Sticky rail only where there is room for it beside the measure. */}
@@ -65,6 +69,8 @@ export function ArticlePage() {
 
       <footer className="pb-20">
         <SeriesNav prev={prev} next={next} />
+
+        <GiscusComments />
 
         <div className="article-wide mt-8 px-4 sm:px-6">
           <Link

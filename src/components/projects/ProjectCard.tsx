@@ -25,7 +25,7 @@ export function ProjectCard({ project, index = 0, onOpenDemo }: ProjectCardProps
     >
       <Card hover className="h-full flex flex-col relative overflow-hidden group">
         <div className="relative h-48 -mx-6 -mt-6 mb-4 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent-amber/20 to-accent-patina/20" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-1)]/20 to-[var(--accent-2)]/20" />
           
           <motion.div
             className="absolute inset-0 bg-[var(--panel)]/95 flex items-center justify-center gap-4 z-10"
@@ -55,9 +55,9 @@ export function ProjectCard({ project, index = 0, onOpenDemo }: ProjectCardProps
           <div className="absolute top-4 left-4 z-20">
             <span className={`
               px-3 py-1 rounded-full text-xs font-medium
-              ${project.category === 'ml' ? 'bg-accent-amber/20 text-accent-amber' : ''}
-              ${project.category === 'dl' ? 'bg-accent-patina/20 text-accent-patina' : ''}
-              ${project.category === 'genai' ? 'bg-accent-rust/20 text-accent-rust' : ''}
+              ${project.category === 'ml' ? 'bg-[var(--accent-1)]/20 text-accent-amber' : ''}
+              ${project.category === 'dl' ? 'bg-[var(--accent-2)]/20 text-accent-patina' : ''}
+              ${project.category === 'genai' ? 'bg-[var(--accent-3)]/20 text-accent-rust' : ''}
             `}>
               {project.category.toUpperCase()}
             </span>

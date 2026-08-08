@@ -13,7 +13,7 @@ export function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle form submission here
-    console.log('Form submitted:', formData)
+    if (import.meta.env.DEV) console.log('Form submitted:', formData)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -42,7 +42,7 @@ export function Contact() {
             <div className="space-y-6">
               <Card hover>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-accent-amber/20 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[var(--accent-1)]/20 rounded-lg flex items-center justify-center">
                     <Mail className="text-accent-amber" size={24} />
                   </div>
                   <div>
@@ -56,7 +56,7 @@ export function Contact() {
 
               <Card hover>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-accent-patina/20 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[var(--accent-2)]/20 rounded-lg flex items-center justify-center">
                     <Phone className="text-accent-patina" size={24} />
                   </div>
                   <div>
@@ -68,7 +68,7 @@ export function Contact() {
 
               <Card hover>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-accent-rust/20 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[var(--accent-3)]/20 rounded-lg flex items-center justify-center">
                     <MapPin className="text-accent-rust" size={24} />
                   </div>
                   <div>

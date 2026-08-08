@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react'
 import { LoadingScreen } from '@/components/hero'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 // Lazy load heavy sections
 const Hero = lazy(() => import('@/components/sections/Hero').then((m) => ({ default: m.Hero })))
@@ -32,12 +33,22 @@ export function Home() {
       <Suspense fallback={<LoadingScreen />}>
         <Hero />
       </Suspense>
-      <Suspense fallback={null}>
+      <Suspense fallback={<Skeleton className="h-64" />}>
         <About />
+      </Suspense>
+      <Suspense fallback={<Skeleton className="h-48" />}>
         <Experience />
+      </Suspense>
+      <Suspense fallback={<Skeleton className="h-96" />}>
         <Projects />
+      </Suspense>
+      <Suspense fallback={<Skeleton className="h-48" />}>
         <Writing />
+      </Suspense>
+      <Suspense fallback={<Skeleton className="h-48" />}>
         <Skills />
+      </Suspense>
+      <Suspense fallback={<Skeleton className="h-64" />}>
         <Contact />
       </Suspense>
     </>

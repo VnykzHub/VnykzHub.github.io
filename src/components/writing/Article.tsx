@@ -114,7 +114,7 @@ export function SeriesNav({ prev, next }: { prev?: ArticleMeta; next?: ArticleMe
       {prev ? (
         <Link
           to={`/blog/${prev.series}/${prev.slug}`}
-          className="group rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 transition-colors hover:border-accent-amber"
+          className="group surface-card p-5 transition-colors hover:border-accent-amber"
         >
           <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             <ArrowLeft size={12} /> Part {pad(prev.part)}
@@ -130,7 +130,7 @@ export function SeriesNav({ prev, next }: { prev?: ArticleMeta; next?: ArticleMe
       {next && (
         <Link
           to={`/blog/${next.series}/${next.slug}`}
-          className="group rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-5 text-right transition-colors hover:border-accent-amber sm:col-start-2"
+          className="group surface-card p-5 text-right transition-colors hover:border-accent-amber sm:col-start-2"
         >
           <span className="flex items-center justify-end gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             Part {pad(next.part)} <ArrowRight size={12} />

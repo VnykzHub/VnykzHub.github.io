@@ -25,9 +25,9 @@ const ACCENT_TEXT = {
 } as const
 
 const ACCENT_BG = {
-  amber: 'bg-accent-amber/15',
-  patina: 'bg-accent-patina/15',
-  rust: 'bg-accent-rust/15',
+  amber: 'bg-[var(--accent-1)]/15',
+  patina: 'bg-[var(--accent-2)]/15',
+  rust: 'bg-[var(--accent-3)]/15',
 } as const
 
 /** Solid dot for daily, ringed for production, hollow for working knowledge. */

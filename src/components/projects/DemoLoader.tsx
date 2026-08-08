@@ -82,7 +82,7 @@ export function DemoLoader({ project }: DemoLoaderProps) {
     
     default:
       return (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-accent-amber/10 to-accent-patina/10">
+        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--accent-1)]/10 to-[var(--accent-2)]/10">
           <div className="text-center space-y-4 p-8">
             <div className="text-6xl">🚀</div>
             <p className="text-[var(--heading)] font-semibold">{project.title}</p>

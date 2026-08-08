@@ -84,7 +84,7 @@ function SeriesCard({ series }: { series: Series }) {
   )
 
   const base =
-    'block rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] p-7 transition-colors'
+    'block surface-card p-7 transition-colors'
 
   return readable ? (
     <Link to={`/blog/${series.id}`} className={`${base} hover:border-[var(--panel-border)]`}>

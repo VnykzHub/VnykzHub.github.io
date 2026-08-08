@@ -6,6 +6,7 @@ import { Link as ScrollLink } from 'react-scroll'
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { TypedHeadline } from '@/components/hero/TypedHeadline'
 import { StaticBackground } from '@/components/hero/StaticBackground'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 // three.js + fiber + drei + postprocessing is ~950 kB — as a static import it
 // blocks the hero copy from painting. Streamed in behind StaticBackground
@@ -52,9 +53,11 @@ export function Hero() {
     <Section id="home" fullHeight centered className="relative overflow-hidden">
       {/* 3D Neural Network Background */}
       {webGLSupported ? (
-        <Suspense fallback={<StaticBackground />}>
-          <HeroCanvas mousePosition={mousePosition} />
-        </Suspense>
+        <ErrorBoundary fallback={<StaticBackground />}>
+          <Suspense fallback={<StaticBackground />}>
+            <HeroCanvas mousePosition={mousePosition} />
+          </Suspense>
+        </ErrorBoundary>
       ) : (
         <StaticBackground />
       )}
@@ -78,7 +81,7 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--panel)]/60 backdrop-blur-sm border border-[var(--panel-border)] mb-8"
+            className="chip mb-8"
           >
             <Sparkles className="w-4 h-4 text-accent-amber animate-pulse" />
             <Text size="sm">AI Engineer | ML Specialist | GenAI Expert</Text>
@@ -95,7 +98,7 @@ export function Hero() {
               <span className="relative">
                 <span className="text-gradient">Vinayak Mathur</span>
                 <motion.span
-                  className="absolute -inset-1 bg-accent-amber/20 blur-2xl"
+                  className="absolute -inset-1 bg-[var(--accent-1)]/20 blur-2xl"
                   animate={{
                     opacity: [0.5, 0.8, 0.5],
                   }}
@@ -138,14 +141,14 @@ export function Hero() {
             transition={{ delay: 0.7 }}
             className="flex flex-wrap justify-center gap-4 mb-8"
           >
-            <div className="flex items-center gap-2 px-3 py-1 bg-[var(--panel)]/60 rounded-full">
+            <div className="chip text-xs font-mono">
               <div className="w-2 h-2 bg-accent-rust rounded-full animate-pulse" />
               <Text size="sm">Available for opportunities</Text>
             </div>
-            <div className="px-3 py-1 bg-[var(--panel)]/60 rounded-full">
+            <div className="chip text-xs font-mono">
               <Text size="sm">Deloitte • Cognizant • Samsung R&D</Text>
             </div>
-            <div className="px-3 py-1 bg-[var(--panel)]/60 rounded-full">
+            <div className="chip text-xs font-mono">
               <Text size="sm">NVIDIA Certified • AWS • Azure</Text>
             </div>
           </motion.div>

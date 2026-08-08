@@ -5,8 +5,8 @@ import { navigationItems } from '@/data/navigation'
 import { Link as RouterLink } from 'react-router-dom'
 import { NavItemLink } from './NavItemLink'
 
-const projectsItem = navigationItems.find((i) => i.id === 'projects')!
-const contactItem = navigationItems.find((i) => i.id === 'contact')!
+const projectsItem = navigationItems.find((i) => i.id === 'projects')
+const contactItem = navigationItems.find((i) => i.id === 'contact')
 
 const currentYear = new Date().getFullYear()
 
@@ -104,22 +104,26 @@ export function Footer() {
                   Writing
                 </RouterLink>
               </li>
-              <li>
-                <NavItemLink
-                  item={projectsItem}
-                  className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer text-sm"
-                >
-                  Projects
-                </NavItemLink>
-              </li>
-              <li>
-                <NavItemLink
-                  item={contactItem}
-                  className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer text-sm"
-                >
-                  Contact
-                </NavItemLink>
-              </li>
+              {projectsItem && (
+                <li>
+                  <NavItemLink
+                    item={projectsItem}
+                    className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer text-sm"
+                  >
+                    Projects
+                  </NavItemLink>
+                </li>
+              )}
+              {contactItem && (
+                <li>
+                  <NavItemLink
+                    item={contactItem}
+                    className="text-[var(--ink-soft)] hover:text-accent-amber transition-colors cursor-pointer text-sm"
+                  >
+                    Contact
+                  </NavItemLink>
+                </li>
+              )}
             </ul>
           </div>
         </div>

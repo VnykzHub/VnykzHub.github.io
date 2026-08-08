@@ -2,11 +2,11 @@
 import { Section, Container, AnimatedSection } from '@/components/common'
 import { Heading, Text, Eyebrow } from '@/components/ui'
 import { ProjectGrid } from '@/components/projects/ProjectGrid'
-import { ProjectService } from '@/services/projectService'
+import { getAllProjects, getFeaturedProjects } from '@/services/projectService'
 
 export function Projects() {
-  const projects = ProjectService.getAll()
-  const featuredProjects = ProjectService.getFeatured()
+  const projects = getAllProjects()
+  const featuredProjects = getFeaturedProjects()
   
   return (
     <Section id="projects">

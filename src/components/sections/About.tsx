@@ -19,7 +19,7 @@ export function About() {
         <Grid cols={3} gap={6}>
           <AnimatedSection animation="slideUp" delay={0.1}>
             <Card hover className="text-center h-full">
-              <div className="w-12 h-12 bg-accent-amber/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--accent-1)]/20 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Target className="text-accent-amber" size={24} />
               </div>
               <Heading as="h3" size="lg" className="mb-3">
@@ -33,7 +33,7 @@ export function About() {
 
           <AnimatedSection animation="slideUp" delay={0.2}>
             <Card hover className="text-center h-full">
-              <div className="w-12 h-12 bg-accent-patina/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--accent-2)]/20 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <GraduationCap className="text-accent-patina" size={24} />
               </div>
               <Heading as="h3" size="lg" className="mb-3">
@@ -47,7 +47,7 @@ export function About() {
 
           <AnimatedSection animation="slideUp" delay={0.3}>
             <Card hover className="text-center h-full">
-              <div className="w-12 h-12 bg-accent-rust/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <div className="w-12 h-12 bg-[var(--accent-3)]/20 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Award className="text-accent-rust" size={24} />
               </div>
               <Heading as="h3" size="lg" className="mb-3">
