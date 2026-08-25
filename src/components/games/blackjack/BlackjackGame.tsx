@@ -20,7 +20,14 @@ const TABS = [
 
 /** The trainer: felt table + coach, seeded and shareable. */
 export function BlackjackGame() {
-  const [seed, setSeed] = useState('1729')
+  // Seed lives OUTSIDE the keyed core so reseeding remounts the game with a
+  // fresh reducer + shoe (useReducer keeps state across reducer identity
+  // changes, so the keyed remount is the reset mechanism).
+  const [seed, setSeed] = useState('')
+  return <BlackjackCore key={seed} seed={seed} onSeedChange={setSeed} />
+}
+
+function BlackjackCore({ seed, onSeedChange }: { seed: string; onSeedChange: (s: string) => void }) {
   const [tab, setTab] = useState<Tab>('play')
   const { state, dispatch } = useBlackjackGame(seed)
 
@@ -48,16 +55,17 @@ export function BlackjackGame() {
     <GameShell
       eyebrow="Game 01 · Static · measures: expected value"
       title="Blackjack Trainer"
-      lede="Basic strategy and true-count drilling. The coach prices every deviation from the chart — and the count never hides: the running tally is the point."
-      onReseed={(s) => setSeed(s)}
+      lede="Basic strategy and true-count drilling against a computer dealer. The coach prices every deviation from the chart — and the count never hides: the running tally is the point."
+      initialSeed={seed}
+      onReseed={onSeedChange}
       readoutItems={readoutItems}
-      howItWorks="A six-deck shoe, shuffled from the page seed — share your link and someone else plays the same cards. Dealer stands on all 17s, blackjack pays 3:2, you may split once and double after splitting. The strategy engine behind the Hint button and the Chart tab is standard 6-deck basic strategy, and the charts are test-locked to it cell by cell."
+      howItWorks="A six-deck shoe, shuffled fresh every visit — share your link and someone else plays your exact cards. The dealer is a computer agent: it stands on all 17s and plays out its hand the moment you stand. Blackjack pays 3:2, you may split once and double after splitting. The strategy engine behind the Hint button and the Chart tab is standard 6-deck basic strategy, and the charts are test-locked to it cell by cell."
     >
       <SegmentedControl<Tab> options={[...TABS]} value={tab} onChange={setTab} label="Blackjack trainer tabs" />
       <div className="mt-6">
-        {tab === 'play' && <PlayTable key={seed} state={state} dispatch={dispatch} />}
-        {tab === 'scenarios' && <ScenarioPanel key={seed} seed={seed} />}
-        {tab === 'count' && <CountTrainerPanel key={seed} seed={seed} />}
+        {tab === 'play' && <PlayTable state={state} dispatch={dispatch} />}
+        {tab === 'scenarios' && <ScenarioPanel seed={seed} />}
+        {tab === 'count' && <CountTrainerPanel seed={seed} />}
         {tab === 'chart' && <StrategyChartPanel />}
       </div>
     </GameShell>

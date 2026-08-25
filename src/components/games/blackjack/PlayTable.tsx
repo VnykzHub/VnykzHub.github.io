@@ -197,6 +197,11 @@ export function PlayTable({ state, dispatch }: PlayTableProps) {
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">
+          {state.phase === 'settled' && (
+            <GameButton variant="primary" onClick={() => dispatch({ type: 'NEW_ROUND' })}>
+              New round
+            </GameButton>
+          )}
           <GameButton variant="primary" disabled={!canDeal} onClick={() => dispatch({ type: 'DEAL' })}>
             Deal
           </GameButton>

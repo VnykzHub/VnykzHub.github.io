@@ -11,6 +11,12 @@ interface GameShellProps {
   eyebrow: string
   title: string
   lede: string
+  /**
+   * Seed chosen by the parent. When empty, the shell rolls a fresh random one
+   * once and reports it through onReseed — parents that remount on seed change
+   * must pass it back so it is not regenerated every mount.
+   */
+  initialSeed?: string
   /** Called with the new seed whenever reseed happens or the page loads with ?seed=. */
   onReseed: (seed: string) => void
   readoutItems: ReadoutItem[]
@@ -18,7 +24,7 @@ interface GameShellProps {
   children: ReactNode
 }
 
-const DEFAULT_SEED = '1729'
+const randomSeed = () => String(Math.random()).slice(2) + String(Date.now()).slice(-4)
 
 /**
  * Shared editorial frame for every game: header, seed bar, instrument stage,
@@ -29,21 +35,25 @@ export function GameShell({
   eyebrow,
   title,
   lede,
+  initialSeed = '',
   onReseed,
   readoutItems,
   howItWorks,
   children,
 }: GameShellProps) {
-  const [seed, setSeed] = useState(DEFAULT_SEED)
+  const [seed, setSeed] = useState('')
   const [copied, setCopied] = useState(false)
   const [focused, setFocused] = useState(false)
   const seedInputRef = useRef<HTMLInputElement>(null)
 
-  // Initial seed: ?seed= query param wins, then default. Fire onReseed once.
+  // Seed: ?seed= in the URL gives a reproducible run (share-link); the
+  // parent's initialSeed is reused on remounts; only roll a random one when
+  // neither exists.
   useEffect(() => {
     const urlSeed = new URLSearchParams(window.location.search).get('seed')
-    const initial = urlSeed?.trim() || DEFAULT_SEED
+    const initial = urlSeed?.trim() || initialSeed.trim() || randomSeed()
     setSeed(initial)
+    if (seedInputRef.current) seedInputRef.current.value = initial
     onReseed(initial)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- onReseed is game-owned; run once per mount
   }, [])
