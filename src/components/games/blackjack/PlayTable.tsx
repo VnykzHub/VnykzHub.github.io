@@ -73,7 +73,7 @@ export function PlayTable({ state, dispatch }: PlayTableProps) {
 
   return (
     <div
-      className="bj-felt relative flex min-h-[540px] flex-col items-center gap-5 overflow-hidden rounded-xl px-4 py-8"
+      className="bj-felt relative flex min-h-[600px] flex-col items-center gap-5 overflow-hidden rounded-xl px-4 py-8 md:min-h-[680px]"
       style={{
         background: 'radial-gradient(ellipse at center, var(--felt-light) 0%, var(--felt) 50%, var(--felt-rim) 100%)',
       }}
@@ -82,9 +82,9 @@ export function PlayTable({ state, dispatch }: PlayTableProps) {
       <div className="pointer-events-none absolute inset-2 rounded-[100px] border-2 border-[var(--gold)]/20" />
 
       {/* dealer */}
-      <div className="relative flex w-full max-w-[600px] flex-col items-center gap-2">
+      <div className="relative flex w-full max-w-[760px] flex-col items-center gap-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-[var(--gold)]/50">Dealer</span>
-        <div className="flex min-h-[90px] items-center justify-center">
+        <div className="flex min-h-[106px] items-center justify-center">
           {state.dealer.map((card, i) => (
             <div key={i} className="-ml-3 first:ml-0">
               <PlayingCard card={card} hidden={dealerHidden && i === 1} />
@@ -149,7 +149,7 @@ export function PlayTable({ state, dispatch }: PlayTableProps) {
       </div>
 
       {/* player hands */}
-      <div className="relative flex w-full max-w-[600px] flex-col items-center gap-2">
+      <div className="relative flex w-full max-w-[760px] flex-col items-center gap-2">
         {state.hands.map((hand, i) => (
           <div key={i} className="flex w-full flex-col items-center gap-1">
             <div className="min-h-[1.5rem] font-mono text-sm font-semibold text-[var(--gold)]">
@@ -157,7 +157,7 @@ export function PlayTable({ state, dispatch }: PlayTableProps) {
               {hand.status === 'bust' && <span className="ml-2 text-[var(--lose)]">bust</span>}
             </div>
             <div
-              className={`flex min-h-[90px] items-center justify-center rounded-lg px-2 py-1 ${
+              className={`flex min-h-[106px] items-center justify-center rounded-lg px-2 py-1 ${
                 i === state.activeHand && dealing ? 'outline outline-1 outline-[var(--gold)]/60' : ''
               }`}
             >
@@ -179,16 +179,16 @@ export function PlayTable({ state, dispatch }: PlayTableProps) {
               key={amount}
               onClick={() => dispatch({ type: 'ADD_BET', amount })}
               disabled={!betting}
-              aria-label={`Bet $${amount}`}
-              className={`flex h-11 w-11 items-center justify-center rounded-full border-[3px] border-dashed border-white/30 font-mono text-[11px] font-bold text-white transition-transform hover:scale-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${CHIP_CLASS[amount]}`}
+              aria-label={`Bet ${amount} points`}
+              className={`flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-dashed border-white/30 font-mono text-[12px] font-bold text-white transition-transform hover:scale-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${CHIP_CLASS[amount]}`}
             >
-              ${amount}
+              {amount}
             </button>
           ))}
         </div>
         <div className="font-mono text-xs text-[var(--cream)]/50">
-          Bet: <span className="font-semibold text-[var(--gold)]">${state.bet}</span> &nbsp;|&nbsp; Bank:{' '}
-          <span className="font-semibold text-[var(--gold)]">${state.bank}</span>
+          Bet: <span className="font-semibold text-[var(--gold)]">{state.bet} pts</span> &nbsp;|&nbsp; Bank:{' '}
+          <span className="font-semibold text-[var(--gold)]">{state.bank} pts</span>
           {state.optimalPlays + state.totalPlays > 0 && (
             <span className="ml-3">
               coach: {state.optimalPlays}/{state.totalPlays} optimal
@@ -231,6 +231,9 @@ export function PlayTable({ state, dispatch }: PlayTableProps) {
             New shoe dealt — count reset
           </p>
         )}
+        <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--gold)]/40">
+          Training simulation — points, not money
+        </p>
       </div>
     </div>
   )

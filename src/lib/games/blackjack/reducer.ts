@@ -50,7 +50,7 @@ export function createBlackjackReducer(rng: Rng) {
         if (state.phase !== 'betting') return state
         return { ...state, bet: 0 }
       case 'RESET_BANK':
-        return { ...state, bank: START_BANK, message: 'Bankroll reset to $500.' }
+        return { ...state, bank: START_BANK, message: 'Bankroll reset to 500 pts.' }
       case 'NEW_ROUND':
         return {
           ...state,
@@ -127,7 +127,7 @@ function deal(state: BlackjackState, rng: Rng): BlackjackState {
       ...s,
       phase: 'settled',
       bank: s.bank + win,
-      message: `Blackjack! You win $${win}!`,
+      message: `Blackjack! You win ${win} pts!`,
       tone: 'win',
       lastOptimal: null,
     }
@@ -289,20 +289,20 @@ function playDealer(state: BlackjackState): BlackjackState {
   if (hands.length > 1) {
     message =
       net > 0
-        ? `You win $${net} across both hands.`
+        ? `You win ${net} pts across both hands.`
         : net < 0
-          ? `Dealer wins. You lose $${-net} overall.`
+          ? `Dealer wins. You lose ${-net} pts overall.`
           : 'Push! Bet returned.'
   } else {
     message =
       dealerTotal > 21
-        ? `Dealer busts! You win $${hands[0].bet}`
+        ? `Dealer busts! You win ${hands[0].bet} pts`
         : hands[0].status === 'bust'
-          ? `Bust! You lose $${hands[0].bet}`
+          ? `Bust! You lose ${hands[0].bet} pts`
           : net > 0
-            ? `You win $${net}!`
+            ? `You win ${net} pts!`
             : net < 0
-              ? `Dealer wins. You lose $${-net}`
+              ? `Dealer wins. You lose ${-net} pts`
               : 'Push! Bet returned.'
   }
 

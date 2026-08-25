@@ -8,10 +8,11 @@ interface GameButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANTS = {
-  primary: 'bg-[var(--accent-1)] text-[#151006] border-[var(--accent-1)] hover:brightness-110',
+  primary:
+    'bg-[var(--accent-1)] text-[#151006] border-[var(--accent-1)] enabled:hover:brightness-110',
   ghost:
-    'bg-transparent text-[var(--ink-soft)] border-[var(--rule)] hover:border-[var(--ink-faint)] hover:text-[var(--ink)]',
-  danger: 'bg-[var(--accent-3)] text-[#fff8f2] border-[var(--accent-3)] hover:brightness-110',
+    'bg-[var(--card-bg)] text-[var(--ink)] border-[var(--ink-faint)]/60 enabled:hover:border-[var(--accent-1)] enabled:hover:text-[var(--accent-1)]',
+  danger: 'bg-[var(--accent-3)] text-[#fff8f2] border-[var(--accent-3)] enabled:hover:brightness-110',
 }
 
 const SIZES = {
@@ -27,7 +28,7 @@ export const GameButton = forwardRef<HTMLButtonElement, GameButtonProps>(
       type={type}
       className={cn(
         'inline-flex items-center justify-center gap-1.5 rounded-sm border font-mono font-semibold uppercase tracking-[0.08em] transition-colors duration-150',
-        'disabled:cursor-not-allowed disabled:opacity-40',
+        'disabled:cursor-not-allowed disabled:opacity-30 disabled:border-[var(--rule)] disabled:bg-transparent disabled:text-[var(--ink-faint)]',
         'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-2)]',
         VARIANTS[variant],
         SIZES[size],

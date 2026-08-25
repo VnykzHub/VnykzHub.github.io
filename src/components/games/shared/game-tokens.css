@@ -8,3 +8,14 @@
   --g-machine: var(--accent-2); /* patina — the model / bot / solver */
   --g-bad: var(--accent-3); /* rust — loss, wrong, bust */
 }
+
+/*
+ * Focus mode (toggled by GameShell): the game becomes the whole page. Hides
+ * the site chrome — the game's own controls stay. Body class is the seam;
+ * GameShell adds/removes it and Escape exits.
+ */
+.game-focus header,
+.game-focus footer,
+.game-focus button[aria-label='Back to top'] {
+  display: none !important;
+}

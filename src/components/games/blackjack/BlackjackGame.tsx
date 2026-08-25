@@ -25,7 +25,7 @@ export function BlackjackGame() {
   const { state, dispatch } = useBlackjackGame(seed)
 
   const readoutItems: ReadoutItem[] = [
-    { label: 'bankroll', value: `$${state.bank}`, tone: state.bank < 500 ? 'bad' : ('human' as const) },
+    { label: 'bankroll', value: `${state.bank} pts`, tone: state.bank < 500 ? 'bad' : ('human' as const) },
     {
       label: 'running count',
       value: (state.runningCount > 0 ? '+' : '') + state.runningCount,
