@@ -151,19 +151,19 @@ function hit(state: BlackjackState): BlackjackState {
   const total = handTotal(cards)
   if (total > 21) {
     hands[handIdx] = { ...hand, status: 'bust' }
-    const coached = coach(s, 'Hit', optimal, handIdx)
+    const coached = coach(s, 'Hit', optimal)
     const advanced = advanceHands({ ...coached, hands }, handIdx)
     if (advanced.phase === 'dealer') return playDealer(advanced)
     return advanced
   }
   if (total === 21) {
     hands[handIdx] = { ...hand, status: 'stood' }
-    const coached = coach(s, 'Hit', optimal, handIdx)
+    const coached = coach(s, 'Hit', optimal)
     const advanced = advanceHands({ ...coached, hands }, handIdx)
     if (advanced.phase === 'dealer') return playDealer(advanced)
     return advanced
   }
-  const coached = coach(s, 'Hit', optimal, handIdx)
+  const coached = coach(s, 'Hit', optimal)
   return { ...coached, lastOptimal: getOptimalMove(cards, coached.dealer[0]) }
 }
 
@@ -174,7 +174,7 @@ function stand(state: BlackjackState): BlackjackState {
   const optimal = getOptimalMove(s.hands[handIdx].cards, s.dealer[0])
   const hands = s.hands.slice()
   hands[handIdx] = { ...hands[handIdx], status: 'stood' }
-  const coached = coach(s, 'Stand', optimal, handIdx)
+  const coached = coach(s, 'Stand', optimal)
   const advanced = advanceHands({ ...coached, hands }, handIdx)
   if (advanced.phase === 'dealer') return playDealer(advanced)
   return advanced
@@ -197,7 +197,7 @@ function double(state: BlackjackState): BlackjackState {
     doubled: true,
   }
   hands[handIdx] = doubled
-  const coached = coach({ ...s, bank: s.bank - hand.bet }, 'Double', optimal, handIdx)
+  const coached = coach({ ...s, bank: s.bank - hand.bet }, 'Double', optimal)
   const advanced = advanceHands({ ...coached, hands }, handIdx)
   if (advanced.phase === 'dealer') return playDealer(advanced)
   return advanced
@@ -218,12 +218,12 @@ function split(state: BlackjackState): BlackjackState {
   if (hand.cards[0].rank === 'A') {
     first.status = 'stood'
     second.status = 'stood'
-    const coached = coach({ ...s, bank: s.bank - hand.bet }, 'Split', optimal, 0)
+    const coached = coach({ ...s, bank: s.bank - hand.bet }, 'Split', optimal)
     const advanced = { ...coached, hands: [first, second], activeHand: 0, phase: 'dealer' as const }
     return playDealer(advanced)
   }
 
-  const coached = coach({ ...s, bank: s.bank - hand.bet }, 'Split', optimal, 0)
+  const coached = coach({ ...s, bank: s.bank - hand.bet }, 'Split', optimal)
   return {
     ...coached,
     hands: [first, second],
@@ -237,8 +237,7 @@ function split(state: BlackjackState): BlackjackState {
 function coach(
   s: BlackjackState,
   chosen: 'Hit' | 'Stand' | 'Double' | 'Split',
-  optimal: { move: string; reason: string },
-  _handIdx: number
+  optimal: { move: string; reason: string }
 ): BlackjackState {
   const totalPlays = s.totalPlays + 1
   const match = chosen === optimal.move

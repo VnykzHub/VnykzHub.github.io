@@ -57,6 +57,7 @@ export function CountTrainerPanel({ seed }: { seed: string }) {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
+    // Full reset per seed — dealBatch is stable across renders.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seed])
 
