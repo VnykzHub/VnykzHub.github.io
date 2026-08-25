@@ -4,8 +4,9 @@ import { posterior, kellyFraction, kellySide, capFraction, ROUNDS, START, CAP } 
 describe('posterior', () => {
   it('starts at 0.5 and follows the Beta mean', () => {
     expect(posterior(0, 0)).toBe(0.5)
-    expect(posterior(3, 1)).toBeCloseTo(2 / 3, 10)
-    expect(posterior(0, 3)).toBeCloseTo(1 / 3, 10)
+    expect(posterior(3, 1)).toBeCloseTo(4 / 6, 10)
+    expect(posterior(0, 3)).toBeCloseTo(1 / 5, 10)
+    expect(posterior(3, 0)).toBeCloseTo(4 / 5, 10)
     expect(posterior(10, 0)).toBeCloseTo(11 / 12, 10)
   })
 })
