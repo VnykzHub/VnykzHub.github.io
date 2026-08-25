@@ -2,7 +2,7 @@
 
 import { Section, Container, AnimatedSection, Grid } from '@/components/common'
 import { Heading, Text, Card, Button, Eyebrow } from '@/components/ui'
-import { Mail, Phone, Linkedin, Github, Send, MapPin } from 'lucide-react'
+import { Mail, Linkedin, Github, Send, MapPin } from 'lucide-react'
 import { useState } from 'react'
 
 export function Contact() {
@@ -69,18 +69,6 @@ export function Contact() {
                     <a href="mailto:vinayak.k.mathur@gmail.com" className="text-lg hover:text-accent-amber transition-colors">
                       vinayak.k.mathur@gmail.com
                     </a>
-                  </div>
-                </div>
-              </Card>
-
-              <Card hover>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[var(--accent-2)]/20 rounded-lg flex items-center justify-center">
-                    <Phone className="text-accent-patina" size={24} />
-                  </div>
-                  <div>
-                    <Text size="sm" muted>Phone</Text>
-                    <Text size="lg">+91 9460041703</Text>
                   </div>
                 </div>
               </Card>

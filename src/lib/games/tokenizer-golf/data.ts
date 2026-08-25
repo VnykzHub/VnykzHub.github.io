@@ -6,7 +6,7 @@ export const CORPUS = [
   'Rechtsschutzversicherungsgesellschaften',
   'def flash_attention(q, k, v, block_size=128):',
   'Antidisestablishmentarianism is a mouthful.',
-  'Call +91 9460041703 before 14:30 on 2026-03-11.',
+  'Call +91 55500 12345 before 14:30 on 2026-03-11.',
   'supercalifragilisticexpialidocious',
   'SELECT customer_id, SUM(revenue) FROM txns GROUP BY 1;',
   'Vinayak deployed the retrieval pipeline to Cloud Run.',
