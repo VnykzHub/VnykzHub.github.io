@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 
 const schema = z.object({
   email: z.string().email('Valid email is required'),
@@ -19,6 +19,13 @@ export async function POST(request: Request) {
     }
 
     const { email } = parsed.data
+
+    let supabase
+    try {
+      supabase = getSupabase()
+    } catch {
+      return NextResponse.json({ error: 'Service not configured.' }, { status: 503 })
+    }
 
     const { error } = await supabase.from('subscribers').insert({ email })
 

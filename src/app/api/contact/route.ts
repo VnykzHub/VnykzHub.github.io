@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { supabase } from '@/lib/supabase'
-import { resend } from '@/lib/resend'
+import { getSupabase } from '@/lib/supabase'
+import { getResend } from '@/lib/resend'
 
 const schema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -23,6 +23,13 @@ export async function POST(request: Request) {
 
     const { name, email, message } = parsed.data
 
+    let supabase
+    try {
+      supabase = getSupabase()
+    } catch {
+      return NextResponse.json({ error: 'Service not configured.' }, { status: 503 })
+    }
+
     const { error: dbError } = await supabase.from('contacts').insert({
       name,
       email,
@@ -37,8 +44,9 @@ export async function POST(request: Request) {
       )
     }
 
-    // Notify via Resend
+    // Notify via Resend (non-fatal when unconfigured or failing)
     try {
+      const resend = getResend()
       await resend.emails.send({
         from: 'vnykzhub.com <noreply@vnykzhub.com>',
         to: 'vinayak.k.mathur@gmail.com',
