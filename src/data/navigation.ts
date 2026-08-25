@@ -1,4 +1,4 @@
-import { Home, User, Briefcase, Code2, Mail, Brain, PenLine } from 'lucide-react'
+import { Home, User, Briefcase, Code2, Mail, Brain, PenLine, FlaskConical, Gamepad2 } from 'lucide-react'
 import { LucideIcon } from 'lucide-react'
 
 export interface NavItem {
@@ -20,6 +20,8 @@ export const navigationItems: NavItem[] = [
   { id: 'projects', label: 'Projects', href: 'projects', icon: Code2, kind: 'scroll' },
   { id: 'experience', label: 'Experience', href: 'experience', icon: Briefcase, kind: 'scroll' },
   { id: 'blog', label: 'Blog', href: '/blog', icon: PenLine, kind: 'route' },
+  { id: 'games', label: 'Games', href: '/games', icon: Gamepad2, kind: 'route' },
+  { id: 'lab', label: 'Lab', href: '/lab', icon: FlaskConical, kind: 'route' },
   { id: 'skills', label: 'Skills', href: 'skills', icon: Brain, kind: 'scroll' },
   { id: 'contact', label: 'Contact', href: 'contact', icon: Mail, kind: 'scroll' },
 ]
