@@ -1,0 +1,10 @@
+/*
+ * Game-scoped tokens. Ride on the site's theme variables (index.css) so every
+ * game instrument re-skins with the site theme for free. One indirection, one
+ * place to retune if the games ever need their own calibration.
+ */
+:root {
+  --g-human: var(--accent-1); /* brass — you */
+  --g-machine: var(--accent-2); /* patina — the model / bot / solver */
+  --g-bad: var(--accent-3); /* rust — loss, wrong, bust */
+}
