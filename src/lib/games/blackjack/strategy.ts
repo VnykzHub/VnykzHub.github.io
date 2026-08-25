@@ -12,10 +12,6 @@ export interface OptimalMove {
  * test in strategy.test.ts locks the two together.
  */
 export function getOptimalMove(playerCards: Card[], upcard: Card): OptimalMove {
-  const pTotal = handTotal(playerCards)
-  const dRank = upcard.rank
-  const dVal = ['J', 'Q', 'K'].includes(dRank) ? 10 : dRank === 'A' ? 11 : parseInt(dRank, 10)
-  const dKey = dRank === 'A' ? 'A' : String(dVal)
   const twoCards = playerCards.length === 2
 
   const result = evaluate(playerCards, upcard)

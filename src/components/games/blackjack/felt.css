@@ -1,0 +1,26 @@
+/*
+ * Blackjack table tokens. The felt stays dark in both site themes — it's a
+ * physical table, like the dark-only 3D canvas on the home page.
+ */
+.bj-felt {
+  --felt: #0d3d2b;
+  --felt-light: #145038;
+  --felt-rim: #0a2e1f;
+  --gold: #c9a84c;
+  --gold-dim: #8a6d2e;
+  --cream: #f5f0e8;
+  --win: #27ae60;
+  --lose: #e74c3c;
+  --chip-red: #c0392b;
+  --chip-blue: #2980b9;
+  --chip-green: #27ae60;
+  --chip-black: #1a1a1a;
+}
+
+/* Card back: brass diamonds on deep green — the site's instruments, not the prototype's blue. */
+.bj-card-back {
+  background:
+    linear-gradient(135deg, transparent 25%, rgba(201, 168, 76, 0.32) 25%, rgba(201, 168, 76, 0.32) 50%, transparent 50%, transparent 75%, rgba(201, 168, 76, 0.32) 75%) 0 0 / 10px 10px,
+    #0a2e1f;
+  border: 1px solid rgba(201, 168, 76, 0.45);
+}

@@ -1,4 +1,6 @@
 import type { BlackjackAction, BlackjackState, Card, PlayerHand } from './types'
+
+export type { BlackjackState }
 import { buildShoe, RESHUFFLE_AT, TOTAL_CARDS, countOf } from './shoe'
 import { handTotal, isBlackjack, isPair } from './hand'
 import { getOptimalMove } from './strategy'
