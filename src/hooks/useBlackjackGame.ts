@@ -13,8 +13,12 @@ export function useBlackjackGame(seed: string) {
   const [state, dispatch] = useReducer(reducer, undefined, () => {
     const s = initialState(rngFrom(seed, 'blackjack'))
     if (typeof window !== 'undefined') {
-      const saved = Number(window.localStorage.getItem(BANK_KEY))
-      if (Number.isFinite(saved) && saved >= 0) s.bank = saved
+      const raw = window.localStorage.getItem(BANK_KEY)
+      // null means first visit — keep the starting bankroll. 0 means bankrupt.
+      if (raw !== null) {
+        const saved = Number(raw)
+        if (Number.isFinite(saved) && saved >= 0) s.bank = saved
+      }
     }
     return s
   })
