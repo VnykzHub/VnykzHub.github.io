@@ -18,6 +18,21 @@ export function getOptimalMove(playerCards: Card[], upcard: Card): OptimalMove {
   const dKey = dRank === 'A' ? 'A' : String(dVal)
   const twoCards = playerCards.length === 2
 
+  const result = evaluate(playerCards, upcard)
+  // Double is only legal on a two-card hand; coach a Hit instead on 3+.
+  if (!twoCards && result.move === 'Double') {
+    return { move: 'Hit', reason: `With ${playerCards.length} cards Double is off the table — Hit.` }
+  }
+  return result
+}
+
+function evaluate(playerCards: Card[], upcard: Card): OptimalMove {
+  const pTotal = handTotal(playerCards)
+  const dRank = upcard.rank
+  const dVal = ['J', 'Q', 'K'].includes(dRank) ? 10 : dRank === 'A' ? 11 : parseInt(dRank, 10)
+  const dKey = dRank === 'A' ? 'A' : String(dVal)
+  const twoCards = playerCards.length === 2
+
   const pair = isPair(playerCards)
   const soft = softTotal(playerCards)
 
