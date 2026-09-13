@@ -1,8 +1,8 @@
 'use client'
 
-import { Suspense, useRef, useState } from 'react'
+import { Suspense, useRef, useState, type RefObject } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Grid } from '@react-three/drei'
+import { Grid, Trail, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 import { rngFrom, type Rng } from '@/lib/games/shared/rng'
 import { createSimState, stepSimulation, clusterCenter, type SimState } from '@/lib/games/apiary-apex/simulation'
@@ -39,6 +39,8 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
   const predatorRefA = useRef<BeeHandle>(null)
   const predatorRefB = useRef<BeeHandle>(null)
   const preyRef = useRef<BeeHandle>(null)
+  const preyObjRef = useRef<THREE.Object3D | null>(null)
+  const ambienceRef = useRef<THREE.Group>(null)
   const [obstacles, setObstacles] = useState<Obstacle[]>(() => chunksAround(seed, 0, 0).flatMap((c) => c.obstacles))
 
   useFrame((state, rawDelta) => {
@@ -79,6 +81,8 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
     applyTransform(predatorRefA.current, sim.predators[0].pos, sim.predators[0].vel)
     applyTransform(predatorRefB.current, sim.predators[1].pos, sim.predators[1].vel)
     applyTransform(preyRef.current, sim.prey.pos, sim.prey.vel)
+    preyObjRef.current = preyRef.current?.group ?? null
+    ambienceRef.current?.position.set(center.x, 1.5, center.z)
 
     const d0 = Math.hypot(sim.prey.pos.x - sim.predators[0].pos.x, sim.prey.pos.z - sim.predators[0].pos.z)
     const d1 = Math.hypot(sim.prey.pos.x - sim.predators[1].pos.x, sim.prey.pos.z - sim.predators[1].pos.z)
@@ -136,6 +140,12 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
       <Bee ref={predatorRefA} role="predator" />
       <Bee ref={predatorRefB} role="predator" />
       <Bee ref={preyRef} role="prey" />
+      {/* A faint motion streak on the survivor — the one agent worth tracking by eye. */}
+      <Trail target={preyObjRef as RefObject<THREE.Object3D>} width={2} length={5} color="#f4c542" attenuation={(t) => t * t} />
+      {/* Ambient pollen, recentered on the pack each frame so it never gets left behind. */}
+      <group ref={ambienceRef}>
+        <Sparkles count={70} scale={[50, 8, 50]} size={3.5} speed={0.25} color="#ffe9a8" opacity={0.65} />
+      </group>
     </>
   )
 }
