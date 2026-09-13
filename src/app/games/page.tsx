@@ -4,7 +4,7 @@ import { GamesHub } from '@/screens/GamesHub'
 export const metadata: Metadata = {
   title: 'Games — Instruments for AI Intuition',
   description:
-    'Nine playable instruments: expected value, tokenization, perplexity, Kelly sizing, optimizers, alpha-beta search, entropy, and deduction.',
+    'Ten playable instruments: expected value, tokenization, perplexity, Kelly sizing, optimizers, alpha-beta search, entropy, deduction, and multi-agent pursuit.',
 }
 
 export default function Page() {

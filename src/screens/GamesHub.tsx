@@ -2,6 +2,7 @@ import Link from 'next/link'
 import {
   ArrowRight,
   Brain,
+  Bug,
   Coins,
   Diamond,
   Fingerprint,
@@ -128,6 +129,21 @@ const CATEGORIES: Category[] = [
         tagline: 'Survive waves of kindergartners in this PixiJS arcade game. Push, dodge, sprint — and don’t get dogpiled.',
         tech: ['PixiJS', 'Canvas'],
         icon: Swords,
+        status: 'live',
+      },
+    ],
+  },
+  {
+    id: 'field',
+    label: 'Field',
+    note: 'agents against each other — you just watch',
+    games: [
+      {
+        title: 'ApiaryApex',
+        slug: 'apiary-apex',
+        tagline: 'Two hunter bees and a survivor, loose in an endless generated field. Steering behaviors for now — the reward math a learned brain would need is already running underneath.',
+        tech: ['Three.js', 'Steering Behaviors', 'Procedural'],
+        icon: Bug,
         status: 'live',
       },
     ],
