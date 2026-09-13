@@ -29,6 +29,27 @@ export const TEAM_SEPARATION_RADIUS = 9
 export const WANDER_WEIGHT = 3.2
 
 /**
+ * Pacing. Measured against the pre-tuning build: capture gaps ranged from
+ * 2.8s (an instant re-catch right after respawn — feels cheap) to 162s (a
+ * long dead stretch with nothing happening — feels broken). Two knobs fix
+ * both tails without touching the steering itself:
+ *  - a brief post-capture window where the hunters have "lost the trail"
+ *    (reduced force), so a fresh respawn always gets a beat to react; and
+ *  - a mild speed/force ramp-up the longer the current chase runs, so an
+ *    unusually lucky escape streak can't go on forever.
+ * Both ramp linearly and reset every capture, so nothing here is a hard cliff.
+ */
+export const POST_CAPTURE_CONFUSION_DURATION = 1.8
+export const POST_CAPTURE_CONFUSION_FORCE_FACTOR = 0.35
+export const TENSION_RAMP_TIME = 60
+export const TENSION_RAMP_MAX_BONUS = 0.18
+// A hard floor under the confusion window: even a hunter that's already
+// close to the respawn point can't re-trigger a capture for this long.
+// Softer confusion-only tuning still let an unlucky respawn get re-caught
+// in ~3s during pacing analysis; this guarantees every chase gets a beat.
+export const POST_RESPAWN_IMMUNITY = 1.2
+
+/**
  * Reward-shaping weights, mirrored from the project spec's formulas
  * (Reward = w1*Δdistance - w2*time + captureBonus, etc). v1's agents are
  * scripted steering behaviors, not a trained policy, so these numbers

@@ -25,6 +25,10 @@ export interface SimState {
   distanceTraveled: number
   lastCaptureAt: number
   lastRewards: StepRewards
+  /** Sim time at which the post-capture "hunters lost the trail" window ends. */
+  confusionUntil: number
+  /** Sim time until which a fresh respawn can't be captured (respawn i-frames). */
+  immuneUntil: number
 }
 
 function makeAgent(x: number, z: number, angle: number): Agent {
@@ -45,7 +49,22 @@ export function createSimState(seed: string): SimState {
     distanceTraveled: 0,
     lastCaptureAt: 0,
     lastRewards: { predator: [0, 0], prey: 0 },
+    confusionUntil: 0,
+    immuneUntil: 0,
   }
+}
+
+/**
+ * Combined hunter speed/force multiplier for this step: reduced right after
+ * a capture (they've lost the trail), rising with an unbroken chase (rising
+ * tension), both linear ramps. 1.0 is "normal."
+ */
+function predatorIntensity(state: SimState): number {
+  const confusionRemaining = Math.max(0, state.confusionUntil - state.t)
+  const confusionT = confusionRemaining > 0 ? confusionRemaining / C.POST_CAPTURE_CONFUSION_DURATION : 0
+  const forceFactor = 1 - confusionT * (1 - C.POST_CAPTURE_CONFUSION_FORCE_FACTOR)
+  const tensionBonus = Math.min(state.survivalTime / C.TENSION_RAMP_TIME, 1) * C.TENSION_RAMP_MAX_BONUS
+  return (1 + tensionBonus) * forceFactor
 }
 
 /** Center-of-mass of the whole pack — also what the terrain streamer and camera track. */
@@ -94,8 +113,11 @@ export function stepSimulation(state: SimState, rng: Rng, dt: number = C.FIXED_D
     return force
   }
 
-  const nextP0 = { ...integrate(p0, predatorForce(p0, p1, p0Wander.dir), C.PREDATOR_MAX_SPEED, C.PREDATOR_MAX_FORCE, dt), wanderAngle: p0Wander.angle }
-  const nextP1 = { ...integrate(p1, predatorForce(p1, p0, p1Wander.dir), C.PREDATOR_MAX_SPEED, C.PREDATOR_MAX_FORCE, dt), wanderAngle: p1Wander.angle }
+  const intensity = predatorIntensity(state)
+  const predatorMaxSpeed = C.PREDATOR_MAX_SPEED * intensity
+  const predatorMaxForce = C.PREDATOR_MAX_FORCE * intensity
+  const nextP0 = { ...integrate(p0, predatorForce(p0, p1, p0Wander.dir), predatorMaxSpeed, predatorMaxForce, dt), wanderAngle: p0Wander.angle }
+  const nextP1 = { ...integrate(p1, predatorForce(p1, p0, p1Wander.dir), predatorMaxSpeed, predatorMaxForce, dt), wanderAngle: p1Wander.angle }
 
   let preyForce = V.add(
     fleeForce(prey.pos, prey.vel, p0.pos, C.PREY_MAX_SPEED),
@@ -108,7 +130,7 @@ export function stepSimulation(state: SimState, rng: Rng, dt: number = C.FIXED_D
   const nextD0 = V.distance(nextPreyRaw.pos, nextP0.pos)
   const nextD1 = V.distance(nextPreyRaw.pos, nextP1.pos)
   const nearest = Math.min(nextD0, nextD1)
-  const captured = nearest < C.CAPTURE_RADIUS
+  const captured = nearest < C.CAPTURE_RADIUS && state.t >= state.immuneUntil
 
   const lastRewards = computeRewards(prey.pos, [p0.pos, p1.pos], nextPreyRaw.pos, [nextP0.pos, nextP1.pos], captured, dt)
 
@@ -119,6 +141,8 @@ export function stepSimulation(state: SimState, rng: Rng, dt: number = C.FIXED_D
   let lastCaptureAt = state.lastCaptureAt
   let inCloseRange = state.inCloseRange
   let nextPrey = nextPreyRaw
+  let confusionUntil = state.confusionUntil
+  let immuneUntil = state.immuneUntil
 
   if (captured) {
     captures += 1
@@ -126,6 +150,8 @@ export function stepSimulation(state: SimState, rng: Rng, dt: number = C.FIXED_D
     lastCaptureAt = state.t + dt
     survivalTime = 0
     inCloseRange = false
+    confusionUntil = state.t + dt + C.POST_CAPTURE_CONFUSION_DURATION
+    immuneUntil = state.t + dt + C.POST_RESPAWN_IMMUNITY
     nextPrey = respawnPrey([nextP0, nextP1], rng)
   } else {
     const nowClose = nearest < C.CLOSE_CALL_RADIUS
@@ -148,5 +174,7 @@ export function stepSimulation(state: SimState, rng: Rng, dt: number = C.FIXED_D
     distanceTraveled,
     lastCaptureAt,
     lastRewards,
+    confusionUntil,
+    immuneUntil,
   }
 }
