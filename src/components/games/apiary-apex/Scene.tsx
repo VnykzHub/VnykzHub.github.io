@@ -84,11 +84,23 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
     const d1 = Math.hypot(sim.prey.pos.x - sim.predators[1].pos.x, sim.prey.pos.z - sim.predators[1].pos.z)
     preyRef.current?.setDanger(Math.max(0, 1 - Math.min(d0, d1) / 8))
 
-    // Chase camera: settle in behind the prey's heading, look at the pack.
+    // Chase camera: settle in behind the prey's heading, looking at the pack.
+    // Distance and height scale with how spread out the three agents are, so
+    // a fresh respawn (everyone far apart) pulls back to keep the whole chase
+    // in frame instead of cropping a hunter out, and a tight chase pushes in
+    // for a more intense close-up.
+    const spread = Math.max(
+      Math.hypot(sim.predators[0].pos.x - center.x, sim.predators[0].pos.z - center.z),
+      Math.hypot(sim.predators[1].pos.x - center.x, sim.predators[1].pos.z - center.z),
+      Math.hypot(sim.prey.pos.x - center.x, sim.prey.pos.z - center.z),
+    )
+    const camDistance = THREE.MathUtils.clamp(13 + spread * 0.9, 13, 34)
+    const camHeight = THREE.MathUtils.clamp(7 + spread * 0.45, 7, 20)
+
     cameraTarget.current.lerp(new THREE.Vector3(center.x, 0.6, center.z), 1 - Math.exp(-delta * 2.5))
     const heading = Math.atan2(sim.prey.vel.x, sim.prey.vel.z)
-    const behind = new THREE.Vector3(-Math.sin(heading), 0, -Math.cos(heading)).multiplyScalar(16)
-    const desiredCamPos = new THREE.Vector3(sim.prey.pos.x, 9, sim.prey.pos.z).add(behind)
+    const behind = new THREE.Vector3(-Math.sin(heading), 0, -Math.cos(heading)).multiplyScalar(camDistance)
+    const desiredCamPos = new THREE.Vector3(sim.prey.pos.x, camHeight, sim.prey.pos.z).add(behind)
     state.camera.position.lerp(desiredCamPos, 1 - Math.exp(-delta * 2))
     state.camera.lookAt(cameraTarget.current)
 

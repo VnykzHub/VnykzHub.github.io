@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GameShell, GameButton, type ReadoutItem } from '@/components/games/shared'
 import { Scene, type ApiaryStats } from './Scene'
 
@@ -13,6 +13,22 @@ const INITIAL_STATS: ApiaryStats = {
   bufferedFrames: 0,
 }
 
+const BEST_SURVIVAL_KEY = 'games.apiary-apex.best-survival-ever'
+const CAPTURES_EVER_KEY = 'games.apiary-apex.captures-ever'
+
+interface AllTimeRecord {
+  bestSurvival: number
+  capturesEver: number
+}
+
+function loadAllTime(): AllTimeRecord {
+  if (typeof window === 'undefined') return { bestSurvival: 0, capturesEver: 0 }
+  return {
+    bestSurvival: Number(window.localStorage.getItem(BEST_SURVIVAL_KEY)) || 0,
+    capturesEver: Number(window.localStorage.getItem(CAPTURES_EVER_KEY)) || 0,
+  }
+}
+
 const HOW_IT_WORKS = `Two hunters chase a lead-pursuit force toward the survivor's predicted future position (not its current one — chasing where it is means always arriving late), plus a mutual separation force that keeps them from stacking on the same line, so they tend to flank instead of tailgate. The survivor runs a steep inverse-square flee force from both hunters at once, so a distant threat barely registers but a close one is nearly the whole signal. All three whisker-raycast the terrain ahead — a small fan of rays samples for obstacles a few body-lengths out and steers around whatever's soonest to hit.
 
 The field itself never ends: it's a 3x3 window of 40-unit chunks that streams in around the pack's center of mass, each chunk's obstacle scatter generated once from a hash of the run's seed and that chunk's coordinates, then cached — so the same seed always regrows the same terrain, and terrain outside the window simply isn't computed. A capture doesn't reset the world, just the survivor's position; the chase keeps rolling.
@@ -23,11 +39,42 @@ export function ApiaryApexGame() {
   const [seed, setSeed] = useState('')
   const [paused, setPaused] = useState(false)
   const [stats, setStats] = useState<ApiaryStats>(INITIAL_STATS)
+  const [allTime, setAllTime] = useState<AllTimeRecord>({ bestSurvival: 0, capturesEver: 0 })
+  const prevCaptures = useRef(0)
+
+  // Load the running record once on mount (client-only — localStorage isn't
+  // available during SSR).
+  useEffect(() => {
+    setAllTime(loadAllTime())
+  }, [])
+
+  // Fold each session's numbers into the persisted all-time record. Reseeding
+  // resets stats.captures to 0, which reads as a negative delta here — that's
+  // fine, it's just clamped to 0 rather than "un-counting" past captures.
+  useEffect(() => {
+    const delta = Math.max(0, stats.captures - prevCaptures.current)
+    prevCaptures.current = stats.captures
+    if (delta === 0 && stats.bestSurvival <= allTime.bestSurvival) return
+    setAllTime((prev) => {
+      const next = {
+        bestSurvival: Math.max(prev.bestSurvival, stats.bestSurvival),
+        capturesEver: prev.capturesEver + delta,
+      }
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(BEST_SURVIVAL_KEY, String(next.bestSurvival))
+        window.localStorage.setItem(CAPTURES_EVER_KEY, String(next.capturesEver))
+      }
+      return next
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- allTime.bestSurvival read is intentionally not a dep; it would re-run this on its own write
+  }, [stats.captures, stats.bestSurvival])
 
   const readoutItems: ReadoutItem[] = [
     { label: 'Captures', value: String(stats.captures), tone: 'bad' },
     { label: 'This chase', value: `${stats.survivalTime.toFixed(1)}s`, tone: 'machine' },
-    { label: 'Best survival', value: `${stats.bestSurvival.toFixed(1)}s`, tone: 'human' },
+    { label: 'Best (session)', value: `${stats.bestSurvival.toFixed(1)}s`, tone: 'human' },
+    { label: 'Best (all-time)', value: `${allTime.bestSurvival.toFixed(1)}s`, tone: 'human' },
+    { label: 'Captures (all-time)', value: String(allTime.capturesEver), tone: 'bad' },
     { label: 'Close calls', value: String(stats.closeCalls), tone: 'mute' },
     { label: 'Chunks loaded', value: String(stats.chunkCount), tone: 'mute' },
     { label: 'Telemetry buffered', value: String(stats.bufferedFrames), tone: 'mute' },
