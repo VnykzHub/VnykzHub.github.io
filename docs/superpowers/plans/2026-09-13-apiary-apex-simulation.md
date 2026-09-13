@@ -76,18 +76,34 @@ src/lib/games/apiary-apex/
   simulation.ts     — createSimState/stepSimulation: the fixed-timestep sim core
   telemetry.ts      — TelemetryHarvester (local ring buffer; dispatch() is a
                        documented no-op — see §1's table for why)
-  *.test.ts         — 19 vitest cases: determinism, cross-seed variance,
-                       numerical stability over 5000+ steps, reward correctness
+  *.test.ts         — 21 vitest cases: determinism, cross-seed variance,
+                       numerical stability over 5000+ steps, reward correctness,
+                       respawn-immunity behavior
 src/components/games/apiary-apex/
-  Bee.tsx           — R3F bee mesh (role-colored, imperative danger-glow handle)
+  Bee.tsx           — R3F bee mesh: role-colored, stripe band, antennae, a
+                       rear stinger on hunters, imperative danger-glow handle
   ObstacleField.tsx — honeycomb-pillar obstacle rendering
   Scene.tsx         — Canvas, fixed-timestep loop driving the sim from a ref
                        (not React state — 60Hz physics stays off the render path),
-                       chase camera, chunk-streaming trigger
-  ApiaryApexGame.tsx — GameShell integration, HUD readout, pause control
+                       spread-aware auto-framing chase camera, chunk-streaming
+                       trigger, a Trail on the survivor, ambient Sparkles
+  ApiaryApexGame.tsx — GameShell integration, HUD readout, pause control,
+                       localStorage-persisted all-time best-survival/captures
 src/app/games/apiary-apex/page.tsx
 ```
 
-**Verified:** `npx tsc --noEmit`, `npm run lint`, `npx vitest run` (401 tests, repo-wide), `npm run build` all pass. Browser-checked via Playwright against the dev server: scene renders (bees, streaming obstacles, working chase camera), pause/resume freezes and resumes the sim clock, reseeding regenerates a visibly different — but for a repeat of the same seed, identical — terrain, telemetry buffer counter climbs and caps at 500, mobile viewport (390px) has no horizontal overflow.
+**Verified:** `npx tsc --noEmit`, `npm run lint`, `npx vitest run` (402 tests, repo-wide), `npm run build` all pass. Browser-checked via Playwright against the dev server: scene renders (bees, streaming obstacles, working chase camera), pause/resume freezes and resumes the sim clock, reseeding regenerates a visibly different — but for a repeat of the same seed, identical — terrain, telemetry buffer counter climbs and caps at 500, mobile viewport (390px) has no horizontal overflow, all-time records correctly persist across page reloads.
 
-**Deliberately not done in v1** (all captured as later phases above, not forgotten): no Rapier physics, no ONNX/learned brain, no telemetry upload, no nightly retraining, no cinematic camera director/audio. The in-browser experience is honest about this — the "How it works" copy on the page itself says "none of this is learned yet."
+**Deliberately not done in v1** (all captured as later phases above, not forgotten): no Rapier physics, no ONNX/learned brain, no telemetry upload, no nightly retraining, no cinematic camera director or sound. The in-browser experience is honest about this — the "How it works" copy on the page itself says none of this is learned yet.
+
+### Post-ship tuning pass (same session, iterating on user feedback loop)
+
+Before any user testing, an empirical pass caught and fixed a real pacing problem: measured over long simulated runs, capture-to-capture gaps ranged from 2.8s (an instant re-catch right after a respawn) to 162s (a long dead stretch). Two self-resetting linear ramps fixed both tails — see `config.ts`'s `POST_CAPTURE_CONFUSION_*`, `TENSION_RAMP_*`, and `POST_RESPAWN_IMMUNITY` constants and their doc comments — bringing gaps to a consistent ~26-40s average with a ~50-100s worst case. Re-measured after the change, not just asserted.
+
+Also shipped, all browser-verified:
+- **Bee silhouettes.** Elongated bodies, a banding stripe, antennae, and a rear stinger cone on hunters only — reads as "bee" and as predator-vs-prey at a glance instead of plain colored spheres.
+- **Auto-framing camera.** Distance and height now scale with how spread out the three agents are, so a fresh respawn (everyone far apart) pulls the camera back to keep the whole chase in frame, and a tight chase pushes in closer.
+- **Persisted all-time records.** Best survival ever and total captures ever live in `localStorage` (same convention as the Blackjack Trainer's bankroll persistence) and show in the readout alongside the current session's numbers.
+- **Motion trail + ambient pollen.** A fading trail follows the survivor (drei's `Trail`, driven by a ref updated in the physics loop rather than React state, so it's free of extra re-renders); `Sparkles` recentered on the pack's centroid each frame add atmosphere without ever drifting out of view as the world streams past.
+
+None of this touches the phase boundaries above — it's all still Phase 1 (scripted, client-only, no network calls), just a materially more polished version of it.
