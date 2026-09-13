@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { GameShell, GameButton, type ReadoutItem } from '@/components/games/shared'
 import { Scene, type ApiaryStats } from './Scene'
+import { AgentStatsTable } from './AgentStatsTable'
 
 const INITIAL_STATS: ApiaryStats = {
   captures: 0,
@@ -11,6 +12,12 @@ const INITIAL_STATS: ApiaryStats = {
   closeCalls: 0,
   chunkCount: 9,
   bufferedFrames: 0,
+  overtakes: 0,
+  predatorStats: [
+    { cumulativeReward: 0, distanceTraveled: 0, topSpeed: 0 },
+    { cumulativeReward: 0, distanceTraveled: 0, topSpeed: 0 },
+  ],
+  preyStats: { cumulativeReward: 0, distanceTraveled: 0, topSpeed: 0 },
 }
 
 const BEST_SURVIVAL_KEY = 'games.apiary-apex.best-survival-ever'
@@ -29,11 +36,11 @@ function loadAllTime(): AllTimeRecord {
   }
 }
 
-const HOW_IT_WORKS = `Two hunters chase a lead-pursuit force toward the survivor's predicted future position (not its current one — chasing where it is means always arriving late), plus a mutual separation force that keeps them from stacking on the same line, so they tend to flank instead of tailgate. The survivor runs a steep inverse-square flee force from both hunters at once, so a distant threat barely registers but a close one is nearly the whole signal. All three whisker-raycast the terrain ahead — a small fan of rays samples for obstacles a few body-lengths out and steers around whatever's soonest to hit.
+const HOW_IT_WORKS = `Two hunters chase a lead-pursuit force toward the survivor's predicted future position (not its current one — chasing where it is means always arriving late), plus a mutual separation force that keeps them from stacking on the same line, so they tend to flank instead of tailgate. Whichever hunter is currently farther behind also gets a small speed bonus proportional to the gap — the two race each other, not just the prey, so the lead swaps back and forth instead of settling ("overtakes" in the readout counts these swaps). The survivor runs a steep inverse-square flee force from both hunters at once, so a distant threat barely registers but a close one is nearly the whole signal. All three whisker-raycast the terrain ahead — a small fan of rays samples ten different obstacle shapes a few body-lengths out and steers around whatever's soonest to hit; anything that gets shoved past that soft avoidance anyway (a sharp turn, two competing forces) is hard-stopped at the surface afterward, so nothing actually clips through geometry.
 
-The field itself never ends: it's a 3x3 window of 40-unit chunks that streams in around the pack's center of mass, each chunk's obstacle scatter generated once from a hash of the run's seed and that chunk's coordinates, then cached — so the same seed always regrows the same terrain, and terrain outside the window simply isn't computed. A capture doesn't reset the world, just the survivor's position; the chase keeps rolling.
+The ground itself has real terrain: elevation and a temperature field, both smooth deterministic noise seeded the same way as the obstacle scatter. Climbing a rise costs speed, descending one gives it back, and everyone slows down symmetrically in patches that are too hot or too cold — the same physics for hunters and survivor alike, so it never secretly favors a side. The field never ends: it's a 3x3 window of 40-unit chunks that streams in around the pack's center of mass, each chunk's terrain, obstacles, and elevation generated once from a hash of the run's seed and that chunk's coordinates, then cached — so the same seed always regrows the same field. A capture doesn't reset the world, just the survivor's position (with a brief head start before it can be caught again); the chase keeps rolling.
 
-None of this is learned. Every position, action, and a reward figure — computed every frame from the same weighted-distance formulas a trained policy would eventually optimize — is captured into a local buffer (see the "telemetry buffered" reading), but v1 has no server to send it to and no network model to run, so it never leaves your browser. That's the seam a future version would use: swap the scripted steering above for a small neural net run through onnxruntime-web, and the telemetry buffer already speaks the right schema to train it.`
+Every position, action, and reward is computed every frame from the spec's weighted-distance formulas — only the hunter that actually made contact banks the capture bonus, and every uninterrupted minute of survival pays the prey a bonus and costs both hunters a penalty, on top of the continuous distance-based reward. None of it is learned yet, though: it's captured into a local buffer (see "telemetry buffered") purely as the schema a future trained policy would need, but v1 has no server to send it to and no network model to run, so it never leaves your browser. That's the seam a future version would use: swap the scripted steering above for a small neural net run through onnxruntime-web, and the telemetry buffer already speaks the right schema to train it.`
 
 export function ApiaryApexGame() {
   const [seed, setSeed] = useState('')
@@ -76,6 +83,7 @@ export function ApiaryApexGame() {
     { label: 'Best (all-time)', value: `${allTime.bestSurvival.toFixed(1)}s`, tone: 'human' },
     { label: 'Captures (all-time)', value: String(allTime.capturesEver), tone: 'bad' },
     { label: 'Close calls', value: String(stats.closeCalls), tone: 'mute' },
+    { label: 'Overtakes', value: String(stats.overtakes), tone: 'machine' },
     { label: 'Chunks loaded', value: String(stats.chunkCount), tone: 'mute' },
     { label: 'Telemetry buffered', value: String(stats.bufferedFrames), tone: 'mute' },
   ]
@@ -98,12 +106,17 @@ export function ApiaryApexGame() {
         </GameButton>
       </div>
       {seed && (
-        <div
-          className="relative w-full overflow-hidden rounded-sm border border-[var(--rule)] bg-[#0c1512]"
-          style={{ height: 'min(70vh, 620px)', minHeight: 360 }}
-        >
-          <Scene seed={seed} paused={paused} onStats={setStats} />
-        </div>
+        <>
+          <div
+            className="relative w-full overflow-hidden rounded-sm border border-[var(--rule)] bg-[#0c1512]"
+            style={{ height: 'min(70vh, 620px)', minHeight: 360 }}
+          >
+            <Scene seed={seed} paused={paused} onStats={setStats} />
+          </div>
+          <div className="mt-4">
+            <AgentStatsTable predatorStats={stats.predatorStats} preyStats={stats.preyStats} />
+          </div>
+        </>
       )}
     </GameShell>
   )

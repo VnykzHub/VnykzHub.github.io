@@ -27,6 +27,56 @@ export const OBSTACLE_AVOID_WEIGHT = 46
 export const TEAM_SEPARATION_WEIGHT = 14
 export const TEAM_SEPARATION_RADIUS = 9
 export const WANDER_WEIGHT = 3.2
+export const AGENT_COLLISION_RADIUS = 0.55 // how much "body" an agent has against obstacle geometry
+
+// Visual flight character (rendering only — doesn't feed back into physics):
+// yaw is turn-rate-limited rather than snapped instantly, which in turn gives
+// a well-defined turn rate to bank into; pitch follows the ground slope
+// under the current heading. Both are smoothed a bit further on top.
+export const FLIGHT_MAX_TURN_RATE = 9 // rad/s cap on visual yaw change
+export const FLIGHT_BANK_GAIN = 0.16
+export const FLIGHT_MAX_BANK = 0.55 // rad, ~31°
+export const FLIGHT_PITCH_GAIN = 0.5
+export const FLIGHT_MAX_PITCH = 0.35 // rad, ~20°
+export const FLIGHT_SMOOTHING = 10 // higher = snappier bank/pitch response
+
+// Terrain field — elevation and temperature, both deterministic smooth value
+// noise (two octaves for elevation, one for temperature's slower-varying
+// zones). Neither is cosmetic: elevation creates real uphill/downhill drag
+// via its gradient, and temperature imposes a "comfort band" outside which
+// everyone (hunters and prey alike, symmetrically — this isn't meant to
+// favor a side) slows down. Ground meshes and obstacle placement both read
+// elevationAt() so what you see lines up with what agents feel.
+export const HOVER_HEIGHT = 0.6
+export const ELEVATION_AMPLITUDE = 3.2
+export const ELEVATION_CELL_LARGE = 34
+export const ELEVATION_CELL_SMALL = 11
+export const TEMPERATURE_CELL = 58
+export const TEMPERATURE_COMFORT_LOW = 0.35
+export const TEMPERATURE_COMFORT_HIGH = 0.65
+export const TEMPERATURE_MIN_SPEED_MULT = 0.72
+export const SLOPE_SENSITIVITY = 0.5
+export const SLOPE_MAX_EFFECT = 0.28
+
+/**
+ * The two hunters race each other, not just the survivor: whichever is
+ * currently farther from the prey gets a speed bonus proportional to how far
+ * behind it is, capped at RIVALRY_MAX_BOOST once the gap reaches
+ * RIVALRY_MAX_DIFF. This makes the lead swap back and forth visibly instead
+ * of one hunter settling into a permanent front position.
+ */
+export const RIVALRY_MAX_BOOST = 0.22
+export const RIVALRY_MAX_DIFF = 10
+
+/**
+ * A periodic reward tick layered on top of the continuous per-step reward:
+ * every MILESTONE_INTERVAL seconds the prey survives, it banks a bonus and
+ * both hunters take a penalty — reinforcing "don't let the chase drag on"
+ * independent of the moment-to-moment distance reward.
+ */
+export const MILESTONE_INTERVAL = 60
+export const MILESTONE_PREY_BONUS = 40
+export const MILESTONE_PREDATOR_PENALTY = 40
 
 /**
  * Pacing. Measured against the pre-tuning build: capture gaps ranged from
@@ -41,8 +91,13 @@ export const WANDER_WEIGHT = 3.2
  */
 export const POST_CAPTURE_CONFUSION_DURATION = 1.8
 export const POST_CAPTURE_CONFUSION_FORCE_FACTOR = 0.35
-export const TENSION_RAMP_TIME = 60
-export const TENSION_RAMP_MAX_BONUS = 0.18
+// Retuned after adding terrain drag, obstacle collision, and hunter rivalry:
+// those made evasion genuinely more effective (real cover, real slowdowns),
+// which pushed capture gaps back up (avg ~41-50s, worst case ~134s,
+// measured). Ramping faster and harder pulls the worst case back down
+// without touching the mechanics that caused it.
+export const TENSION_RAMP_TIME = 45
+export const TENSION_RAMP_MAX_BONUS = 0.26
 // A hard floor under the confusion window: even a hunter that's already
 // close to the respawn point can't re-trigger a capture for this long.
 // Softer confusion-only tuning still let an unlucky respawn get re-caught

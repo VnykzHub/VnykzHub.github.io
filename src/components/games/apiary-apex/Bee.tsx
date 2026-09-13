@@ -10,6 +10,8 @@ export interface BeeHandle {
   group: THREE.Group
   /** 0 (calm) to 1 (a hunter is right on top of it) — only meaningful for the prey. */
   setDanger: (v: number) => void
+  /** A brief scale bounce — fired on the hunter that just made a catch. */
+  pulse: () => void
 }
 
 interface BeeProps {
@@ -26,6 +28,8 @@ export const Bee = forwardRef<BeeHandle, BeeProps>(function Bee({ role }, ref) {
   const bodyMatRef = useRef<THREE.MeshStandardMaterial>(null)
   const wingL = useRef<THREE.Mesh>(null)
   const wingR = useRef<THREE.Mesh>(null)
+  const bodyMeshRef = useRef<THREE.Mesh>(null)
+  const pulseStart = useRef<number | null>(null)
   const palette = PALETTE[role]
   const isPredator = role === 'predator'
 
@@ -38,6 +42,9 @@ export const Bee = forwardRef<BeeHandle, BeeProps>(function Bee({ role }, ref) {
       setDanger(v: number) {
         if (bodyMatRef.current) bodyMatRef.current.emissiveIntensity = 0.12 + Math.max(0, Math.min(1, v)) * 1.1
       },
+      pulse() {
+        pulseStart.current = performance.now() / 1000
+      },
     }),
     [],
   )
@@ -46,12 +53,26 @@ export const Bee = forwardRef<BeeHandle, BeeProps>(function Bee({ role }, ref) {
     const flap = Math.sin(clock.elapsedTime * 40) * 0.5 + 0.5
     if (wingL.current) wingL.current.rotation.z = 0.3 + flap * 0.5
     if (wingR.current) wingR.current.rotation.z = -0.3 - flap * 0.5
+
+    if (pulseStart.current !== null && bodyMeshRef.current) {
+      const elapsed = performance.now() / 1000 - pulseStart.current
+      const duration = 0.4
+      if (elapsed >= duration) {
+        bodyMeshRef.current.scale.setScalar(1)
+        pulseStart.current = null
+      } else {
+        // Bounce up to 1.4x and back via a half sine, so it reads as a
+        // single "gulp" rather than a jarring snap.
+        const s = 1 + Math.sin((elapsed / duration) * Math.PI) * 0.4
+        bodyMeshRef.current.scale.setScalar(s)
+      }
+    }
   })
 
   return (
     <group ref={groupRef}>
       {/* Abdomen — stretched along the forward (+Z) axis so heading reads at a glance. */}
-      <mesh scale={[0.85, 0.8, 1.4]}>
+      <mesh ref={bodyMeshRef} scale={[0.85, 0.8, 1.4]}>
         <sphereGeometry args={[0.5, 14, 12]} />
         <meshStandardMaterial ref={bodyMatRef} color={palette.body} emissive={palette.emissive} emissiveIntensity={0.12} />
       </mesh>

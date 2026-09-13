@@ -2,14 +2,25 @@ import type { Rng } from '@/lib/games/shared/rng'
 import * as V from './vec2'
 import type { Vec2 } from './vec2'
 import { chunksAround, type Obstacle } from './terrain'
-import { fleeForce, pursueForce, separationForce, obstacleAvoidForce, stepWander } from './steering'
-import { computeRewards, type StepRewards } from './rewards'
+import { terrainSpeedMultiplier } from './terrainField'
+import { fleeForce, pursueForce, separationForce, obstacleAvoidForce, stepWander, resolveObstacleCollisions } from './steering'
+import { computeRewards, applyMilestoneTick, type StepRewards } from './rewards'
 import * as C from './config'
 
 export interface Agent {
   pos: Vec2
   vel: Vec2
   wanderAngle: number
+}
+
+export interface AgentStats {
+  cumulativeReward: number
+  distanceTraveled: number
+  topSpeed: number
+}
+
+function freshStats(): AgentStats {
+  return { cumulativeReward: 0, distanceTraveled: 0, topSpeed: 0 }
 }
 
 export interface SimState {
@@ -22,13 +33,22 @@ export interface SimState {
   inCloseRange: boolean
   survivalTime: number
   bestSurvival: number
-  distanceTraveled: number
   lastCaptureAt: number
+  /** World position of the most recent capture (pre-respawn) — drives the capture visual effect. */
+  lastCapturePos: Vec2 | null
+  /** Which hunter made the most recent catch (0 or 1); null before any capture. */
+  lastCatcherIndex: 0 | 1 | null
   lastRewards: StepRewards
   /** Sim time at which the post-capture "hunters lost the trail" window ends. */
   confusionUntil: number
   /** Sim time until which a fresh respawn can't be captured (respawn i-frames). */
   immuneUntil: number
+  /** Which hunter is currently closer to the prey — used only to detect a lead swap. */
+  currentLeader: 0 | 1 | null
+  /** How many times the trailing hunter has overtaken the leader. */
+  overtakes: number
+  predatorStats: [AgentStats, AgentStats]
+  preyStats: AgentStats
 }
 
 function makeAgent(x: number, z: number, angle: number): Agent {
@@ -46,11 +66,16 @@ export function createSimState(seed: string): SimState {
     inCloseRange: false,
     survivalTime: 0,
     bestSurvival: 0,
-    distanceTraveled: 0,
     lastCaptureAt: 0,
+    lastCapturePos: null,
+    lastCatcherIndex: null,
     lastRewards: { predator: [0, 0], prey: 0 },
     confusionUntil: 0,
     immuneUntil: 0,
+    currentLeader: null,
+    overtakes: 0,
+    predatorStats: [freshStats(), freshStats()],
+    preyStats: freshStats(),
   }
 }
 
@@ -65,6 +90,17 @@ function predatorIntensity(state: SimState): number {
   const forceFactor = 1 - confusionT * (1 - C.POST_CAPTURE_CONFUSION_FORCE_FACTOR)
   const tensionBonus = Math.min(state.survivalTime / C.TENSION_RAMP_TIME, 1) * C.TENSION_RAMP_MAX_BONUS
   return (1 + tensionBonus) * forceFactor
+}
+
+/**
+ * The two hunters race each other too: whichever is currently farther from
+ * the prey gets a speed bonus proportional to the gap, so the lead swaps
+ * back and forth instead of settling — an overtake, not just a formation.
+ */
+function rivalryMultipliers(distA: number, distB: number): [number, number] {
+  const diff = distA - distB // positive => A is trailing
+  const t = Math.max(-1, Math.min(1, diff / C.RIVALRY_MAX_DIFF))
+  return [1 + Math.max(0, t) * C.RIVALRY_MAX_BOOST, 1 + Math.max(0, -t) * C.RIVALRY_MAX_BOOST]
 }
 
 /** Center-of-mass of the whole pack — also what the terrain streamer and camera track. */
@@ -114,10 +150,19 @@ export function stepSimulation(state: SimState, rng: Rng, dt: number = C.FIXED_D
   }
 
   const intensity = predatorIntensity(state)
-  const predatorMaxSpeed = C.PREDATOR_MAX_SPEED * intensity
-  const predatorMaxForce = C.PREDATOR_MAX_FORCE * intensity
-  const nextP0 = { ...integrate(p0, predatorForce(p0, p1, p0Wander.dir), predatorMaxSpeed, predatorMaxForce, dt), wanderAngle: p0Wander.angle }
-  const nextP1 = { ...integrate(p1, predatorForce(p1, p0, p1Wander.dir), predatorMaxSpeed, predatorMaxForce, dt), wanderAngle: p1Wander.angle }
+  const [rivalryA, rivalryB] = rivalryMultipliers(V.distance(p0.pos, prey.pos), V.distance(p1.pos, prey.pos))
+  const terrainA = terrainSpeedMultiplier(state.seed, p0.pos, p0.vel)
+  const terrainB = terrainSpeedMultiplier(state.seed, p1.pos, p1.vel)
+  const terrainPrey = terrainSpeedMultiplier(state.seed, prey.pos, prey.vel)
+
+  const p0Mult = intensity * rivalryA * terrainA
+  const p1Mult = intensity * rivalryB * terrainB
+  const rawP0 = integrate(p0, predatorForce(p0, p1, p0Wander.dir), C.PREDATOR_MAX_SPEED * p0Mult, C.PREDATOR_MAX_FORCE * p0Mult, dt)
+  const rawP1 = integrate(p1, predatorForce(p1, p0, p1Wander.dir), C.PREDATOR_MAX_SPEED * p1Mult, C.PREDATOR_MAX_FORCE * p1Mult, dt)
+  const correctedP0 = resolveObstacleCollisions(rawP0.pos, rawP0.vel, obstacles)
+  const correctedP1 = resolveObstacleCollisions(rawP1.pos, rawP1.vel, obstacles)
+  const nextP0: Agent = { pos: correctedP0.pos, vel: correctedP0.vel, wanderAngle: p0Wander.angle }
+  const nextP1: Agent = { pos: correctedP1.pos, vel: correctedP1.vel, wanderAngle: p1Wander.angle }
 
   let preyForce = V.add(
     fleeForce(prey.pos, prey.vel, p0.pos, C.PREY_MAX_SPEED),
@@ -125,41 +170,74 @@ export function stepSimulation(state: SimState, rng: Rng, dt: number = C.FIXED_D
   )
   preyForce = V.add(preyForce, obstacleAvoidForce(prey.pos, prey.vel, obstacles, C.OBSTACLE_AVOID_WEIGHT * 1.3))
   preyForce = V.add(preyForce, V.scale(preyWander.dir, C.WANDER_WEIGHT))
-  const nextPreyRaw = { ...integrate(prey, preyForce, C.PREY_MAX_SPEED, C.PREY_MAX_FORCE, dt), wanderAngle: preyWander.angle }
+  const rawPrey = integrate(prey, preyForce, C.PREY_MAX_SPEED * terrainPrey, C.PREY_MAX_FORCE * terrainPrey, dt)
+  const correctedPrey = resolveObstacleCollisions(rawPrey.pos, rawPrey.vel, obstacles)
+  const nextPreyRaw: Agent = { pos: correctedPrey.pos, vel: correctedPrey.vel, wanderAngle: preyWander.angle }
 
   const nextD0 = V.distance(nextPreyRaw.pos, nextP0.pos)
   const nextD1 = V.distance(nextPreyRaw.pos, nextP1.pos)
-  const nearest = Math.min(nextD0, nextD1)
-  const captured = nearest < C.CAPTURE_RADIUS && state.t >= state.immuneUntil
+  const outsideImmunity = state.t >= state.immuneUntil
+  const catchers: [boolean, boolean] = [outsideImmunity && nextD0 < C.CAPTURE_RADIUS, outsideImmunity && nextD1 < C.CAPTURE_RADIUS]
+  const captured = catchers[0] || catchers[1]
 
-  const lastRewards = computeRewards(prey.pos, [p0.pos, p1.pos], nextPreyRaw.pos, [nextP0.pos, nextP1.pos], captured, dt)
+  let rewards = computeRewards(prey.pos, [p0.pos, p1.pos], nextPreyRaw.pos, [nextP0.pos, nextP1.pos], catchers, dt)
+  const survivalTimeCandidate = captured ? 0 : state.survivalTime + dt
+  rewards = applyMilestoneTick(rewards, state.survivalTime, survivalTimeCandidate)
 
   let captures = state.captures
   let closeCalls = state.closeCalls
   let survivalTime = state.survivalTime + dt
   let bestSurvival = state.bestSurvival
   let lastCaptureAt = state.lastCaptureAt
+  let lastCapturePos = state.lastCapturePos
+  let lastCatcherIndex = state.lastCatcherIndex
   let inCloseRange = state.inCloseRange
   let nextPrey = nextPreyRaw
   let confusionUntil = state.confusionUntil
   let immuneUntil = state.immuneUntil
+  let currentLeader = state.currentLeader
+  let overtakes = state.overtakes
 
   if (captured) {
     captures += 1
     bestSurvival = Math.max(bestSurvival, survivalTime)
     lastCaptureAt = state.t + dt
+    lastCapturePos = nextPreyRaw.pos
+    lastCatcherIndex = catchers[0] ? 0 : 1
     survivalTime = 0
     inCloseRange = false
     confusionUntil = state.t + dt + C.POST_CAPTURE_CONFUSION_DURATION
     immuneUntil = state.t + dt + C.POST_RESPAWN_IMMUNITY
+    currentLeader = null // the post-respawn distance jump isn't a real lead change
     nextPrey = respawnPrey([nextP0, nextP1], rng)
   } else {
-    const nowClose = nearest < C.CLOSE_CALL_RADIUS
+    const nowClose = Math.min(nextD0, nextD1) < C.CLOSE_CALL_RADIUS
     if (nowClose && !state.inCloseRange) closeCalls += 1
     inCloseRange = nowClose
+
+    const leaderNow: 0 | 1 = nextD0 < nextD1 ? 0 : 1
+    if (currentLeader !== null && currentLeader !== leaderNow) overtakes += 1
+    currentLeader = leaderNow
   }
 
-  const distanceTraveled = state.distanceTraveled + V.length(nextPreyRaw.vel) * dt
+  const speedOf = (v: Vec2): number => V.length(v)
+  const predatorStats: [AgentStats, AgentStats] = [
+    {
+      cumulativeReward: state.predatorStats[0].cumulativeReward + rewards.predator[0],
+      distanceTraveled: state.predatorStats[0].distanceTraveled + speedOf(nextP0.vel) * dt,
+      topSpeed: Math.max(state.predatorStats[0].topSpeed, speedOf(nextP0.vel)),
+    },
+    {
+      cumulativeReward: state.predatorStats[1].cumulativeReward + rewards.predator[1],
+      distanceTraveled: state.predatorStats[1].distanceTraveled + speedOf(nextP1.vel) * dt,
+      topSpeed: Math.max(state.predatorStats[1].topSpeed, speedOf(nextP1.vel)),
+    },
+  ]
+  const preyStats: AgentStats = {
+    cumulativeReward: state.preyStats.cumulativeReward + rewards.prey,
+    distanceTraveled: state.preyStats.distanceTraveled + speedOf(nextPreyRaw.vel) * dt,
+    topSpeed: Math.max(state.preyStats.topSpeed, speedOf(nextPreyRaw.vel)),
+  }
 
   return {
     ...state,
@@ -171,10 +249,15 @@ export function stepSimulation(state: SimState, rng: Rng, dt: number = C.FIXED_D
     inCloseRange,
     survivalTime,
     bestSurvival,
-    distanceTraveled,
     lastCaptureAt,
-    lastRewards,
+    lastCapturePos,
+    lastCatcherIndex,
+    lastRewards: rewards,
     confusionUntil,
     immuneUntil,
+    currentLeader,
+    overtakes,
+    predatorStats,
+    preyStats,
   }
 }

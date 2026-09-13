@@ -67,26 +67,44 @@ The user's brief asked for "a starting point," and separately confirmed the inte
 
 ```
 src/lib/games/apiary-apex/
-  vec2.ts          — 2D vector math (the world is x/z; y is a fixed hover height)
-  config.ts        — all tunables, incl. the spec's reward-formula weights
-  terrain.ts        — chunkAt/buildChunk/chunksAround: seeded, cached, deterministic
+  vec2.ts           — 2D vector math (the world is x/z; y is terrain elevation + hover)
+  config.ts         — all tunables: reward weights, pacing ramps, terrain/rivalry/
+                       milestone constants, flight-animation gains
+  terrainField.ts   — elevationAt/temperatureAt (deterministic value noise, no
+                       library), elevationGradient, terrain speed multipliers,
+                       temperatureColor
+  terrain.ts        — chunkAt/buildChunk/chunksAround: seeded, cached, deterministic;
+                       10 OBSTACLE_TYPES, each obstacle carries groundY from terrainField
   steering.ts       — fleeForce, pursueForce (lead prediction), separationForce,
-                       obstacleAvoidForce (whisker raycasting), stepWander
-  rewards.ts        — computeRewards() implementing the spec's two reward formulas
-  simulation.ts     — createSimState/stepSimulation: the fixed-timestep sim core
+                       obstacleAvoidForce (whisker raycasting), stepWander,
+                       resolveObstacleCollisions (hard post-integration backstop)
+  rewards.ts        — computeRewards() (per-catcher attribution) + applyMilestoneTick()
+  simulation.ts     — createSimState/stepSimulation: fixed-timestep core; hunter
+                       rivalry, terrain speed multipliers, collision resolution,
+                       per-agent AgentStats, overtakes tracking, capture metadata
   telemetry.ts      — TelemetryHarvester (local ring buffer; dispatch() is a
                        documented no-op — see §1's table for why)
-  *.test.ts         — 21 vitest cases: determinism, cross-seed variance,
-                       numerical stability over 5000+ steps, reward correctness,
-                       respawn-immunity behavior
+  *.test.ts         — 43 vitest cases: determinism, cross-seed variance, numerical
+                       stability, reward/milestone correctness, respawn immunity,
+                       obstacle-type variety, terrain field range/continuity, hard
+                       collision resolution, zero-penetration over a 4000-step run
 src/components/games/apiary-apex/
-  Bee.tsx           — R3F bee mesh: role-colored, stripe band, antennae, a
-                       rear stinger on hunters, imperative danger-glow handle
-  ObstacleField.tsx — honeycomb-pillar obstacle rendering
-  Scene.tsx         — Canvas, fixed-timestep loop driving the sim from a ref
-                       (not React state — 60Hz physics stays off the render path),
-                       spread-aware auto-framing chase camera, chunk-streaming
-                       trigger, a Trail on the survivor, ambient Sparkles
+  Bee.tsx            — R3F bee mesh: role-colored, stripe band, antennae, a rear
+                        stinger on hunters, danger-glow + capture-pulse handle
+  ObstacleField.tsx  — 10 distinct obstacle geometries (boulder, pine, flower
+                        cluster, mushroom, log, reeds, crystal, stump, bush,
+                        honeycomb), each positioned at its terrain groundY
+  TerrainField.tsx   — streamed per-chunk ground mesh, vertex-displaced by
+                        elevation and vertex-colored by temperature, geometry
+                        cached and disposed like terrain.ts's chunk cache
+  AgentStatsTable.tsx — per-agent (Hunter A / Hunter B / Survivor) reward,
+                        distance, and top-speed breakdown
+  Scene.tsx          — Canvas, fixed-timestep loop driving the sim from a ref
+                        (not React state — 60Hz physics stays off the render path),
+                        turn-rate-limited yaw with bank/pitch flight animation,
+                        spread-aware auto-framing chase camera (terrain-aware),
+                        chunk-streaming trigger, capture flash + hunter pulse,
+                        a Trail on the survivor, ambient Sparkles
   ApiaryApexGame.tsx — GameShell integration, HUD readout, pause control,
                        localStorage-persisted all-time best-survival/captures
 src/app/games/apiary-apex/page.tsx
@@ -107,3 +125,28 @@ Also shipped, all browser-verified:
 - **Motion trail + ambient pollen.** A fading trail follows the survivor (drei's `Trail`, driven by a ref updated in the physics loop rather than React state, so it's free of extra re-renders); `Sparkles` recentered on the pack's centroid each frame add atmosphere without ever drifting out of view as the world streams past.
 
 None of this touches the phase boundaries above — it's all still Phase 1 (scripted, client-only, no network calls), just a materially more polished version of it.
+
+### Gap analysis + feature pass (user playtest questions, same session)
+
+Before the user could test locally, they asked direct questions about the running build — a useful gap analysis, since some answers exposed real bugs rather than just missing features:
+
+- **Predators didn't chase each other** — confirmed correct: hunters only pursue the prey; the force between them is pure separation (no clustering), not mutual pursuit. Unchanged, but the user then asked for a *race* dynamic between them (see rivalry below).
+- **Only one obstacle type existed** (a hex pillar) — confirmed gap, fixed: 10 types now (`terrain.ts`'s `OBSTACLE_TYPES`).
+- **No terrain elevation or temperature** — confirmed gap, fixed: a full terrain field (below).
+- **Obstacle avoidance was soft-only** — confirmed real bug: `obstacleAvoidForce` is a predictive nudge, not a hard boundary, so a sharp turn or two competing forces could shove an agent visibly into geometry with zero consequence. Fixed with `resolveObstacleCollisions` (steering.ts) — a post-integration penetration check that pushes the agent back to the surface and kills only the inward velocity component (a slide, not a stop). Verified with a 4000-step test asserting zero penetration against real chunk obstacles, not just a unit-level check of the function in isolation.
+- **No capture visual feedback** — confirmed gap, fixed: a decaying point-light flash at the catch site plus a "gulp" scale-bounce on the catching hunter.
+- **Reward model was too coarse** for the user's actual theory (catcher-only credit, periodic time-based reinforcement, per-agent stat tracking) — all three implemented (below).
+
+**Terrain field** (`terrainField.ts`, new): deterministic 2-octave value noise (hashed lattice + bilinear smoothstep interpolation — no library) drives both elevation and temperature, seeded identically to the obstacle scatter so the same seed always regrows the same field.
+- *Elevation* has a real gradient (`elevationGradient`) that agents feel: climbing costs speed, descending gives it back, both capped (`SLOPE_MAX_EFFECT`). Ground meshes, obstacle placement, and bee hover height all read the same `elevationAt()`, so what's on screen matches what agents feel underfoot.
+- *Temperature* imposes a comfort band (`TEMPERATURE_COMFORT_LOW/HIGH`) outside of which everyone — hunters and prey alike, deliberately symmetric so it never secretly favors a side — slows down, and drives a cold→green→hot color ramp on the ground mesh itself (`TerrainField.tsx`, a per-chunk displaced + vertex-colored mesh replacing the old flat `<Grid>`).
+
+**Hunter rivalry** (`rivalryMultipliers` in `simulation.ts`): whichever hunter is currently farther from the prey gets a speed bonus proportional to the gap, capped at `RIVALRY_MAX_BOOST` once the gap reaches `RIVALRY_MAX_DIFF`. The lead visibly swaps back and forth instead of settling; each swap increments `state.overtakes`, shown in the readout and confirmed happening in every long test run.
+
+**Reward model refinement** (`rewards.ts`): `computeRewards` now takes `catchers: [boolean, boolean]` instead of one shared `captured` flag, so the capture bonus goes only to the hunter that actually made contact (both, if simultaneous) — confirmed live in a browser run where one hunter's cumulative reward jumped to 1000+ on a catch while the other's stayed near zero. `applyMilestoneTick` layers a periodic tick on top: every `MILESTONE_INTERVAL` (60s) the prey survives uninterrupted, it banks a bonus and both hunters take a penalty, independent of the continuous distance-based reward. Per-agent running totals (`AgentStats`: cumulative reward, distance traveled, top speed) now accumulate for all three agents for the life of a run and render in a new `AgentStatsTable.tsx` below the canvas.
+
+**Flight character**: yaw is now turn-rate-limited (`FLIGHT_MAX_TURN_RATE`) rather than snapped instantly, which gives a well-defined turn rate to bank into (`FLIGHT_BANK_GAIN`/`FLIGHT_MAX_BANK`); pitch follows the ground slope under the current heading (`FLIGHT_PITCH_GAIN`/`FLIGHT_MAX_PITCH`). Answers the user's flight-quality question directly: bees now visibly bank into turns and pitch with terrain instead of staying flat and only yawing.
+
+**Pacing re-tuned again**: the terrain drag, real obstacle collision, and hunter rivalry all made evasion genuinely more effective, which pushed capture gaps back up (measured avg ~41-50s, worst case ~134s — worse than the earlier tuned baseline). Rather than leave that regressed, `TENSION_RAMP_TIME`/`TENSION_RAMP_MAX_BONUS` were retuned and re-measured, landing back at avg ~28-36s, worst case ~80-96s, with overtakes and close-calls both healthy.
+
+**Verified**: full suite now 425 tests (43 new/changed in `apiary-apex`, covering the terrain field, obstacle variety, per-catcher rewards, milestone ticks, rivalry/overtakes, per-agent stats, and — the important one — a long-run test asserting no agent ever ends a step penetrating a real obstacle). `tsc`/`lint`/`build` all clean. Browser-verified via Playwright screenshots across multiple seeds: terrain color visibly shifts from cold to hot across the field, 7+ distinct obstacle shapes visible in single frames, a real capture correctly attributed reward to only the catching hunter (1016 vs 5 in one observed run), and the per-agent stats table populates live. The capture flash/pulse effects are code-verified and exercised by the capture-attribution test but weren't caught on camera — they decay in well under a second, faster than a screenshot-polling loop can reliably sample.

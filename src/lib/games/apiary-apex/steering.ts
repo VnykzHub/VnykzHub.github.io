@@ -1,7 +1,13 @@
 import * as V from './vec2'
 import type { Vec2 } from './vec2'
-import type { Obstacle } from './terrain'
-import { WHISKER_ANGLES, WHISKER_LOOKAHEAD } from './config'
+import { WHISKER_ANGLES, WHISKER_LOOKAHEAD, AGENT_COLLISION_RADIUS } from './config'
+
+/** Only the geometry steering actually needs — decoupled from terrain.ts's richer Obstacle (type, groundY, ...). */
+interface ObstacleCircle {
+  x: number
+  z: number
+  radius: number
+}
 
 /** Seek-style flee: strongest at close range, fading fast — a threat far away barely registers. */
 export function fleeForce(pos: Vec2, vel: Vec2, threat: Vec2, maxSpeed: number): Vec2 {
@@ -43,7 +49,7 @@ export function separationForce(pos: Vec2, others: Vec2[], radius: number): Vec2
  * (and around) the current heading, find the soonest obstacle any of them
  * would hit, and steer away from it. Zero when nothing is in the way.
  */
-export function obstacleAvoidForce(pos: Vec2, vel: Vec2, obstacles: Obstacle[], maxForce: number, agentRadius = 0.6): Vec2 {
+export function obstacleAvoidForce(pos: Vec2, vel: Vec2, obstacles: ObstacleCircle[], maxForce: number, agentRadius = 0.6): Vec2 {
   const speed = V.length(vel)
   const heading = speed > 0.1 ? V.normalize(vel) : V.v2(1, 0)
   let best: { t: number; away: Vec2 } | null = null
@@ -71,4 +77,26 @@ export function obstacleAvoidForce(pos: Vec2, vel: Vec2, obstacles: Obstacle[], 
 export function stepWander(angle: number, rng: () => number): { angle: number; dir: Vec2 } {
   const next = angle + (rng() - 0.5) * 0.6
   return { angle: next, dir: V.fromAngle(next) }
+}
+
+/**
+ * Whisker avoidance is a soft nudge, not a guarantee — a sharp escape turn or
+ * two competing flee forces can still shove an agent past it. This is the
+ * hard backstop: run after integration, it finds any obstacle the agent
+ * ended up inside and pushes it back out to the surface, killing only the
+ * velocity component driving further inward (a slide, not a dead stop).
+ */
+export function resolveObstacleCollisions(pos: Vec2, vel: Vec2, obstacles: ObstacleCircle[], agentRadius = AGENT_COLLISION_RADIUS): { pos: Vec2; vel: Vec2 } {
+  let correctedPos = pos
+  let correctedVel = vel
+  for (const obs of obstacles) {
+    const minDist = obs.radius + agentRadius
+    const d = V.distance(correctedPos, obs)
+    if (d >= minDist || d < 1e-6) continue
+    const away = V.normalize(V.sub(correctedPos, obs))
+    correctedPos = V.add(obs, V.scale(away, minDist))
+    const velIntoObstacle = correctedVel.x * away.x + correctedVel.z * away.z
+    if (velIntoObstacle < 0) correctedVel = V.sub(correctedVel, V.scale(away, velIntoObstacle))
+  }
+  return { pos: correctedPos, vel: correctedVel }
 }

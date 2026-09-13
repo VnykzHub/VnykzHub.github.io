@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { buildChunk, chunksAround, chunkAt } from './terrain'
+import { buildChunk, chunksAround, chunkAt, OBSTACLE_TYPES } from './terrain'
+import { elevationAt } from './terrainField'
 import { SAFE_ZONE_RADIUS } from './config'
 
 describe('terrain', () => {
@@ -34,5 +35,24 @@ describe('terrain', () => {
     const chunks = chunksAround('seed-1', 0, 0)
     expect(chunks).toHaveLength(9)
     expect(new Set(chunks.map((c) => c.id)).size).toBe(9)
+  })
+
+  it('gives every obstacle a valid type and a ground elevation matching the terrain field', () => {
+    const chunk = buildChunk('type-check', 3, -2)
+    expect(chunk.obstacles.length).toBeGreaterThan(0)
+    for (const o of chunk.obstacles) {
+      expect(OBSTACLE_TYPES).toContain(o.type)
+      expect(o.groundY).toBeCloseTo(elevationAt('type-check', o.x, o.z), 10)
+    }
+  })
+
+  it('produces a variety of obstacle types across many chunks, not just one', () => {
+    const seen = new Set<string>()
+    for (let cx = 0; cx < 8; cx++) {
+      for (let cz = 0; cz < 8; cz++) {
+        for (const o of buildChunk('variety-check', cx, cz).obstacles) seen.add(o.type)
+      }
+    }
+    expect(seen.size).toBeGreaterThanOrEqual(OBSTACLE_TYPES.length - 1)
   })
 })

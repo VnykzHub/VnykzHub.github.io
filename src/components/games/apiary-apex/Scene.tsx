@@ -2,15 +2,17 @@
 
 import { Suspense, useRef, useState, type RefObject } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Grid, Trail, Sparkles } from '@react-three/drei'
+import { Trail, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 import { rngFrom, type Rng } from '@/lib/games/shared/rng'
-import { createSimState, stepSimulation, clusterCenter, type SimState } from '@/lib/games/apiary-apex/simulation'
-import { chunksAround, type Obstacle } from '@/lib/games/apiary-apex/terrain'
+import { createSimState, stepSimulation, clusterCenter, type SimState, type AgentStats } from '@/lib/games/apiary-apex/simulation'
+import { chunksAround, type Chunk } from '@/lib/games/apiary-apex/terrain'
+import { elevationAt, elevationGradient } from '@/lib/games/apiary-apex/terrainField'
 import { TelemetryHarvester } from '@/lib/games/apiary-apex/telemetry'
-import { CHUNK_SIZE, FIXED_DT } from '@/lib/games/apiary-apex/config'
+import { FIXED_DT, HOVER_HEIGHT, FLIGHT_MAX_TURN_RATE, FLIGHT_BANK_GAIN, FLIGHT_MAX_BANK, FLIGHT_PITCH_GAIN, FLIGHT_MAX_PITCH, FLIGHT_SMOOTHING } from '@/lib/games/apiary-apex/config'
 import { Bee, type BeeHandle } from './Bee'
 import { ObstacleField } from './ObstacleField'
+import { TerrainField } from './TerrainField'
 
 export interface ApiaryStats {
   captures: number
@@ -19,12 +21,29 @@ export interface ApiaryStats {
   closeCalls: number
   chunkCount: number
   bufferedFrames: number
+  overtakes: number
+  predatorStats: [AgentStats, AgentStats]
+  preyStats: AgentStats
 }
 
 interface SimulationRootProps {
   seed: string
   paused: boolean
   onStats: (stats: ApiaryStats) => void
+}
+
+/** Per-bee smoothed flight state — yaw is turn-rate-limited, bank/pitch derived from that and terrain slope. */
+interface FlightState {
+  yaw: number
+  bank: number
+  pitch: number
+}
+
+function shortestAngleDelta(from: number, to: number): number {
+  let d = (to - from) % (Math.PI * 2)
+  if (d > Math.PI) d -= Math.PI * 2
+  if (d < -Math.PI) d += Math.PI * 2
+  return d
 }
 
 function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
@@ -34,6 +53,7 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
   const accRef = useRef(0)
   const lastPush = useRef(0)
   const lastChunkKey = useRef('')
+  const lastSeenCaptureAt = useRef(0)
   const cameraTarget = useRef(new THREE.Vector3(0, 0.6, 0))
 
   const predatorRefA = useRef<BeeHandle>(null)
@@ -41,7 +61,12 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
   const preyRef = useRef<BeeHandle>(null)
   const preyObjRef = useRef<THREE.Object3D | null>(null)
   const ambienceRef = useRef<THREE.Group>(null)
-  const [obstacles, setObstacles] = useState<Obstacle[]>(() => chunksAround(seed, 0, 0).flatMap((c) => c.obstacles))
+  const flashRef = useRef<THREE.PointLight>(null)
+  const flightP0 = useRef<FlightState>({ yaw: 0.4, bank: 0, pitch: 0 })
+  const flightP1 = useRef<FlightState>({ yaw: Math.PI - 0.4, bank: 0, pitch: 0 })
+  const flightPrey = useRef<FlightState>({ yaw: -Math.PI / 2, bank: 0, pitch: 0 })
+
+  const [chunks, setChunks] = useState<Chunk[]>(() => chunksAround(seed, 0, 0))
 
   useFrame((state, rawDelta) => {
     if (paused) return
@@ -63,24 +88,47 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
     const sim = simRef.current
     const center = clusterCenter(sim)
 
-    const chunks = chunksAround(seed, center.x, center.z)
-    const chunkKey = chunks
+    const visibleChunks = chunksAround(seed, center.x, center.z)
+    const chunkKey = visibleChunks
       .map((c) => c.id)
       .sort()
       .join('|')
     if (chunkKey !== lastChunkKey.current) {
       lastChunkKey.current = chunkKey
-      setObstacles(chunks.flatMap((c) => c.obstacles))
+      setChunks(visibleChunks)
     }
 
-    const applyTransform = (handle: BeeHandle | null, pos: { x: number; z: number }, vel: { x: number; z: number }) => {
+    // Flight: yaw is turn-rate-limited (not snapped), which gives a genuine
+    // turn rate to bank into; pitch follows ground slope under the heading.
+    // Position sits on the local terrain elevation, not a flat y=0.
+    const applyFlight = (handle: BeeHandle | null, pos: { x: number; z: number }, vel: { x: number; z: number }, flight: FlightState) => {
       if (!handle?.group) return
-      handle.group.position.set(pos.x, 0.6, pos.z)
-      if (vel.x * vel.x + vel.z * vel.z > 0.01) handle.group.rotation.y = Math.atan2(vel.x, vel.z)
+      const speed = Math.hypot(vel.x, vel.z)
+      if (speed > 0.3) {
+        const targetYaw = Math.atan2(vel.x, vel.z)
+        const maxStep = FLIGHT_MAX_TURN_RATE * delta
+        const rawDelta = shortestAngleDelta(flight.yaw, targetYaw)
+        const turnDelta = Math.max(-maxStep, Math.min(maxStep, rawDelta))
+        flight.yaw += turnDelta
+        const turnRate = turnDelta / Math.max(delta, 1e-4)
+        const targetBank = Math.max(-FLIGHT_MAX_BANK, Math.min(FLIGHT_MAX_BANK, turnRate * FLIGHT_BANK_GAIN))
+        const smoothing = 1 - Math.exp(-FLIGHT_SMOOTHING * delta)
+        flight.bank += (targetBank - flight.bank) * smoothing
+
+        const grad = elevationGradient(seed, pos.x, pos.z)
+        const headingX = Math.sin(flight.yaw)
+        const headingZ = Math.cos(flight.yaw)
+        const slopeAlongHeading = grad.x * headingX + grad.z * headingZ
+        const targetPitch = Math.max(-FLIGHT_MAX_PITCH, Math.min(FLIGHT_MAX_PITCH, -slopeAlongHeading * FLIGHT_PITCH_GAIN))
+        flight.pitch += (targetPitch - flight.pitch) * smoothing
+      }
+      const groundY = elevationAt(seed, pos.x, pos.z)
+      handle.group.position.set(pos.x, groundY + HOVER_HEIGHT, pos.z)
+      handle.group.rotation.set(flight.pitch, flight.yaw, flight.bank)
     }
-    applyTransform(predatorRefA.current, sim.predators[0].pos, sim.predators[0].vel)
-    applyTransform(predatorRefB.current, sim.predators[1].pos, sim.predators[1].vel)
-    applyTransform(preyRef.current, sim.prey.pos, sim.prey.vel)
+    applyFlight(predatorRefA.current, sim.predators[0].pos, sim.predators[0].vel, flightP0.current)
+    applyFlight(predatorRefB.current, sim.predators[1].pos, sim.predators[1].vel, flightP1.current)
+    applyFlight(preyRef.current, sim.prey.pos, sim.prey.vel, flightPrey.current)
     preyObjRef.current = preyRef.current?.group ?? null
     ambienceRef.current?.position.set(center.x, 1.5, center.z)
 
@@ -88,11 +136,29 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
     const d1 = Math.hypot(sim.prey.pos.x - sim.predators[1].pos.x, sim.prey.pos.z - sim.predators[1].pos.z)
     preyRef.current?.setDanger(Math.max(0, 1 - Math.min(d0, d1) / 8))
 
+    // Capture feedback: a brief warm flash at the catch site and a scale
+    // "gulp" on whichever hunter actually made it.
+    if (sim.lastCaptureAt > lastSeenCaptureAt.current) {
+      lastSeenCaptureAt.current = sim.lastCaptureAt
+      if (sim.lastCatcherIndex === 0) predatorRefA.current?.pulse()
+      else if (sim.lastCatcherIndex === 1) predatorRefB.current?.pulse()
+      if (flashRef.current && sim.lastCapturePos) {
+        const flashY = elevationAt(seed, sim.lastCapturePos.x, sim.lastCapturePos.z) + HOVER_HEIGHT
+        flashRef.current.position.set(sim.lastCapturePos.x, flashY, sim.lastCapturePos.z)
+        flashRef.current.intensity = 18
+      }
+    }
+    if (flashRef.current && flashRef.current.intensity > 0.01) {
+      flashRef.current.intensity *= Math.exp(-delta * 6)
+    }
+
     // Chase camera: settle in behind the prey's heading, looking at the pack.
     // Distance and height scale with how spread out the three agents are, so
     // a fresh respawn (everyone far apart) pulls back to keep the whole chase
     // in frame instead of cropping a hunter out, and a tight chase pushes in
-    // for a more intense close-up.
+    // for a more intense close-up. Both track the local terrain elevation,
+    // not a flat y=0, so the camera doesn't dip through hills or hover oddly
+    // over valleys.
     const spread = Math.max(
       Math.hypot(sim.predators[0].pos.x - center.x, sim.predators[0].pos.z - center.z),
       Math.hypot(sim.predators[1].pos.x - center.x, sim.predators[1].pos.z - center.z),
@@ -100,11 +166,13 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
     )
     const camDistance = THREE.MathUtils.clamp(13 + spread * 0.9, 13, 34)
     const camHeight = THREE.MathUtils.clamp(7 + spread * 0.45, 7, 20)
+    const centerGroundY = elevationAt(seed, center.x, center.z)
+    const preyGroundY = elevationAt(seed, sim.prey.pos.x, sim.prey.pos.z)
 
-    cameraTarget.current.lerp(new THREE.Vector3(center.x, 0.6, center.z), 1 - Math.exp(-delta * 2.5))
+    cameraTarget.current.lerp(new THREE.Vector3(center.x, centerGroundY + 0.6, center.z), 1 - Math.exp(-delta * 2.5))
     const heading = Math.atan2(sim.prey.vel.x, sim.prey.vel.z)
     const behind = new THREE.Vector3(-Math.sin(heading), 0, -Math.cos(heading)).multiplyScalar(camDistance)
-    const desiredCamPos = new THREE.Vector3(sim.prey.pos.x, camHeight, sim.prey.pos.z).add(behind)
+    const desiredCamPos = new THREE.Vector3(sim.prey.pos.x, preyGroundY + camHeight, sim.prey.pos.z).add(behind)
     state.camera.position.lerp(desiredCamPos, 1 - Math.exp(-delta * 2))
     state.camera.lookAt(cameraTarget.current)
 
@@ -116,8 +184,11 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
         bestSurvival: sim.bestSurvival,
         survivalTime: sim.survivalTime,
         closeCalls: sim.closeCalls,
-        chunkCount: chunks.length,
+        chunkCount: visibleChunks.length,
         bufferedFrames: harvesterRef.current.size,
+        overtakes: sim.overtakes,
+        predatorStats: sim.predatorStats,
+        preyStats: sim.preyStats,
       })
     }
   })
@@ -127,16 +198,9 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
       <fog attach="fog" args={['#0c1512', 20, 85]} />
       <ambientLight intensity={0.6} color="#cfe8c0" />
       <directionalLight position={[20, 30, 10]} intensity={1.1} color="#fff2cf" />
-      <Grid
-        args={[400, 400]}
-        cellSize={2}
-        cellColor="#2f4a34"
-        sectionSize={CHUNK_SIZE}
-        sectionColor="#4c7a52"
-        fadeDistance={90}
-        infiniteGrid
-      />
-      <ObstacleField obstacles={obstacles} />
+      <pointLight ref={flashRef} intensity={0} distance={14} decay={2} color="#ffb347" />
+      <TerrainField seed={seed} chunks={chunks} />
+      <ObstacleField obstacles={chunks.flatMap((c) => c.obstacles)} />
       <Bee ref={predatorRefA} role="predator" />
       <Bee ref={predatorRefB} role="predator" />
       <Bee ref={preyRef} role="prey" />

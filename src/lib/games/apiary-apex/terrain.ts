@@ -1,4 +1,5 @@
 import { rngFrom } from '@/lib/games/shared/rng'
+import { elevationAt } from './terrainField'
 import {
   CHUNK_SIZE,
   VISIBILITY_RADIUS,
@@ -9,11 +10,36 @@ import {
   OBSTACLE_MAX_RADIUS,
 } from './config'
 
+/**
+ * Ten distinct silhouettes so the field reads as a real place rather than a
+ * field of identical hex pillars — each type gets its own geometry in
+ * ObstacleField.tsx. Deliberately just shape + a natural-palette color for
+ * now; a later aesthetic pass (real materials/textures per type) slots in
+ * without touching this list.
+ */
+export const OBSTACLE_TYPES = [
+  'honeycomb',
+  'boulder',
+  'pine',
+  'flowerCluster',
+  'mushroom',
+  'log',
+  'reedCluster',
+  'crystal',
+  'stump',
+  'bush',
+] as const
+
+export type ObstacleType = (typeof OBSTACLE_TYPES)[number]
+
 export interface Obstacle {
   x: number
   z: number
   radius: number
   height: number
+  type: ObstacleType
+  /** Terrain elevation at (x, z) — obstacles sit on the ground, not at world y=0. */
+  groundY: number
 }
 
 export interface Chunk {
@@ -55,7 +81,9 @@ export function buildChunk(seed: string, cx: number, cz: number): Chunk {
     const radius = OBSTACLE_MIN_RADIUS + r() * (OBSTACLE_MAX_RADIUS - OBSTACLE_MIN_RADIUS)
     if (Math.hypot(x, z) < SAFE_ZONE_RADIUS + radius) continue // keep spawn clear
     const height = 2 + r() * 3
-    obstacles.push({ x, z, radius, height })
+    const type = OBSTACLE_TYPES[Math.floor(r() * OBSTACLE_TYPES.length)]
+    const groundY = elevationAt(seed, x, z)
+    obstacles.push({ x, z, radius, height, type, groundY })
   }
 
   const chunk: Chunk = { id, cx, cz, obstacles }
