@@ -1,9 +1,15 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { GameShell, GameButton, type ReadoutItem } from '@/components/games/shared'
-import { Scene, type ApiaryStats } from './Scene'
+import { GameShell, GameButton, SegmentedControl, type ReadoutItem } from '@/components/games/shared'
+import { Scene, type ApiaryStats, type FollowTarget } from './Scene'
 import { AgentStatsTable } from './AgentStatsTable'
+
+const FOLLOW_OPTIONS: { value: FollowTarget; label: string }[] = [
+  { value: 'prey', label: 'Survivor' },
+  { value: 'predator-0', label: 'Hunter A' },
+  { value: 'predator-1', label: 'Hunter B' },
+]
 
 const INITIAL_STATS: ApiaryStats = {
   captures: 0,
@@ -45,6 +51,7 @@ Every position, action, and reward is computed every frame from the spec's weigh
 export function ApiaryApexGame() {
   const [seed, setSeed] = useState('')
   const [paused, setPaused] = useState(false)
+  const [follow, setFollow] = useState<FollowTarget>('prey')
   const [stats, setStats] = useState<ApiaryStats>(INITIAL_STATS)
   const [allTime, setAllTime] = useState<AllTimeRecord>({ bestSurvival: 0, capturesEver: 0 })
   const prevCaptures = useRef(0)
@@ -97,21 +104,22 @@ export function ApiaryApexGame() {
       readoutItems={readoutItems}
       howItWorks={HOW_IT_WORKS}
     >
-      <div className="mb-3 flex items-center justify-between">
-        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
-          scripted steering · no learning yet
-        </p>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <SegmentedControl label="Follow" options={FOLLOW_OPTIONS} value={follow} onChange={setFollow} />
         <GameButton size="sm" variant="ghost" onClick={() => setPaused((p) => !p)}>
           {paused ? 'Resume' : 'Pause'}
         </GameButton>
       </div>
+      <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        scripted steering · no learning yet · drag the scene to look around
+      </p>
       {seed && (
         <>
           <div
             className="relative w-full overflow-hidden rounded-sm border border-[var(--rule)] bg-[#0c1512]"
             style={{ height: 'min(70vh, 620px)', minHeight: 360 }}
           >
-            <Scene seed={seed} paused={paused} onStats={setStats} />
+            <Scene seed={seed} paused={paused} follow={follow} onStats={setStats} />
           </div>
           <div className="mt-4">
             <AgentStatsTable predatorStats={stats.predatorStats} preyStats={stats.preyStats} />

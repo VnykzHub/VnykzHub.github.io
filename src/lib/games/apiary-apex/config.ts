@@ -40,6 +40,15 @@ export const FLIGHT_PITCH_GAIN = 0.5
 export const FLIGHT_MAX_PITCH = 0.35 // rad, ~20°
 export const FLIGHT_SMOOTHING = 10 // higher = snappier bank/pitch response
 
+// Third-person follow camera. Position/orientation only — dragging to look
+// around never touches the simulation, only the camera's own orbit offset.
+export const THIRD_PERSON_DISTANCE = 9
+export const THIRD_PERSON_BASE_PITCH = 0.4 // rad, default elevation angle above the horizon
+export const ORBIT_YAW_SENSITIVITY = 0.006 // rad per pixel dragged horizontally
+export const ORBIT_PITCH_SENSITIVITY = 0.006 // rad per pixel dragged vertically
+export const ORBIT_MIN_PITCH = -0.1 // just below horizon
+export const ORBIT_MAX_PITCH = 1.3 // near-overhead
+
 // Terrain field — elevation and temperature, both deterministic smooth value
 // noise (two octaves for elevation, one for temperature's slower-varying
 // zones). Neither is cosmetic: elevation creates real uphill/downhill drag

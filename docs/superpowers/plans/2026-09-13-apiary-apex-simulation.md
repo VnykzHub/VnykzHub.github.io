@@ -102,10 +102,13 @@ src/components/games/apiary-apex/
   Scene.tsx          — Canvas, fixed-timestep loop driving the sim from a ref
                         (not React state — 60Hz physics stays off the render path),
                         turn-rate-limited yaw with bank/pitch flight animation,
-                        spread-aware auto-framing chase camera (terrain-aware),
+                        third-person camera locked to a selectable bee with
+                        click-drag look-around (camera-only orbit state — never
+                        read by the sim, so it can't influence steering),
                         chunk-streaming trigger, capture flash + hunter pulse,
                         a Trail on the survivor, ambient Sparkles
-  ApiaryApexGame.tsx — GameShell integration, HUD readout, pause control,
+  ApiaryApexGame.tsx — GameShell integration, Follow selector (Survivor /
+                       Hunter A / Hunter B), HUD readout, pause control,
                        localStorage-persisted all-time best-survival/captures
 src/app/games/apiary-apex/page.tsx
 ```

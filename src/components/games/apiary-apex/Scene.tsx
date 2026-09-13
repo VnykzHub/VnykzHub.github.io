@@ -1,18 +1,36 @@
 'use client'
 
-import { Suspense, useRef, useState, type RefObject } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Suspense, useEffect, useRef, useState, type RefObject } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Trail, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 import { rngFrom, type Rng } from '@/lib/games/shared/rng'
-import { createSimState, stepSimulation, clusterCenter, type SimState, type AgentStats } from '@/lib/games/apiary-apex/simulation'
+import { createSimState, stepSimulation, clusterCenter, type SimState, type Agent, type AgentStats } from '@/lib/games/apiary-apex/simulation'
 import { chunksAround, type Chunk } from '@/lib/games/apiary-apex/terrain'
 import { elevationAt, elevationGradient } from '@/lib/games/apiary-apex/terrainField'
 import { TelemetryHarvester } from '@/lib/games/apiary-apex/telemetry'
-import { FIXED_DT, HOVER_HEIGHT, FLIGHT_MAX_TURN_RATE, FLIGHT_BANK_GAIN, FLIGHT_MAX_BANK, FLIGHT_PITCH_GAIN, FLIGHT_MAX_PITCH, FLIGHT_SMOOTHING } from '@/lib/games/apiary-apex/config'
+import {
+  FIXED_DT,
+  HOVER_HEIGHT,
+  FLIGHT_MAX_TURN_RATE,
+  FLIGHT_BANK_GAIN,
+  FLIGHT_MAX_BANK,
+  FLIGHT_PITCH_GAIN,
+  FLIGHT_MAX_PITCH,
+  FLIGHT_SMOOTHING,
+  THIRD_PERSON_DISTANCE,
+  THIRD_PERSON_BASE_PITCH,
+  ORBIT_YAW_SENSITIVITY,
+  ORBIT_PITCH_SENSITIVITY,
+  ORBIT_MIN_PITCH,
+  ORBIT_MAX_PITCH,
+} from '@/lib/games/apiary-apex/config'
 import { Bee, type BeeHandle } from './Bee'
 import { ObstacleField } from './ObstacleField'
 import { TerrainField } from './TerrainField'
+
+/** Which bee the camera is locked to — the only three options, by design. */
+export type FollowTarget = 'predator-0' | 'predator-1' | 'prey'
 
 export interface ApiaryStats {
   captures: number
@@ -29,6 +47,7 @@ export interface ApiaryStats {
 interface SimulationRootProps {
   seed: string
   paused: boolean
+  follow: FollowTarget
   onStats: (stats: ApiaryStats) => void
 }
 
@@ -46,7 +65,7 @@ function shortestAngleDelta(from: number, to: number): number {
   return d
 }
 
-function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
+function SimulationRoot({ seed, paused, follow, onStats }: SimulationRootProps) {
   const simRef = useRef<SimState>(createSimState(seed))
   const rngRef = useRef<Rng>(rngFrom(seed, 'apiary-apex'))
   const harvesterRef = useRef(new TelemetryHarvester())
@@ -54,7 +73,53 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
   const lastPush = useRef(0)
   const lastChunkKey = useRef('')
   const lastSeenCaptureAt = useRef(0)
-  const cameraTarget = useRef(new THREE.Vector3(0, 0.6, 0))
+  const cameraLookAt = useRef(new THREE.Vector3(0, 0.6, 0))
+
+  // Orbit is camera-only: dragging changes where you look FROM, never
+  // anything the sim reads, so it can't influence a bee's steering.
+  const orbitYaw = useRef(0)
+  const orbitPitch = useRef(0)
+  const dragState = useRef({ dragging: false, lastX: 0, lastY: 0 })
+  const { gl } = useThree()
+
+  useEffect(() => {
+    const dom = gl.domElement
+    dom.style.cursor = 'grab'
+    dom.style.touchAction = 'none'
+    const onPointerDown = (e: PointerEvent) => {
+      dragState.current = { dragging: true, lastX: e.clientX, lastY: e.clientY }
+      dom.style.cursor = 'grabbing'
+      dom.setPointerCapture(e.pointerId)
+    }
+    const onPointerMove = (e: PointerEvent) => {
+      if (!dragState.current.dragging) return
+      const dx = e.clientX - dragState.current.lastX
+      const dy = e.clientY - dragState.current.lastY
+      dragState.current.lastX = e.clientX
+      dragState.current.lastY = e.clientY
+      orbitYaw.current -= dx * ORBIT_YAW_SENSITIVITY
+      orbitPitch.current = THREE.MathUtils.clamp(orbitPitch.current - dy * ORBIT_PITCH_SENSITIVITY, ORBIT_MIN_PITCH, ORBIT_MAX_PITCH)
+    }
+    const onPointerUp = () => {
+      dragState.current.dragging = false
+      dom.style.cursor = 'grab'
+    }
+    dom.addEventListener('pointerdown', onPointerDown)
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointerup', onPointerUp)
+    return () => {
+      dom.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+    }
+  }, [gl])
+
+  // Switching who the camera follows resets the look-around offset, so
+  // every bee starts from the same clean behind-the-bee view.
+  useEffect(() => {
+    orbitYaw.current = 0
+    orbitPitch.current = 0
+  }, [follow])
 
   const predatorRefA = useRef<BeeHandle>(null)
   const predatorRefB = useRef<BeeHandle>(null)
@@ -152,29 +217,25 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
       flashRef.current.intensity *= Math.exp(-delta * 6)
     }
 
-    // Chase camera: settle in behind the prey's heading, looking at the pack.
-    // Distance and height scale with how spread out the three agents are, so
-    // a fresh respawn (everyone far apart) pulls back to keep the whole chase
-    // in frame instead of cropping a hunter out, and a tight chase pushes in
-    // for a more intense close-up. Both track the local terrain elevation,
-    // not a flat y=0, so the camera doesn't dip through hills or hover oddly
-    // over valleys.
-    const spread = Math.max(
-      Math.hypot(sim.predators[0].pos.x - center.x, sim.predators[0].pos.z - center.z),
-      Math.hypot(sim.predators[1].pos.x - center.x, sim.predators[1].pos.z - center.z),
-      Math.hypot(sim.prey.pos.x - center.x, sim.prey.pos.z - center.z),
-    )
-    const camDistance = THREE.MathUtils.clamp(13 + spread * 0.9, 13, 34)
-    const camHeight = THREE.MathUtils.clamp(7 + spread * 0.45, 7, 20)
-    const centerGroundY = elevationAt(seed, center.x, center.z)
-    const preyGroundY = elevationAt(seed, sim.prey.pos.x, sim.prey.pos.z)
+    // Third-person follow camera: locked to whichever bee is selected,
+    // sitting behind its current heading by default. Dragging adds a yaw/
+    // pitch offset on top of that heading — purely a viewing angle, never
+    // fed back into the sim, so it can't affect what the bee does.
+    const followedAgent: Agent = follow === 'prey' ? sim.prey : sim.predators[follow === 'predator-0' ? 0 : 1]
+    const followGroundY = elevationAt(seed, followedAgent.pos.x, followedAgent.pos.z)
+    const followWorldPos = new THREE.Vector3(followedAgent.pos.x, followGroundY + HOVER_HEIGHT, followedAgent.pos.z)
 
-    cameraTarget.current.lerp(new THREE.Vector3(center.x, centerGroundY + 0.6, center.z), 1 - Math.exp(-delta * 2.5))
-    const heading = Math.atan2(sim.prey.vel.x, sim.prey.vel.z)
-    const behind = new THREE.Vector3(-Math.sin(heading), 0, -Math.cos(heading)).multiplyScalar(camDistance)
-    const desiredCamPos = new THREE.Vector3(sim.prey.pos.x, preyGroundY + camHeight, sim.prey.pos.z).add(behind)
+    const baseHeading = Math.atan2(followedAgent.vel.x, followedAgent.vel.z)
+    const totalYaw = baseHeading + orbitYaw.current
+    const totalPitch = THREE.MathUtils.clamp(THIRD_PERSON_BASE_PITCH + orbitPitch.current, ORBIT_MIN_PITCH, ORBIT_MAX_PITCH)
+    const horizontalDist = THIRD_PERSON_DISTANCE * Math.cos(totalPitch)
+    const verticalDist = THIRD_PERSON_DISTANCE * Math.sin(totalPitch)
+    const offset = new THREE.Vector3(-Math.sin(totalYaw) * horizontalDist, verticalDist, -Math.cos(totalYaw) * horizontalDist)
+    const desiredCamPos = followWorldPos.clone().add(offset)
+
+    cameraLookAt.current.lerp(followWorldPos, 1 - Math.exp(-delta * 2.5))
     state.camera.position.lerp(desiredCamPos, 1 - Math.exp(-delta * 2))
-    state.camera.lookAt(cameraTarget.current)
+    state.camera.lookAt(cameraLookAt.current)
 
     const now = performance.now()
     if (now - lastPush.current > 180) {
@@ -217,14 +278,15 @@ function SimulationRoot({ seed, paused, onStats }: SimulationRootProps) {
 interface SceneProps {
   seed: string
   paused: boolean
+  follow: FollowTarget
   onStats: (stats: ApiaryStats) => void
 }
 
-export function Scene({ seed, paused, onStats }: SceneProps) {
+export function Scene({ seed, paused, follow, onStats }: SceneProps) {
   return (
     <Canvas camera={{ position: [0, 12, 20], fov: 50 }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
       <Suspense fallback={null}>
-        <SimulationRoot key={seed} seed={seed} paused={paused} onStats={onStats} />
+        <SimulationRoot key={seed} seed={seed} paused={paused} follow={follow} onStats={onStats} />
       </Suspense>
     </Canvas>
   )
